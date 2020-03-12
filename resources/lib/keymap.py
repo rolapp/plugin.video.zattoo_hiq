@@ -19,7 +19,7 @@
 #
 
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon
-import sys, urlparse, os
+import sys, urllib.parse, os
 import  time, datetime, threading
 from resources.lib.zattooDB import ZattooDB
 import xml.etree.ElementTree as ET

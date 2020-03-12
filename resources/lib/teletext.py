@@ -24,14 +24,25 @@
 
 import xbmc, xbmcgui, xbmcaddon, time, threading
 from resources.lib.zattooDB import ZattooDB
-import os 
-import urllib2
+import os, base64
+import urllib.request, urllib.error, urllib.parse
 
 
 __addon__ = xbmcaddon.Addon()
-_dataFolder_ = xbmc.translatePath(__addon__.getAddonInfo('profile')).decode('utf-8')
+_dataFolder_ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 localString = __addon__.getLocalizedString
+DEBUG = __addon__.getSetting('debug')
 
+def debug(content):
+    if DEBUG:log(content, xbmc.LOGDEBUG)
+    
+def notice(content):
+    log(content, xbmc.LOGNOTICE)
+
+def log(msg, level=xbmc.LOGNOTICE):
+    addon = xbmcaddon.Addon()
+    addonID = addon.getAddonInfo('id')
+    xbmc.log('%s: %s' % (addonID, msg), level) 
 
 ACTION_MOVE_LEFT = 1
 ACTION_MOVE_RIGHT = 2
@@ -116,7 +127,7 @@ class Teletext(xbmcgui.WindowDialog):
 	def onAction(self, action):
 		if hasattr(self, 'supPageTimer'): self.supPageTimer.cancel()
 		action = action.getId()
-		#print('action:'+str(action))
+		print(('action:'+str(action)))
 		if action in [ACTION_PARENT_DIR, KEY_NAV_BACK, ACTION_PREVIOUS_MENU, ACTION_MOUSE_RIGHT_CLICK]:
 			if self.imagePath: os.remove(self.imagePath)
 			self.close()
@@ -127,8 +138,9 @@ class Teletext(xbmcgui.WindowDialog):
 			self.pageInputCtrl.setVisible(True)
 			if len(self.pageInput)>2:
 				self.currentPage = int(self.pageInput)
-				self.showPage(str(self.currentPage), str(self.subPage))
 				self.pageInput=''
+				self.showPage(str(self.currentPage), str(self.subPage))
+				
 
 		elif action in [ACTION_MOVE_DOWN, ACTION_GESTURE_SWIPE_DOWN]:
 			self.currentPage=(int((self.currentPage-1)/100))*100
@@ -151,8 +163,11 @@ class Teletext(xbmcgui.WindowDialog):
 			self.showPage(str(self.currentPage),self.subPage)
 			
 	def onControl(self, control):
-		if control == self.button0:
-			#print "Open Keypad"
+		
+		control = control.getId()
+		debug(control)
+		if control == 3004:
+			
 			dialog = xbmcgui.Dialog()
 			self.pageInput = dialog.numeric(0, 'Enter Site')
 			if len(self.pageInput)>2:
@@ -160,32 +175,32 @@ class Teletext(xbmcgui.WindowDialog):
 				self.showPage(str(self.currentPage), str(self.subPage))
 				self.pageInput=''
 				
-		elif control == self.button1:
+		elif control == 3005:
 			self.subPage = self.subPage-1
 			self.showPage(str(self.currentPage),self.subPage)
 				
-		elif control == self.button2:
+		elif control == 3006:
 			self.subPage = self.subPage+1
 			self.showPage(str(self.currentPage),self.subPage)
 			
-		elif control == self.button3:
+		elif control == 3007:
 			self.currentPage -=1
 			self.showPage(str(self.currentPage), str(self.subPage))
 		
-		elif control == self.button5:
+		elif control == 3009:
 			self.currentPage +=1
 			self.showPage(str(self.currentPage), str(self.subPage))
 			
-		elif control == self.button4:
+		elif control == 3008:
 			if self.imagePath: os.remove(self.imagePath)
 			self.close()
 			
-		elif control == self.button6:
+		elif control == 3010:
 			self.currentPage=(int((self.currentPage-1)/100))*100
 			if self.currentPage<100: self.currentPage=100
 			self.showPage(str(self.currentPage), str(self.subPage))
 			
-		elif control == self.button7:
+		elif control == 3011:
 			self.currentPage=(int(self.currentPage/100)+1)*100
 			self.showPage(str(self.currentPage), str(self.subPage))
 				
@@ -196,22 +211,23 @@ class Teletext(xbmcgui.WindowDialog):
 		url='https://zapi.zattoo.com/teletext/'+self.channelID+'/hd/'+page+'/'+str(subpage)+'.html'
 		#print 'TELETEXT  -  ' + str(url)
 		#url="https://zapi.zattoo.com/teletext/sf-1/hd/100/1.html"
-		#print('teletext image:'+url)
+		print(('teletext image:'+url))
 
-		req=urllib2.Request(headers={'User-Agent':'Mozilla/5.0','Cache-Control':'max-age=0'}, url=url)
+		req=urllib.request.Request(headers={'User-Agent':'Mozilla/5.0','Cache-Control':'max-age=0'}, url=url)
 		try:
-			f = urllib2.urlopen(req)
-			html=f.read()
+			f = urllib.request.urlopen(req)
+			
+			html=f.read().decode('utf-8')
 			start = html.index('base64,') + 7
 			end = html.index('"', start)
-			image= html[start:end]
-
+			data= html[start:end]
+			image = base64.b64decode(data)
 			if self.imagePath: os.remove(self.imagePath)
 			self.imagePath = os.path.join(_dataFolder_, 'teletextImage'+str(time.clock())+'.png')
 
-			fh = open(self.imagePath, "wb")
-			fh.write(image.decode('base64'))
-			fh.close()
+			with open(self.imagePath, "wb") as fh:
+				fh.write(image)
+				fh.close()
 
 			self.pageImage.setImage(self.imagePath, useCache=False)
 

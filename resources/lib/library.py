@@ -19,7 +19,7 @@
 #
 
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon
-import sys, urlparse
+import sys, urllib.parse
 import  time, datetime, threading
 from resources.lib.zattooDB import ZattooDB
 
@@ -80,7 +80,7 @@ class library:
       
       nfoFile=os.path.join(libraryPath, fileName+"/"+fileName+".nfo")
       f = open(nfoFile,"w")
-      f.write(out.encode("UTF-8"))
+      f.write(out)
       f.close()
       
       # max_bandwidth = __addon__.getSetting('max_bandwidth')
@@ -140,8 +140,8 @@ def slugify(value):
     and converts spaces to hyphens.
     """
     import re, unicodedata
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
-    value = unicode(re.sub('[-\s]+', '-', value))
+    #value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+    value = str(re.sub('[^\w\s-]', '', value).strip().lower())
+    value = str(re.sub('[-\s]+', '-', value))
     return value
   

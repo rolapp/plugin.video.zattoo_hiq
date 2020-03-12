@@ -38,9 +38,8 @@ class HelpGui(xbmcgui.WindowXMLDialog):
 
 class helpmy:
     
-    def showHelp(self, Img):
-	gui = HelpGui("help.xml", __addon__.getAddonInfo('path'))
-	gui.showHelp(Img)
-	gui.doModal()
-	del gui
-    
+  def showHelp(self, Img):
+    gui = HelpGui("help.xml", __addon__.getAddonInfo('path'))
+    gui.showHelp(Img)
+    gui.doModal()
+    del gui

@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#    copyright (C) 2017 Steffen Rolapp (github@rolapp.de)
+#    copyright (C) 2020 Steffen Rolapp (github@rolapp.de)
 #
 #    This file is part of zattooHiQ
 #
@@ -18,8 +18,11 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+#print 'ZattooHiq-Service started'
+
 import xbmc, xbmcgui, xbmcaddon, datetime, time
-import os, urlparse
+import os, urllib.parse
+
 from resources.lib.library import library
 from resources.lib.zattooDB import ZattooDB
 from resources.lib.zapisession import ZapiSession
@@ -46,9 +49,12 @@ def log(msg, level=xbmc.LOGNOTICE):
     addon = xbmcaddon.Addon()
     addonID = addon.getAddonInfo('id')
     xbmc.log('%s: %s' % (addonID, msg), level) 
-    
+
+def script_chk(script_name):
+    return xbmc.getCondVisibility('System.AddonIsEnabeled(%s)' % script_name)
+     
 def refreshProg():
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     monitor = xbmc.Monitor()
     while not monitor.abortRequested():
         if monitor.waitForAbort(600): break
@@ -65,7 +71,7 @@ def refreshProg():
             pass
 
 def recInfo():
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     from resources.lib.zattooDB import ZattooDB
     _zattooDB_ = ZattooDB()
 
@@ -75,14 +81,14 @@ def recInfo():
         _zattooDB_.getShowInfo(record['program_id'])
 
 def start():
+    
     player=myPlayer()
 
     if OLDVERSION != VERSION:
-        #_zattooDB_.reloadDB(True)
-        _zattooDB_.set_version(VERSION)
+       #_zattooDB_.reloadDB(True)
+       _zattooDB_.set_version(VERSION)
         
-    
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     #xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     #re-import ZattooDB to prevent "convert_timestamp" error
     from resources.lib.zattooDB import ZattooDB
@@ -119,9 +125,7 @@ def start():
         _library_.delete_library() # add by samoth
         _library_.make_library()
   
-    #xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/icon.png', 3000, False)
     refreshProg()
-
 
 
 def getProgNextDay():
@@ -153,7 +157,7 @@ class myPlayer(xbmc.Player):
         self.startTime=self.startTime-datetime.timedelta(seconds=self.skip)
       xbmc.sleep(200)
       playingFile=xbmc.getInfoLabel('Player.Filenameandpath')
-      #print("playingfile: " + str(playingFile))
+      #print "playingfile: " + str(playingFile)
       if playingFile.find('dash-live')>-1 or playingFile.find('hls-live')>-1 or playingFile.find('dashenc-live')>-1:
             self.loadKeymap()
      
@@ -196,8 +200,5 @@ class myPlayer(xbmc.Player):
           xbmc.sleep(200)
           xbmc.executebuiltin('XBMC.Action(reloadkeymaps)')
         except:pass
-
-
-    
 
 

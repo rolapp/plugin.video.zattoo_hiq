@@ -22,11 +22,12 @@
 
 import xbmc, xbmcgui, xbmcaddon, os, xbmcplugin, datetime, time
 import json
-from zapisession import ZapiSession
+from resources.lib.zapisession import ZapiSession
 import sqlite3
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+import importlib
+importlib.reload(sys)
+#sys.setdefaultencoding('utf8')
 
 
 __addon__ = xbmcaddon.Addon()
@@ -35,22 +36,8 @@ _channelList_=[]
 localString = __addon__.getLocalizedString
 local = xbmc.getLocalizedString
 DEBUG = __addon__.getSetting('debug')
-_umlaut_ = {ord(u'ä'): u'ae', ord(u'ö'): u'oe', ord(u'ü'): u'ue', ord(u'ß'): u'ss'}
+_umlaut_ = {ord('ä'): 'ae', ord('ö'): 'oe', ord('ü'): 'ue', ord('ß'): 'ss'}
 
-REMOTE_DBG = False
-
-# append pydev remote debugger
-if REMOTE_DBG:
-  # Make pydev debugger works for auto reload.
-  # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
-  try:
-    import pysrc.pydevd as pydevd  # with the addon script.module.pydevd, only use `import pydevd`
-  # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
-    #pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=False)
-    pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True)
-  except ImportError:
-    sys.stderr.write("Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
-    sys.exit(1)
 
 def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
@@ -105,7 +92,7 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     
     DB._createTables()
     time.sleep(5)
-    xbmcgui.Dialog().notification(localString(31916), localString(30110),  __addon__.getAddonInfo('path') + '/icon.png', 3000, False)
+    xbmcgui.Dialog().notification(localString(31916), localString(30110),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
     DB.updateChannels(True)
     #time.sleep(2)
     DB.updateProgram(datetime.datetime.now(), True)
@@ -121,7 +108,7 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     DB.getProgInfo(True, startTime, endTime)
    
     
-    xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/icon.png', 3000, False)
+    xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
     _library_.make_library()
     xbmc.executebuiltin("Dialog.Close(busydialog)")
     
@@ -142,7 +129,7 @@ class ZattooDB(object):
     self.zapi=self.zapiSession()
 
   def zapiSession(self):
-    zapiSession   = ZapiSession(xbmc.translatePath(__addon__.getAddonInfo('profile')).decode('utf-8'))
+    zapiSession   = ZapiSession(xbmc.translatePath(__addon__.getAddonInfo('profile')))
     PROVIDER = __addon__.getSetting('provider')
     #debug('Provider '+str(PROVIDER))
     if PROVIDER == "0": ZAPIUrl = "https://zattoo.com"
@@ -342,7 +329,7 @@ class ZattooDB(object):
         return
     
 
-    xbmcgui.Dialog().notification(__addon__.getLocalizedString(31917), self.formatDate(date), __addon__.getAddonInfo('path') + '/icon.png', 5000, False)
+    xbmcgui.Dialog().notification(__addon__.getLocalizedString(31917), self.formatDate(date), __addon__.getAddonInfo('path') + '/resources/icon.png', 5000, False)
     #xbmc.executebuiltin("ActivateWindow(busydialog)")
     debug('update Program')
     #update 09.02.2018: zattoo only sends max 5h (6h?) of programdata -> load 6*4h
@@ -362,7 +349,7 @@ class ZattooDB(object):
                  #debug('Sender nicht im Abo: '+str(cid))
                 continue
             if cid == firstchan and not channel['programs']:
-                xbmcgui.Dialog().notification('Update Program', 'No Data',  __addon__.getAddonInfo('path') + '/icon.png', 3000, False)
+                xbmcgui.Dialog().notification('Update Program', 'No Data',  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
                 #c.close()
                 continue
            
@@ -375,7 +362,7 @@ class ZattooDB(object):
                   #https://images.zattic.com/cms/64ab6db7f62b325f4148/original.jpg
                   #http://images.zattic.com/system/images/6dcc/8817/50d1/dfab/f21c/format_480x360.jpg
                 else: image = ""
-    
+                
                 c.execute('INSERT OR IGNORE INTO programs(channel, title, start_date, end_date, description,  genre, image_small, showID, category) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     [cid, program['t'], program['s'], program['e'], program['et'], ', '.join(program['g']), image, program['id'], ', '.join(program['c']) ])
            
@@ -386,7 +373,7 @@ class ZattooDB(object):
     try:
         self.conn.commit()
     except:
-        print ('IntegrityError: FOREIGN KEY constraint failed zattooDB 232')
+        print('IntegrityError: FOREIGN KEY constraint failed zattooDB 232')
     #xbmc.executebuiltin("Dialog.Close(busydialog)")
     c.close()
     return
@@ -433,7 +420,9 @@ class ZattooDB(object):
     #max 10 items per request -> request 3times for 30 items
     for page in range(3):
           api = '/zapi/v2/cached/' + self.zapi.SessionData['session']['power_guide_hash'] + '/teaser_collections/most_watched_live_now_de?page='+str(page)+'&per_page=10'
+          #api = '/zapi/v2/cached/' + self.zapi.SessionData['session']['power_guide_hash'] + '/teaser_collections/avod_highlights_page?page='+str(page)+'&per_page=10'
           mostWatched = self.zapi.exec_zapiCall(api, None)
+          debug('Popular '+str(mostWatched))
           if mostWatched is None: continue
           for data in mostWatched['teasers']:
               data=data['teasable']
@@ -445,10 +434,11 @@ class ZattooDB(object):
               }
               popularList['index'].append(str(data['cid']))
               nr+=1
+              debug(popularList)
     return popularList
 
   def getPrograms(self, channels, get_long_description=False, startTime=datetime.datetime.now(), endTime=datetime.datetime.now()):
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     c = self.conn.cursor()
     programList = []
 
@@ -583,7 +573,7 @@ class ZattooDB(object):
         try:
             self.conn.commit()
         except:
-            print ('IntegrityError: FOREIGN KEY constraint failed zattooDB 355')
+            print('IntegrityError: FOREIGN KEY constraint failed zattooDB 355')
         info.close()
         return {'description':longDesc, 'year':year, 'country':country, 'category':category, 'genre':genre, 'credits':cred}
         
@@ -747,7 +737,7 @@ class ZattooDB(object):
     return channelid
 
   def getProgInfo(self, notify=False, startTime=datetime.datetime.now(), endTime=datetime.datetime.now(), chan='fav'):
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
         fav = False
         if __addon__.getSetting('onlyfav') == 'true': fav = True
         if chan == 'all': fav = False
@@ -802,7 +792,7 @@ class ZattooDB(object):
             #xbmc.executebuiltin("Dialog.Close(busydialog)")
         return
   def dummy(self, notify=False, startTime=datetime.datetime.now(), endTime=datetime.datetime.now()):
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
         fav = False
         if __addon__.getSetting('onlyfav') == 'true': fav = True
         channels = self.getChannelList(fav)

@@ -8,7 +8,7 @@
 
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 import os, re, base64,sys
-import urllib, urllib2
+import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse
 import json
 
 __addon__ = xbmcaddon.Addon()
@@ -54,7 +54,7 @@ class ZapiSession:
         self.SESSION_FILE = os.path.join(dataFolder, 'session.cache')
         self.ACCOUNT_FILE = os.path.join(dataFolder, 'account.cache')
         self.APICALL_FILE = os.path.join(dataFolder, 'apicall.cache')
-        self.HttpHandler = urllib2.build_opener()
+        self.HttpHandler = urllib.request.build_opener()
         self.HttpHandler.addheaders = [('User-Agent', USERAGENT), ('Content-type', 'application/x-www-form-urlencoded'), ('Accept', 'application/json')]
 
     def init_session(self, username, password, api_url="https://zattoo.com"):
@@ -74,7 +74,7 @@ class ZapiSession:
             if accountData['success'] == True:
                 self.AccountData = accountData
                 with open(self.COOKIE_FILE, 'r') as f:
-                    self.set_cookie(base64.b64decode(f.readline()))
+                    self.set_cookie(base64.b64decode(f.readline()).decode('utf-8'))
                 with open(self.SESSION_FILE, 'r') as f:
                     self.SessionData = json.loads(base64.b64decode(f.readline()))
                 return True
@@ -82,7 +82,9 @@ class ZapiSession:
 
     def extract_sessionId(self, cookieContent):
         if cookieContent is not None:
-            return re.search("beaker\.session\.id\s*=\s*([^\s;]*)", cookieContent).group(1)
+            ID = re.search("beaker\.session\.id\s*=\s*([^\s;]*)", str(cookieContent))
+            if ID is None: return None
+            return re.search("beaker\.session\.id\s*=\s*([^\s;]*)", str(cookieContent)).group(1)
         return None
 
     def get_accountData(self):
@@ -93,17 +95,17 @@ class ZapiSession:
         return accountData
 
     def persist_accountData(self, accountData):
-        with open(self.ACCOUNT_FILE, 'w') as f:
-            f.write(base64.b64encode(json.dumps(accountData)))
+        with open(self.ACCOUNT_FILE, 'wb') as f:
+            f.write(base64.b64encode(json.dumps(accountData).encode('utf-8')))
 
     def persist_sessionId(self, sessionId):
-        with open(self.COOKIE_FILE, 'w') as f:
-            f.write(base64.b64encode(sessionId))
-
+        with open(self.COOKIE_FILE, 'wb') as f:
+            f.write(base64.b64encode(sessionId.encode('utf-8')))
+        
 
     def persist_sessionData(self, sessionData):
-        with open(self.SESSION_FILE, 'w') as f:
-            f.write(base64.b64encode(json.dumps(sessionData)))
+        with open(self.SESSION_FILE, 'wb') as f:
+            f.write(base64.b64encode(json.dumps(sessionData).encode('utf-8')))
 
 
 
@@ -114,16 +116,21 @@ class ZapiSession:
     def request_url(self, url, params):
         
         try:
-            #
-            response = self.HttpHandler.open(url, urllib.urlencode(params) if params is not None else None)
-            
+           
+            if params is not None:
+                f = urllib.parse.urlencode(params) 
+                f = f.encode('utf-8')
+                debug(f)
+            response = self.HttpHandler.open(url,f if params is not None else None)
+          
             if response is not None:
-                sessionId = self.extract_sessionId(response.info().getheader('Set-Cookie'))
-
+                sessionId = self.extract_sessionId(response.info())
+                
                 if sessionId is not None:
                     self.set_cookie(sessionId)
                     self.persist_sessionId(sessionId)
-                return response.read()
+                #debug(response.read().decode('utf-8'))
+                return response.read().decode('utf-8')
         except Exception as e:
            debug(str(e))
            if '403' in str(e):
@@ -138,28 +145,32 @@ class ZapiSession:
     def exec_zapiCall(self, api, params, context='default'):
         #url = self.ZAPIAuthUrl + api if context == 'session' else self.ZAPIUrl + api
         url = self.ZAPIUrl + api
-        #debug( "ZapiCall  " + str(url)+str(params))
+        debug( "ZapiCall  " + str(url)+'  '+str(params))
         content = self.request_url(url, params)
+        #debug(content)
         if content is None:# and self.renew_session():
             content = self.request_url(url, params)
         if content is None:
             return None
-        try:
-            resultData = json.loads(content)
-            return resultData
+        #try:
+        resultData = json.loads(content)
+        #debug(resultData)
+        return resultData
 
-
-        except Exception:
-            pass
-        return None
+        # except Exception:
+           # pass
+        # return None
 
     def fetch_appToken(self):
         #debug("ZapiUrL= "+str(self.ZAPIUrl))
         try:
-            handle = urllib2.urlopen(self.ZAPIUrl + '/')
+            handle = urllib.request.urlopen(self.ZAPIUrl + '/')
         except:
-            handle = urllib.urlopen(self.ZAPIUrl + '/')
+            handle = urllib.request.urlopen(self.ZAPIUrl + '/')
+        
         html = handle.read()
+        html = html.decode('utf-8')
+        
         return re.search("window\.appToken\s*=\s*'(.*)'", html).group(1)
 
 
@@ -170,6 +181,7 @@ class ZapiSession:
                   "lang"    : "en",
                   "format"  : "json"}
         sessionData = self.exec_zapiCall(api, params, 'session')
+        
         debug('SessionData: '+str(sessionData))
         if sessionData is not None:
             self.SessionData = sessionData

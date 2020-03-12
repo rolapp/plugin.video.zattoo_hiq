@@ -26,8 +26,9 @@ import threading
 import xbmc, xbmcgui, xbmcaddon, xbmcplugin
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+import importlib
+importlib.reload(sys)
+#sys.setdefaultencoding('utf8')
 
 from resources.lib.zattooDB import ZattooDB
 _zattooDB_ = ZattooDB()
@@ -35,7 +36,7 @@ _zattooDB_ = ZattooDB()
 from resources.lib.library import library
 _library_=library()
 # from notification import Notification
-from strings import *
+from resources.lib.strings import *
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
@@ -47,14 +48,14 @@ local = xbmc.getLocalizedString
 
 # get Timezone Offset
 from tzlocal import get_localzone
-
+#import .resources.lib.pytz
 try:
   tz = get_localzone()
   offset=tz.utcoffset(datetime.datetime.now()).total_seconds()
   _timezone_=int(offset)
 except:pass
 
-_datename_ = {u'Monday': u'Montag', u'Tuesday': u'Dienstag', u'Wednesday':u'Mittwoch'}
+_datename_ = {'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday':'Mittwoch'}
 
 DEBUG = True
 ACTION_LEFT = 1
@@ -219,6 +220,7 @@ class EPG(xbmcgui.WindowXML):
     def getControl(self, controlId):
         try:
             return super(EPG, self).getControl(controlId)
+            
         except:
             if controlId in self.ignoreMissingControlIds:
                 return None
@@ -278,22 +280,25 @@ class EPG(xbmcgui.WindowXML):
 
         controlInFocus = None
         currentFocus = self.focusPoint
+
         try:
             controlInFocus = self.getFocus()
+           
             if controlInFocus in [elem.control for elem in self.controlAndProgramList]:
                 (left, top) = controlInFocus.getPosition()
                 currentFocus = Point()
-                currentFocus.x = left + (controlInFocus.getWidth() / 2)
-                currentFocus.y = top + (controlInFocus.getHeight() / 2)
+                currentFocus.x = left + (controlInFocus.getWidth() // 2)
+                currentFocus.y = top + (controlInFocus.getHeight() // 2)
         except Exception:
             
             control = self._findControlAt(self.focusPoint)
+            
             if control is None and len(self.controlAndProgramList) > 0:
                 control = self.controlAndProgramList[0].control
             if control is not None:
                 self.setFocus(control)
                 return
-
+        
         if actionId in [ACTION_LEFT, ACTION_4, ACTION_JUMP_SMS4]:
             self._left(currentFocus)
         elif actionId in [ACTION_RIGHT, ACTION_6, ACTION_JUMP_SMS6]:
@@ -580,35 +585,36 @@ class EPG(xbmcgui.WindowXML):
         if control: self.setFocus(control)
 
     def setFocus(self, control):
-        debug('setFocus %d' % control.getId())
         if control in [elem.control for elem in self.controlAndProgramList]:
-            debug('Focus before %s' % self.focusPoint)
+          
             (left, top) = control.getPosition()
             if left > self.focusPoint.x or left + control.getWidth() < self.focusPoint.x:
                 self.focusPoint.x = left
-            self.focusPoint.y = top + (control.getHeight() / 2)
-            debug('New focus at %s' % self.focusPoint)
+            self.focusPoint.y = top + (control.getHeight() // 2)
 
         super(EPG, self).setFocus(control)
 
     def onFocus(self, controlId):
         
-        try:
-            controlInFocus = self.getControl(controlId)
-        except Exception:
-            return
-        
+        #try:
+        controlInFocus = self.getControl(controlId)
+        #except Exception:
+        #    return
+        #debug(controlId)
+        #debug(controlInFocus)
         program = self._getProgramFromControl(controlInFocus)
+
         if program is None: return
         # Test auf Restart
         
         if _zattooDB_.getRestart(program['showID']):
-            debug("Showinfo test")
+            
             if program['description'] == None:
                 self.setControlLabel(self.C_MAIN_TITLE, '[B][COLOR gold]R[/COLOR][/B]  [B]%s[/B]' % program['title'])
             else:
                 self.setControlLabel(self.C_MAIN_TITLE, '[B][COLOR gold]R[/COLOR][/B]  [B]%s[/B]  -  [B]%s[/B]' % (program['title'], program['description']))
         else:
+            #debug("Showinfo test")
             if program['description'] == None:
                 self.setControlLabel(self.C_MAIN_TITLE, '[B]%s[/B]' % program['title'])
             else:
@@ -685,7 +691,7 @@ class EPG(xbmcgui.WindowXML):
         else: control = self._findControlOnRight(currentFocus)
         '''
         control = self._findControlOnRight(currentFocus)
-        
+
         if control is not None:
             self.setFocus(control)
         elif control is None:
@@ -771,9 +777,9 @@ class EPG(xbmcgui.WindowXML):
         import time, locale
         #print 'HeuteTIME  ' + str(time.strftime ('%B-%d/%A/%Y'))
         if self.redrawingEPG or self.isClosing:
-            debug('onRedrawEPG - already redrawing')
+            #debug('onRedrawEPG - already redrawing')
             return  # ignore redraw request while redrawing
-        debug('onRedrawEPG')
+        #debug('onRedrawEPG')
 
         self.redrawingEPG = True
         self._showControl(self.C_MAIN_EPG)
@@ -783,9 +789,9 @@ class EPG(xbmcgui.WindowXML):
         self._clearEpg()
 
         channels = self.db.getChannelList(self.favourites)
-        debug(channelStart)
+        #debug(channelStart)
         if channelStart < 0:
-            channelStart = len(channels) - (int((float(len(channels))/8 - len(channels)/8)*8))
+            channelStart = len(channels) - (int((float(len(channels))//8 - len(channels)//8)*8))
         elif channelStart > len(channels) - 8: channelStart = 0
         # if channelStart < 0:
             # channelStart = 0
@@ -856,13 +862,13 @@ class EPG(xbmcgui.WindowXML):
                         else: title = program['title']
                     
                         control = xbmcgui.ControlButton(
-                            cellStart,
-                            self.epgView.top + self.epgView.cellHeight * idx,
-                            cellWidth - 2,
-                            self.epgView.cellHeight - 2,
+                            int(cellStart),
+                            int(self.epgView.top + self.epgView.cellHeight * idx),
+                            int(cellWidth - 2),
+                            int(self.epgView.cellHeight - 2),
                             title,
-                            noFocusTexture=noFocusTexture,
-                            focusTexture=focusTexture
+                            noFocusTexture,
+                            focusTexture
                         )
         
                         self.controlAndProgramList.append(ControlAndProgram(control, program))
@@ -919,7 +925,7 @@ class EPG(xbmcgui.WindowXML):
 
 
     def _secondsToXposition(self, seconds):
-        return self.epgView.left + (seconds * self.epgView.width / 7200)
+        return self.epgView.left + (seconds * self.epgView.width // 7200)
 
     def _findControlOnRight(self, point):
         distanceToNearest = 10000
@@ -928,15 +934,14 @@ class EPG(xbmcgui.WindowXML):
         for elem in self.controlAndProgramList:
             control = elem.control
             (left, top) = control.getPosition()
-            x = left + (control.getWidth() / 2)
-            y = top + (control.getHeight() / 2)
-
+            x = left + (control.getWidth() // 2)
+            y = top + (control.getHeight() // 2)
+            if left == point.x: continue
             if point.x < x and point.y == y:
                 distance = abs(point.x - x)
                 if distance < distanceToNearest:
                     distanceToNearest = distance
                     nearestControl = control
-
         return nearestControl
 
     def _findControlOnLeft(self, point):
@@ -946,15 +951,14 @@ class EPG(xbmcgui.WindowXML):
         for elem in self.controlAndProgramList:
             control = elem.control
             (left, top) = control.getPosition()
-            x = left + (control.getWidth() / 2)
-            y = top + (control.getHeight() / 2)
-
+            debug(control.getWidth() // 2)
+            x = left + (control.getWidth() // 2)
+            y = top + (control.getHeight() // 2)
             if point.x > x and point.y == y:
                 distance = abs(point.x - x)
                 if distance < distanceToNearest:
                     distanceToNearest = distance
                     nearestControl = control
-
         return nearestControl
 
     def _findControlBelow(self, point):
@@ -963,7 +967,7 @@ class EPG(xbmcgui.WindowXML):
         for elem in self.controlAndProgramList:
             control = elem.control
             (leftEdge, top) = control.getPosition()
-            y = top + (control.getHeight() / 2)
+            y = top + (control.getHeight() // 2)
 
             if point.y < y:
                 rightEdge = leftEdge + control.getWidth()
@@ -977,7 +981,7 @@ class EPG(xbmcgui.WindowXML):
         for elem in self.controlAndProgramList:
             control = elem.control
             (leftEdge, top) = control.getPosition()
-            y = top + (control.getHeight() / 2)
+            y = top + (control.getHeight() // 2)
 
             if point.y > y:
                 rightEdge = leftEdge + control.getWidth()
@@ -999,8 +1003,10 @@ class EPG(xbmcgui.WindowXML):
         return None
 
     def _getProgramFromControl(self, control):
+        debug('old %d' % control.getId())
         for elem in self.controlAndProgramList:
-            if elem.control == control:
+            
+            if elem.control.getId() == control.getId():
                 return elem.program
         return None
 
@@ -1060,7 +1066,7 @@ class EPG(xbmcgui.WindowXML):
     def setControlImage(self, controlId, image):
         control = self.getControl(controlId)
         if control:
-            control.setImage(image.encode('utf-8'), False)
+            control.setImage(image, False)
 
     def setControlLabel(self, controlId, label):
         control = self.getControl(controlId)

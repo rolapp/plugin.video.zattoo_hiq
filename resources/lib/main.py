@@ -21,8 +21,9 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon
-import sys, urlparse,  os, json
+import sys, urllib.parse,  os, json
 import time, datetime, threading
 import _strptime
     
@@ -36,7 +37,7 @@ from resources.lib.helpmy import helpmy
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
-__addondir__  = xbmc.translatePath( __addon__.getAddonInfo('profile') ) 
+__addondir__  = xbmc.translatePath( __addon__.getAddonInfo('profile') )
 
 
 _timezone_ = int(__addon__.getSetting('time_offset'))*60*-60 #-time.altzone
@@ -51,7 +52,7 @@ _keymap_=KeyMap()
 _helpmy_=helpmy()
 
 global lastplaying
-_umlaut_ = {ord(u'ä'): u'ae', ord(u'ö'): u'oe', ord(u'ü'): u'ue', ord(u'ß'): u'ss'}
+_umlaut_ = {ord('ä'): 'ae', ord('ö'): 'oe', ord('ü'): 'ue', ord('ß'): 'ss'}
 
 localString = __addon__.getLocalizedString
 local = xbmc.getLocalizedString
@@ -66,11 +67,11 @@ def notice(content):
 def log(msg, level=xbmc.LOGNOTICE):
     addon = xbmcaddon.Addon()
     addonID = addon.getAddonInfo('id')
-    xbmc.log('%s: %s' % (addonID, msg), level) 
+    xbmc.log('%s: %s' % (addonID, msg), level)
 
 # get Timezone Offset
 from tzlocal import get_localzone
-import pytz
+#import resources.lib.pytz
 try:
   tz = get_localzone()
   offset=tz.utcoffset(datetime.datetime.now()).total_seconds()
@@ -168,7 +169,7 @@ VERSION = __addon__.getAddonInfo('version')
 DOLBY = __addon__.getSetting('dolby')
 KEYMAP = __addon__.getSetting('keymap')
    
-if premiumUser or SWISS: 
+if premiumUser or SWISS:
   xbmc.executebuiltin( "Skin.SetBool(%s)" %'record')
 else: 
   xbmc.executebuiltin( "Skin.Reset(%s)" %'record')
@@ -227,7 +228,7 @@ def build_directoryContent(content, __addonhandle__, cache=True, root=False, con
 
 
 def build_root(__addonuri__, __addonhandle__):
-  import urllib
+  import urllib.request, urllib.parse, urllib.error
 
   # check if settings are set
   name = __addon__.getSetting('username')
@@ -253,27 +254,27 @@ def build_root(__addonuri__, __addonhandle__):
     xbmcgui.Window(10000).setProperty('ZBEplayOnStart', 'false')
 
 
-  iconPath = __addon__.getAddonInfo('path') + '/icon.png'
-  if _listMode_ == 'all': listTitle = localString(31100)
-  else: listTitle = localString(31101)
+  iconPath = __addon__.getAddonInfo('path') + '/resources/icon.png'
+#  if _listMode_ == 'all': listTitle = localString(31100)
+#  else: listTitle = localString(31101)
 
   content = [
     
-    {'title': '[COLOR ff00ff00]'+localString(31099)+'[/COLOR]', 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'popular'})},
-    {'title': localString(31103), 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'preview'})},
-    {'title': localString(31104), 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'epg'})},
-    {'title': localString(31102), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'channellist'})},
-    {'title': localString(31105), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'searchlist', })},
+    {'title': '[COLOR ff00ff00]'+localString(31099)+'[/COLOR]', 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'popular'})},
+    {'title': localString(31103), 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'preview'})},
+    {'title': localString(31104), 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'epg'})},
+    {'title': localString(31102), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'channellist'})},
+    {'title': localString(31105), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'searchlist', })},
     
   ]
   if RECORD:
-    content.append({'title': localString(31106), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'recordings'})},)
-  content.append({'title': localString(31108), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'category'})},)
+    content.append({'title': localString(31106), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'recordings'})},)
+  content.append({'title': localString(31108), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'category'})},)
 
   if __addon__.getSetting('help') == "true":
-    content.append({'title': '[COLOR yellow]'+local(10043)+'[/COLOR]', 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'showhelp'})})
+    content.append({'title': '[COLOR yellow]'+local(10043)+'[/COLOR]', 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'showhelp'})})
   if __addon__.getSetting('settings') == "true":
-    content.append({'title': '[COLOR yellow]'+localString(31107)+' '+__addonname__+' '+VERSION+'[/COLOR]', 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'show_settings'})})
+    content.append({'title': '[COLOR yellow]'+localString(31107)+' '+__addonname__+' - v.'+VERSION+'[/COLOR]', 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'show_settings'})})
   
   build_directoryContent(content, __addonhandle__, True, False, 'files')
   
@@ -284,7 +285,7 @@ def build_root(__addonuri__, __addonhandle__):
   #_zattooDB_.getProgInfo(True, datetime.datetime.now(), datetime.datetime.now()+datetime.timedelta(minutes = 20))
  
 def build_searchList():
-  import urllib
+  import urllib.request, urllib.parse, urllib.error
   __addonuri__= sys.argv[0]
   __addonhandle__ = int(sys.argv[1])
   search = _zattooDB_.get_search()
@@ -294,13 +295,13 @@ def build_searchList():
   if search is not None:
         xbmcplugin.addDirectoryItem(
           handle=__addonhandle__,
-          url=__addonuri__+ '?' + urllib.urlencode({'mode': 'inputsearch'}),
+          url=__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'inputsearch'}),
           listitem=xbmcgui.ListItem('[B][COLOR blue]' + localString(320000) +'[/B][/COLOR]'),
           isFolder=True
         )
         xbmcplugin.addDirectoryItem(
           handle=__addonhandle__,
-          url=__addonuri__+ '?' + urllib.urlencode({'mode': 'deletesearch', 'al': True, 'search': '_'}),
+          url=__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'deletesearch', 'al': True, 'search': '_'}),
           listitem=xbmcgui.ListItem('[B][COLOR blue]' + localString(320001) +'[/B][/COLOR]'),
           isFolder=True
         )
@@ -312,7 +313,7 @@ def build_searchList():
             li.addContextMenuItems(contextMenuItems, replaceItems=True)
             xbmcplugin.addDirectoryItem(
               handle=__addonhandle__,
-              url=__addonuri__+ '?' + urllib.urlencode({'mode': 'search', 'id': search[chan]['id']}),
+              url=__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'search', 'id': search[chan]['id']}),
               listitem=li,
               isFolder=True
             )
@@ -324,7 +325,7 @@ def build_searchList():
   
   
 def build_channelsList(__addonuri__, __addonhandle__):
-  import urllib
+  import urllib.request, urllib.parse, urllib.error
   channels = _zattooDB_.getChannelList(_listMode_ == 'favourites')
   li = False
   nr=0
@@ -337,9 +338,9 @@ def build_channelsList(__addonuri__, __addonhandle__):
     content = []
     # time of chanellist creation
     if _listMode_ == 'favourites':
-      content.append({'title': '[B][COLOR blue]' + 'Favourites ('+str(nr)+')' +'[/B][/COLOR]', 'isFolder': False, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'switchlist'})})
+      content.append({'title': '[B][COLOR blue]' + 'Favourites ('+str(nr)+')' +'[/B][/COLOR]', 'isFolder': False, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'switchlist'})})
     else:
-      content.append({'title': '[B][COLOR blue]' + 'All ('+str(nr)+')' +'[/B][/COLOR]', 'isFolder': False, 'url':__addonuri__+ '?' + urllib.urlencode({'mode': 'switchlist'})})
+      content.append({'title': '[B][COLOR blue]' + 'All ('+str(nr)+')' +'[/B][/COLOR]', 'isFolder': False, 'url':__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'switchlist'})})
 
     # get last watched channel
     playing = _zattooDB_.get_playing()
@@ -356,8 +357,8 @@ def build_channelsList(__addonuri__, __addonhandle__):
         start = prog.get('start_date','').strftime('%H:%M')
         end = prog.get('end_date','').strftime('%H:%M')
         startend = '[COLOR yellow]'+start+"-"+end+'[/COLOR]'
-        zstart = int(time.mktime(prog.get('start_date', '').timetuple())) 
-        zend = int(time.mktime(prog.get('end_date', '').timetuple())) 
+        zstart = int(time.mktime(prog.get('start_date', '').timetuple()))
+        zend = int(time.mktime(prog.get('end_date', '').timetuple()))
       except AttributeError:
         startend = ''
       if len(str(nr)) == 1:
@@ -380,7 +381,7 @@ def build_channelsList(__addonuri__, __addonhandle__):
       if RECALL: 
         url2 = "plugin://"+__addonId__+"/?mode=watch_c&id=" + prog.get('channel', '') +'&showID=' + prog.get('showID','') + "&start=" + str(zstart+300) + "&end=" + str(zend)
       elif RESTART:
-        url2 = "plugin://"+__addonId__+"/?mode=watch_c&id=" + prog.get('channel', '') +'&showID=' + prog.get('showID', '') + '&restart=true' + "&start=" + str(zstart+300) + "&end=" + str(zend) 
+        url2 = "plugin://"+__addonId__+"/?mode=watch_c&id=" + prog.get('channel', '') +'&showID=' + prog.get('showID', '') + '&restart=true' + "&start=" + str(zstart+300) + "&end=" + str(zend)
       else: url2=''
         
       content.append({
@@ -394,7 +395,7 @@ def build_channelsList(__addonuri__, __addonhandle__):
         'year': yy,
         'country': prog.get('country',''),
         'isFolder': False,
-        'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': channels[chan]['id'], 'showID': prog.get('showID', '')}),
+        'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': channels[chan]['id'], 'showID': prog.get('showID', '')}),
         'url2': url2,
         'selected' : channels[chan]['id'] == playing['channel']
       })
@@ -403,17 +404,17 @@ def build_channelsList(__addonuri__, __addonhandle__):
   build_directoryContent(content, __addonhandle__, False)
 
 def build_category(__addonuri__, __addonhandle__, cat):
-  import urllib
+  import urllib.request, urllib.parse, urllib.error
   
-  li = False
+  #li = False
   program = _zattooDB_.get_category(cat)
   #debug('Progkategorien: '+str(program))
   if program is not None:
-    channels = _zattooDB_.getChannelList(False)    
+    channels = _zattooDB_.getChannelList(False)
     #debug('KatChannels: '+str(channels))
     content = []
     # time of chanellist creation
-    content.append({'title': '[B][COLOR blue]' + cat +'[/B][/COLOR]', 'isFolder': True, 'url':__addonuri__+ '?' + urllib.urlencode({'mode': 'category'})})
+    content.append({'title': '[B][COLOR blue]' + cat +'[/B][/COLOR]', 'isFolder': True, 'url':__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'category'})})
 
     # get last watched channel
     playing = _zattooDB_.get_playing()
@@ -429,8 +430,8 @@ def build_category(__addonuri__, __addonhandle__, cat):
       #debug(str(program[chan]))
       try:
         start = program[chan]['start_date'].strftime('%H:%M')
-        end = program[chan]['end_date'].strftime('%H:%M') 
-        startend = '[COLOR yellow]'+start+"-"+end+'[/COLOR]' 
+        end = program[chan]['end_date'].strftime('%H:%M')
+        startend = '[COLOR yellow]'+start+"-"+end+'[/COLOR]'
         zend = int(program[chan]['end_date'].strftime('%S'))
         zstart = int(program[chan]['start_date'].strftime('%S'))
         
@@ -442,7 +443,7 @@ def build_category(__addonuri__, __addonhandle__, cat):
       yy = program[chan]['year']
       cred=''
       director=[]
-      cast=[]      
+      cast=[]
       credjson = program[chan]['credits']
     
       if credjson is not None:
@@ -457,7 +458,7 @@ def build_category(__addonuri__, __addonhandle__, cat):
       if RECALL: 
         url2 = "plugin://"+__addonId__+"/?mode=watch_c&id=" + channels[prog]['id'] + "&start=" + str(zstart+300) + "&end=" + str(zend)
       elif RESTART:
-        url2 = "plugin://"+__addonId__+"/?mode=watch_c&id=" + channels[prog]['id'] +'&showID=' + program[chan]['showID'] + '&restart=true' + "&start=" + str(zstart+300) + "&end=" + str(zend) 
+        url2 = "plugin://"+__addonId__+"/?mode=watch_c&id=" + channels[prog]['id'] +'&showID=' + program[chan]['showID'] + '&restart=true' + "&start=" + str(zstart+300) + "&end=" + str(zend)
       else: url2=''
 
       content.append({
@@ -471,7 +472,7 @@ def build_category(__addonuri__, __addonhandle__, cat):
         'cast': cast,
         'country': program[chan]['country'],
         'isFolder': False,
-        'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': channels[prog]['id']}),
+        'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': channels[prog]['id']}),
         'url2': url2,
         'selected' : channels[prog]['id'] == playing['channel']
       })
@@ -480,7 +481,7 @@ def build_category(__addonuri__, __addonhandle__, cat):
   build_directoryContent(content, __addonhandle__, False)
 
 def build_recordingsList(__addonuri__, __addonhandle__):
-  import urllib
+  import urllib.request, urllib.parse, urllib.error
   
   resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/playlist', None)
   debug('recordliste: '+str(resultData))
@@ -491,7 +492,7 @@ def build_recordingsList(__addonuri__, __addonhandle__):
     if not showInfo: continue
     if showInfo == "NONE": continue
     #mark if show is future, running or finished
-    
+
     start = int(time.mktime(time.strptime(record['start'], "%Y-%m-%dT%H:%M:%SZ"))) + _timezone_  # local timestamp
     end = int(time.mktime(time.strptime(record['end'], "%Y-%m-%dT%H:%M:%SZ"))) + _timezone_  # local timestamp
     position = int(time.mktime(time.strptime(record['position'], "%Y-%m-%dT%H:%M:%SZ"))) + _timezone_  # local timestamp
@@ -510,9 +511,9 @@ def build_recordingsList(__addonuri__, __addonhandle__):
         if color == "crimson": continue
         
     if __addon__.getSetting('rec_name') == '0':
-        label=datetime.datetime.fromtimestamp(st).strftime('%Y.%m.%d. %H:%M')+' ' 
+        label=datetime.datetime.fromtimestamp(st).strftime('%Y.%m.%d. %H:%M')+' '
     elif __addon__.getSetting('rec_name') == '1':
-        label=datetime.datetime.fromtimestamp(st).strftime('%a %d.%m.%Y. %H:%M')+' ' 
+        label=datetime.datetime.fromtimestamp(st).strftime('%a %d.%m.%Y. %H:%M')+' '
     if record['episode_title']:
       label+='[COLOR '+color+']'+record['title']+'[/COLOR]: '+record['episode_title']
       title=record['title']+': '+record['episode_title']
@@ -524,16 +525,16 @@ def build_recordingsList(__addonuri__, __addonhandle__):
     if showInfo == "NONE": continue
     label+=' ('+showInfo[0]['channel_name']+')'
     
-    director=[]
-    cast=[]
-    
+    director = []
+    cast = []
+
     if showInfo[0]['cr'] != []:
-		director = showInfo[0]['cr']['director']
-		cast = showInfo[0]['cr']['actor']
+        director = showInfo[0]['cr']['director']
+        cast = showInfo[0]['cr']['actor']
+
     date = datetime.datetime.fromtimestamp(start).strftime('%d.%m.%Y')
     meta.update({'title':label,'date':date,'year':showInfo[0]['year'], 'plot':showInfo[0]['d'], 'country':showInfo[0]['country'],'director':director, 'cast':cast, 'genre':', '.join(showInfo[0]['g'])  })
     meta.update({'sorttitle':record['title']})
-   
     '''
     #mark watched
     if (position>end-660):  #10min padding from zattoo +1min safety margin
@@ -546,10 +547,10 @@ def build_recordingsList(__addonuri__, __addonhandle__):
       image_url = 'https://images.zattic.com/cms/' + record['image_token'] + '/format_480x360.jpg'
       li.setThumbnailImage(image_url)
       li.setArt({'thumb':image_url, 'fanart':image_url, 'landscape':image_url})
-    li.setProperty('IsPlayable', 'true') 
+    li.setProperty('IsPlayable', 'true')
     
     li.setProperty("TotalTime", str(end-start))
-    li.setProperty("ResumeTime", str(position-start+300)) #skip 5min zattoo padding 
+    li.setProperty("ResumeTime", str(position-start+300)) #skip 5min zattoo padding
     li.setProperty('zStartTime', str(start))
     
     try:
@@ -575,12 +576,11 @@ def build_recordingsList(__addonuri__, __addonhandle__):
     if seriesrec == 'true':
       contextMenuItems.append((localString(31925),'RunPlugin("plugin://'+__addonId__+'/?mode=remove_series&recording_id='+str(record['id'])+'&series='+str(series)+'")',))
     contextMenuItems.append((localString(31921), 'RunPlugin("plugin://'+__addonId__+'/?mode=remove_recording&recording_id='+str(record['id'])+'&title='+str(title)+'")'))
-    #contextMenuItems.append(('Download', 'RunPlugin("plugin://'+__addonId__+'/?mode=download&recording_id='+str(record['id'])+'&title='+str(title)+'&duration='+str(duration)+'")'))
     li.addContextMenuItems(contextMenuItems, replaceItems=True)
 
     xbmcplugin.addDirectoryItem(
       handle=__addonhandle__,
-      url=__addonuri__+ '?' + urllib.urlencode({'mode': 'watch_r', 'id': record['id'], 'start': start}),
+      url=__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_r', 'id': record['id'], 'start': start}),
       listitem=li,
       isFolder=False
     )
@@ -635,7 +635,7 @@ def watch_recording(__addonuri__, __addonhandle__, recording_id, start=0):
     while (player.isPlaying()):
         try: pos=player.getTime()
         except: pass
-        xbmc.sleep(100) 
+        xbmc.sleep(100)
 
     #send watched position to zattoo
     #zStoptime=datetime.datetime.fromtimestamp(startTime+round(pos)-300).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -688,24 +688,6 @@ def delete_series(recording_id, series):
   resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/series_recording/remove', params)
   xbmc.executebuiltin('Container.Refresh')
 
-def start_download(recording_id, title, duration):
-    max_bandwidth = __addon__.getSetting('max_bandwidth')
-    params = {'recording_id': recording_id, 'stream_type': 'hls', 'maxrate':max_bandwidth}
-    resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch', params)
-    debug ('Result:'+str(resultData))
-    streams = None
-    if resultData is not None:
-      streams = resultData['stream']['watch_urls']
-    
-    if len(streams)==0:
-      xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", channelInfo['logo'], 5000, False)
-      return
-    elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
-    else: streamNr = 0
-    url = streams[streamNr]['url']
-   
-    _ffmpg_.start_download(url, title, duration)
-
 def slugify(value):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
@@ -713,8 +695,8 @@ def slugify(value):
     """
     import re, unicodedata
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
-    value = unicode(re.sub('[-\s]+', '-', value))
+    value = str(re.sub('[^\w\s-]', '', value).strip().lower())
+    value = str(re.sub('[-\s]+', '-', value))
     return value
 
 
@@ -727,7 +709,7 @@ def watch_channel(channel_id, start, end, showID="", restart=False, showOSD=Fals
   playing = _zattooDB_.get_playing()
    
   #lastplaying = playing['channel']
-  xbmcgui.Window(10000).setProperty('lastChannel', playing['channel']) 
+  xbmcgui.Window(10000).setProperty('lastChannel', playing['channel'])
   #debug('last play Channel '+str(xbmcgui.Window(10000).getProperty('lastChannel')))
   if (xbmc.Player().isPlaying() and channel_id == playing['channel'] and start=='0'):
     xbmc.executebuiltin("Action(FullScreen)")
@@ -741,7 +723,7 @@ def watch_channel(channel_id, start, end, showID="", restart=False, showOSD=Fals
   #else:  stream_type='hls'
   
 
-  if restart: 
+  if restart:
     startTime = datetime.datetime.fromtimestamp(int(start))
     endTime = datetime.datetime.fromtimestamp(int(end))
     params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY}
@@ -755,8 +737,8 @@ def watch_channel(channel_id, start, end, showID="", restart=False, showOSD=Fals
   else:
     startTime = datetime.datetime.fromtimestamp(int(start))
     endTime = datetime.datetime.fromtimestamp(int(end))
-    zStart = datetime.datetime.fromtimestamp(int(start) - _timezone_ ).strftime("%Y-%m-%dT%H:%M:%SZ") #5min zattoo skips back
-    zEnd = datetime.datetime.fromtimestamp(int(end) - _timezone_ ).strftime("%Y-%m-%dT%H:%M:%SZ")
+    #zStart = datetime.datetime.fromtimestamp(int(start) - _timezone_ ).strftime("%Y-%m-%dT%H:%M:%SZ") #5min zattoo skips back
+    #zEnd = datetime.datetime.fromtimestamp(int(end) - _timezone_ ).strftime("%Y-%m-%dT%H:%M:%SZ")
     #params = {'cid': channel_id, 'stream_type': stream_type, 'start':zStart, 'end':zEnd, 'maxrate':max_bandwidth }
     params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY}
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/recall/' + channel_id + '/' + showID, params)
@@ -817,27 +799,30 @@ def watch_channel(channel_id, start, end, showID="", restart=False, showOSD=Fals
   xbmcplugin.setResolvedUrl(__addonhandle__, True, listitem)
   #play liveTV: info is created in OSD
   if (start=='0'):
+    debug('PlayLive')
+    player=xbmc.Player()
+    #player.startTime=startTime
+    player.play(streams[streamNr]['url'], listitem)
+    while (player.isPlaying()): xbmc.sleep(100)
+     
     _zattooDB_=ZattooDB()
     channelList = _zattooDB_.getChannelList(False)
     #print "ChannelList: " + str(channelList)
     currentChannel = _zattooDB_.get_playing()['channel']
     nr=channelList[currentChannel]['nr']
-    player=xbmc.Player()
-    #player.startTime=startTime
-    player.play(streams[streamNr]['url'], listitem, False)
-    #while (player.playing):xbmc.sleep(100)
     show_channelNr(nr+1)
     toggleChannel=xbmcgui.Window(10000).getProperty('toggleChannel')
     if toggleChannel !="": showToggleImg()
     
   else:
+    debug('PlayRecall')
     player= myPlayer()
     player.startTime=startTime
     player.play(streams[streamNr]['url'], listitem)
     #xbmc.sleep(1000)
     #player.seekTime(300)
-    while (player.playing):xbmc.sleep(100)
     
+    while (player.playing):xbmc.sleep(100)
   
   
 def skip_channel(skipDir):
@@ -851,7 +836,7 @@ def skip_channel(skipDir):
   debug(nr)
   debug(len(channelList))
   if nr==len(channelList)-1:
-    nr=0    
+    nr=0
   elif nr<0:
     nr=len(channelList)-2
   debug(nr)
@@ -862,12 +847,12 @@ def  toggle_channel():
   _zattooDB_=ZattooDB()
   toggleChannel=xbmcgui.Window(10000).getProperty('toggleChannel')
   playing=_zattooDB_.get_playing()
-  xbmcgui.Window(10000).setProperty('toggleChannel', playing['channel']) 
+  xbmcgui.Window(10000).setProperty('toggleChannel', playing['channel'])
   
   
   if toggleChannel=="": #xbmc.executebuiltin("Action(Back)") #go back to channel selector
     xbmcgui.Window(10000).setProperty('toggleChannel', xbmcgui.Window(10000).getProperty('lastChannel'))
-    debug('last Channel '+str(xbmcgui.Window(10000).getProperty('lastChannel')))    
+    debug('last Channel '+str(xbmcgui.Window(10000).getProperty('lastChannel')))
     showToggleImg()
   else:
     watch_channel(toggleChannel, '0', '0')
@@ -895,24 +880,19 @@ def change_stream(dir):
   xbmcgui.Dialog().notification(title.translate(_umlaut_), program['title'].translate(_umlaut_), channelInfo['logo'], 5000, False)
 
 def search_show(__addonuri__, __addonhandle__, search):
-  import urllib
+  import urllib.request, urllib.parse, urllib.error
 
   resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/program/search?query=' + search.replace(" ", "_"), None)
   debug('Suche: '+str(resultData))
   _zattooDB_.set_search(search)
   if resultData is None:
     build_directoryContent([{'title': __addon__.getLocalizedString(31203), 'isFolder': False, 'url':''}], __addonhandle__)
-    return 
+    return
  
     
   programs = sorted(resultData['programs'], key=lambda prog: ( prog['start'], prog['cid']))
   
   channels = _zattooDB_.getChannelList(False)
-  '''
-  chanDict = {}
-  for chan in channels: chanDict[chan['id']] = chan
-  channels = chanDict
-  '''
 
   recall_shows = []
   record_shows = []
@@ -939,7 +919,7 @@ def search_show(__addonuri__, __addonhandle__, search):
         debug ('suche: '+str(program.get['cid']))
     except KeyError: continue
     
-    info = _zattooDB_.getShowLongDescription(str(showID))  
+    info = _zattooDB_.getShowLongDescription(str(showID))
     debug('showInfo:  '+str(info)+' '+str(showID))
    
     if info['description'] =='':
@@ -953,12 +933,12 @@ def search_show(__addonuri__, __addonhandle__, search):
     #debug('ShowID: '+str(showID)+'  '+str(info))
     cred=''
     director=[]
-    cast=[]      
+    cast=[]
     credjson = program.get('credits','')
     if credjson is not None:
         try:
           cred = json.loads(credjson)
-          debug (cred)       
+          debug (cred)
           director=cred['director']
           cast=cred['actor']
         except:pass
@@ -995,36 +975,36 @@ def search_show(__addonuri__, __addonhandle__, search):
     endlocal = time.mktime(endLocal)
     if restart:
       if startLocal < now and endlocal > now:
-        item['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID})
-        item['url2'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID, 'restart':'true', 'start': str(start), 'end': str(end)})
+        item['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID})
+        item['url2'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID, 'restart':'true', 'start': str(start), 'end': str(end)})
         recall_shows.append(item)
         if record:
-          rec['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'record_p', 'program_id': program['id']})
+          rec['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'record_p', 'program_id': program['id']})
           record_shows.append(rec)
       elif startLocal > now:
         if record:
-          rec['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'record_p', 'program_id': program['id']})
+          rec['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'record_p', 'program_id': program['id']})
           record_shows.append(rec)
     elif startLocal < now and endlocal > now:
         if RECALL:
-          item['url2'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end)})
-          item['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID})
-          recall_shows.append(item)      
+          item['url2'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end)})
+          item['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID})
+          recall_shows.append(item)
         else:
-          item['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID})
+          item['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID})
           recall_shows.append(item)
         if record and RECALL:
-          rec['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'record_p', 'program_id': program['id']})
+          rec['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'record_p', 'program_id': program['id']})
           record_shows.append(rec)
     elif startLocal < now:
       if RECALL and record:
-        item['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end)})
+        item['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end)})
         recall_shows.append(item)      
-        rec['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'record_p', 'program_id': program['id']})
+        rec['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'record_p', 'program_id': program['id']})
         record_shows.append(rec)
     else:
       if RECORD:
-        rec['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'record_p', 'program_id': program['id']})
+        rec['url'] = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'record_p', 'program_id': program['id']})
         record_shows.append(rec)
     
   content = []
@@ -1050,15 +1030,15 @@ def showPreview(popularList=''):
   del preview
 
 def showHelp(__addonuri__, __addonhandle__):
-  import urllib
+  import urllib.request, urllib.parse, urllib.error
   iconPath = __addon__.getAddonInfo('path') + '/icon.png'
-  content = [    
-    {'title': '[COLOR blue]'+local(10043)+'[/COLOR]', 'url':__addonuri__+ '?' + urllib.urlencode({'mode': 'showhelp'}), 'image': iconPath, 'isFolder': True, },
-    {'title': local(128), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'main.png'})},
-    {'title': localString(30300), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'Live-Keymap.png'})},
-    {'title': 'EPG', 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'epg-1.png'})},
-    {'title': 'EPG - Touchscreen', 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'epg-2.png'})},
-    {'title': local(10550), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'Teletext.png'})},
+  content = [
+    {'title': '[COLOR blue]'+local(10043)+'[/COLOR]', 'url':__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'showhelp'}), 'image': iconPath, 'isFolder': True, },
+    {'title': local(128), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'main.png'})},
+    {'title': localString(30300), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'Live-Keymap.png'})},
+    {'title': 'EPG', 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'epg-1.png'})},
+    {'title': 'EPG - Touchscreen', 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'epg-2.png'})},
+    {'title': local(10550), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'Teletext.png'})},
 
   
   ]
@@ -1110,14 +1090,14 @@ def show_channelNr(nr):
     gui.doModal()
     del gui
 
-def showToggleImg():    
+def showToggleImg():
     pip = zattooPiP("zattooGUI.xml", __addon__.getAddonInfo('path'))
     pip.showToggleImg()
     pip.doModal()
     del pip
 
 def showCategory():
-    import urllib
+    import urllib.request, urllib.error
     __addonuri__= sys.argv[0]
     __addonhandle__ = int(sys.argv[1])
     cat = _zattooDB_.set_category()
@@ -1125,13 +1105,13 @@ def showCategory():
     iconPath = __addon__.getAddonInfo('path') + '/icon.png'
     content = []
       
-    for record in cat: 
+    for record in cat:
       content.append(
       {
         'title':record['category']+' ('+str(record['len'])+')',
-        'image': iconPath, 
-        'isFolder': True, 
-        'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'build_category', 'cat': record['category']})
+        'image': iconPath,
+        'isFolder': True,
+        'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'build_category', 'cat': record['category']})
       })
     
     build_directoryContent(content, __addonhandle__, False )
@@ -1155,23 +1135,24 @@ def makeOsdInfo():
     else:
       xbmc.executebuiltin( "Skin.Reset(%s)" %'restart')
       
-  cred = ""
+  cred = ''
   director = ""
-  actor = ""    
+  actor = ""   
   credjson = program['credits']
-
+  
   if credjson is not None:
     try:
       cred = json.loads(credjson)
       director = cred['director']
-      director = json.dumps(director, ensure_ascii=False).encode('utf8')
+      director = json.dumps(director, ensure_ascii=False)
       director = director.replace('"','').replace('[','').replace(']','')
       actor  = cred['actor']
-      actor = json.dumps(actor, ensure_ascii=False).encode('utf8')
+      actor = json.dumps(actor, ensure_ascii=False)
       actor = actor.replace('"','').replace('[','').replace(']','')          
     except:pass
-
-  
+  director = director.replace('"','').replace('[','').replace(']','')
+  actor = actor.replace('"','').replace('[','').replace(']','')   
+         
   description = program['description']
   if description is None: description = ''
   else: description = '  -  ' + description
@@ -1198,6 +1179,7 @@ def makeOsdInfo():
   if channelInfo['favourite']==1: xbmc.executebuiltin( "Skin.SetBool(%s)" %'favourite')
   else: xbmc.executebuiltin( "Skin.Reset(%s)" %'favourite')
 
+        
 class myPlayer(xbmc.Player):
   
     def __init__(self, skip=0):
@@ -1225,7 +1207,7 @@ class myPlayer(xbmc.Player):
         
     def onPlayBackEnded(self):
         channel=_zattooDB_.get_playing()['channel']
-        showID=_zattooDB_.get_playing()['showID']
+        #showID=_zattooDB_.get_playing()['showID']
         # debug(showID)
         # program=_zattooDB_.get_showID(showID)
         # debug(program)
@@ -1332,7 +1314,7 @@ class zattooGUI(xbmcgui.WindowXMLDialog):
     #if self.toggleChannelID!="": self.showToggleImg()
 
   def onAction(self, action):
-    key=str(action.getButtonCode())
+    #key=str(action.getButtonCode())
     actionID = action.getId()
     
     if (actionID>57 and actionID<68):self.act_numbers(actionID)
@@ -1403,7 +1385,7 @@ class zattooOSD(xbmcgui.WindowXMLDialog):
       self.close()
       #print 'Action Stop'
       xbmc.sleep(1000)
-      xbmc.executebuiltin('Action(OSD)') #close hidden gui
+      #xbmc.executebuiltin('Action(OSD)') #close hidden gui
       #xbmc.executebuiltin("Action(Back)")
     elif action == ACTION_SKIPPREW:
       xbmc.executebuiltin("Action(Left)")
@@ -1440,7 +1422,7 @@ class zattooOSD(xbmcgui.WindowXMLDialog):
     elif controlID==205: #stop
       #xbmc.executebuiltin("Action(OSD)")
       xbmc.executebuiltin("Action(Stop)")
-      
+      self.close()
     #elif controlID==208: #start channel
     #  if xbmcgui.Dialog().yesno(channeltitle, __addon__.getLocalizedString(31907)):
     #     __addon__.setSetting(id="start_channel", value=channeltitle)
@@ -1490,7 +1472,7 @@ def main():
   global __addonhandle__ 
   __addonuri__ = sys.argv[0]
   __addonhandle__ = int(sys.argv[1])
-  args = urlparse.parse_qs(sys.argv[2][1:])
+  args = urllib.parse.parse_qs(sys.argv[2][1:])
   action=args.get('mode', ['root'])[0]
   try:
     channel=_zattooDB_.get_playing()['channel']
@@ -1507,7 +1489,7 @@ def main():
   _keymap_.toggleKeyMap()
 
 
-  if action is 'root': build_root(__addonuri__, __addonhandle__)
+  if action == 'root': build_root(__addonuri__, __addonhandle__)
   elif action == 'channellist': build_channelsList(__addonuri__, __addonhandle__)
   elif action == 'preview': showPreview()
   elif action == 'previewOSD': showPreview()
@@ -1518,7 +1500,7 @@ def main():
   elif action == 'selectStartChannel': selectStartChannel()
   elif action == 'editKeyMap': _keymap_.editKeyMap()
   elif action == 'deleteKeyMap': _keymap_.deleteKeyMap()
-  elif action == 'showKeyMap': showkeymap()
+  #elif action == 'showKeyMap': showkeymap()
   elif action == 'record_l': setup_recording(program['showID'])
   elif action == 'search': 
       
@@ -1576,10 +1558,12 @@ def main():
     if stream_type == 'hls': change_stream(1)
     else:
       streams=xbmc.Player().getAvailableAudioStreams()
+      debug('AudioStreams ' + str(streams))
       dialog=xbmcgui.Dialog()
       ret = dialog.select('audio streams', streams)
       if ret==-1: return
       xbmc.Player().setAudioStream(ret)
+      
   elif action == 'teletext':
     from resources.lib.teletext import Teletext
     tele = Teletext()
@@ -1622,12 +1606,6 @@ def main():
     _helpmy_.showHelp(img)
     
   elif action == 'showhelp': showHelp(__addonuri__, __addonhandle__)
-  
-  elif action == 'download':
-    recording_id = args.get('recording_id')[0]
-    title = args.get('title')[0]
-    duration = args.get('duration')[0]
-    start_download(recording_id, title, duration)
     
   elif action == 'inputsearch':
     __addonuri__= sys.argv[0]
@@ -1651,3 +1629,4 @@ def main():
     search = _zattooDB_.edit_search(item)
     xbmc.executebuiltin('Container.Refresh')
     
+
