@@ -1,0 +1,889 @@
+# XBMC Media Center language file
+# Addon Name: TV Guide
+# Addon id: script.tvguide
+# Addon Provider: twinther
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "No description"
+msgstr ""
+
+msgctxt "#30001"
+msgid "[B]Loading data from external source...[/B]"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Calculating remaning time..."
+msgstr ""
+
+msgctxt "#30003"
+msgid "Approximately %d seconds left..."
+msgstr ""
+
+msgctxt "#30004"
+msgid "Loading of data already in progress..."
+msgstr ""
+
+msgctxt "#30005"
+msgid "Mouse control"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Now"
+msgstr ""
+
+msgctxt "#30007"
+msgid "[B]Tip![/B] You can also use the scroll wheel"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "#30009"
+msgid "No program available"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Next: "
+msgstr ""
+
+# empty strings from id 30010 to 30099
+
+msgctxt "#30100"
+msgid "General"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Source"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Show channels from category"
+msgstr ""
+
+msgctxt "#30103"
+msgid "XMLTV file"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Clear cache..."
+msgstr ""
+
+msgctxt "#30105"
+msgid "Done!"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Show notification before selected programs start"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Use program image as background"
+msgstr ""
+
+msgctxt "#30108"
+msgid "Clear all reminders..."
+msgstr ""
+
+msgctxt "#30109"
+msgid "Remember to clear the cache when you change source"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Update program information on XBMC startup"
+msgstr ""
+
+msgctxt "#30111"
+msgid "Play channels using the YouSee web-tv addon"
+msgstr ""
+
+msgctxt "#30112"
+msgid "Notifications"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Play channels using the Danish Live TV addon"
+msgstr ""
+
+msgctxt "#30114"
+msgid "Startup"
+msgstr ""
+
+msgctxt "#30115"
+msgid "- clear cache first"
+msgstr ""
+
+msgctxt "#30116"
+msgid "Search for channel logos in"
+msgstr ""
+
+# empty string with id 30117
+
+msgctxt "#30118"
+msgid "Enable OSD menu"
+msgstr ""
+
+msgctxt "#30119"
+msgid "Disabling the OSD menu may fix video stuttering."
+msgstr ""
+
+msgctxt "#30120"
+msgid "Use alternate streaming method (required for some addons)"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Alternative streaming is not compatible with OSD menu"
+msgstr ""
+
+msgctxt "#30122"
+msgid "XMLTV URL"
+msgstr ""
+
+msgctxt "#30123"
+msgid "XMLTV type"
+msgstr ""
+
+msgctxt "#30124"
+msgid "Local file"
+msgstr ""
+
+msgctxt "#30125"
+msgid "URL"
+msgstr ""
+
+# empty strings from id 30126 to 30149
+
+msgctxt "#30150"
+msgid "Oops, sorry about that!"
+msgstr ""
+
+msgctxt "#30151"
+msgid "It was not possible to load program data,"
+msgstr ""
+
+msgctxt "#30152"
+msgid "check settings or try again later..."
+msgstr ""
+
+msgctxt "#30153"
+msgid "because the settings are invalid!"
+msgstr ""
+
+msgctxt "#30154"
+msgid "It looks like your current skin has a special"
+msgstr ""
+
+msgctxt "#30155"
+msgid "version of the TV Guide skin that is not up-to-date."
+msgstr ""
+
+msgctxt "#30156"
+msgid "Please try with a different skin..."
+msgstr ""
+
+msgctxt "#30157"
+msgid "It looks like the TV Guide database is broken."
+msgstr ""
+
+msgctxt "#30158"
+msgid "The database will be deleted and recreated."
+msgstr ""
+
+msgctxt "#30159"
+msgid "Channel configuration, etc. is unfortunately lost."
+msgstr ""
+
+# empty strings from id 30160 to 30199
+
+msgctxt "#30200"
+msgid "on [B]%s[/B] in 5 minutes..."
+msgstr ""
+
+msgctxt "#30201"
+msgid "on [B]%s[/B] is starting now..."
+msgstr ""
+
+# empty strings from id 30202 to 30299
+
+msgctxt "#30300"
+msgid "Watch live"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Remind"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Don't remind"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "#30304"
+msgid "Choose stream"
+msgstr ""
+
+msgctxt "#30305"
+msgid "You can choose your own .strm file to play, when you want to watch this channel."
+msgstr ""
+
+msgctxt "#30306"
+msgid "Remove stream file"
+msgstr ""
+
+msgctxt "#30307"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Quit"
+msgstr ""
+
+# empty strings from id 30309 to 30499
+
+msgctxt "#30500"
+msgid "[B]Edit channel order and visibility[/B]"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Move up and down to change the position of[CR]the channel. Select or navigate left to accept[CR]the position."
+msgstr ""
+
+msgctxt "#30502"
+msgid "Save"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Cancel"
+msgstr ""
+
+# empty strings from id 30504 to 30599
+
+msgctxt "#30600"
+msgid "[B]Setup stream[/B]"
+msgstr ""
+
+msgctxt "#30601"
+msgid ".strm file"
+msgstr ""
+
+msgctxt "#30602"
+msgid "Favourites"
+msgstr ""
+
+msgctxt "#30603"
+msgid "Addons"
+msgstr ""
+
+msgctxt "#30604"
+msgid "Preview stream"
+msgstr ""
+
+msgctxt "#30605"
+msgid "Save"
+msgstr ""
+
+msgctxt "#30606"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "#30607"
+msgid "Stop preview"
+msgstr ""
+
+# empty strings from id 30608 to 30609
+
+msgctxt "#30610"
+msgid "Browse..."
+msgstr ""
+
+msgctxt "#30611"
+msgid "Click Browse... below and navigate to your stream file. When you have chosen your file you can preview the stream to test if it works in XBMC."
+msgstr ""
+
+# empty strings from id 30612 to 30619
+
+msgctxt "#30620"
+msgid "Choose a favourite below. Only [I]PlayMedia[/I] favourites are supported."
+msgstr ""
+
+# empty strings from id 30621 to 30699
+
+msgctxt "#30700"
+msgid "Multiple addons provide this channels.[CR]Choose one to watch the stream."
+msgstr ""
+
+# empty strings from id 30701 to 30799
+# weeb.tv mod
+
+msgctxt "#30800"
+msgid "JSON-EPG URL"
+msgstr ""
+
+msgctxt "#30801"
+msgid "Play channels using the Weeb.Tv addon"
+msgstr ""
+
+msgctxt "#30802"
+msgid "TV Guide is configured to stream using Weeb.Tv"
+msgstr ""
+
+msgctxt "#30803"
+msgid "addon which is not installed."
+msgstr ""
+
+msgctxt "#30804"
+msgid "Streaming using that addon is now disabled."
+msgstr ""
+
+
+####  Settings   ####
+
+#### Account ####
+
+msgctxt "#310031"
+msgid "Account"
+msgstr ""
+
+msgctxt "#31001"
+msgid "Username"
+msgstr ""
+
+msgctxt "#31002"
+msgid "Password"
+msgstr ""
+
+msgctxt "#31004"
+msgid "Provider"
+msgstr ""
+
+msgctxt "#310038"
+msgid "Country"
+msgstr ""
+
+msgctxt "#310033"
+msgid "Date registered"
+msgstr ""
+
+msgctxt "#310034"
+msgid "Product"
+msgstr ""
+
+msgctxt "#310035"
+msgid "Price"
+msgstr ""
+
+msgctxt "#310036"
+msgid "expiration day"
+msgstr ""
+
+msgctxt "#310037"
+msgid "renewal_date"
+msgstr ""
+
+msgctxt "#310032"
+msgid "Recall eligible"
+msgstr ""
+
+
+## Settings ##
+msgctxt "#31000"
+msgid "Zattoo settings"
+msgstr ""
+
+msgctxt "#31003"
+msgid "PiP Resolution"
+msgstr ""
+
+msgctxt "#31005"
+msgid "Maximum Bandwidth (kbps)"
+msgstr ""
+
+msgctxt "#31006"
+msgid "Default Audio"
+msgstr ""
+
+msgctxt "#310065"
+msgid "Stream-Type"
+msgstr ""
+
+msgctxt "#310066"
+msgid "enable Dolby"
+msgstr ""
+
+msgctxt "#310067"
+msgid "Only show favourite channels"
+msgstr ""
+
+msgctxt "#31007"
+msgid "liveTV on first start"
+msgstr ""
+
+msgctxt "#31008"
+msgid "Channel"
+msgstr ""
+
+msgctxt "#31009"
+msgid "select Channel"
+msgstr ""
+
+msgctxt "#310091"
+msgid "start channel"
+msgstr ""
+
+msgctxt "#310096"
+msgid "Debug"
+msgstr "Debug"
+
+msgctxt "#310097"
+msgid "Big"
+msgstr ""
+
+msgctxt "#310098"
+msgid "Small"
+msgstr ""
+
+msgctxt "#310099"
+msgid "Show Help in Main Menu"
+msgstr ""
+
+
+msgctxt "#310100"
+msgid "Show Settings in Main Menu"
+msgstr ""
+
+### EPG/Aufnahmen ###
+msgctxt "#31010"
+msgid "EPG/Recordings"
+msgstr ""
+
+msgctxt "#31011"
+msgid "EPG time offset"
+msgstr ""
+
+msgctxt "#31012"
+msgid "always play show in EPG"
+msgstr ""
+
+msgctxt "#31013"
+msgid "select folder for library"
+msgstr ""
+
+msgctxt "#31014"
+msgid "Reset Folder"
+msgstr ""
+
+msgctxt "#31015"
+msgid "make library files"
+msgstr ""
+
+msgctxt "#31016"
+msgid "Only finished recordings"
+msgstr ""
+
+msgctxt "#310161"
+msgid "show ongoing recording"
+msgstr ""
+
+msgctxt "#31017"
+msgid "Date format in the recording list"
+msgstr ""
+
+msgctxt "#31018"
+msgid "year.month.day hour:minute"
+msgstr ""
+
+msgctxt "#31019"
+msgid "weekday day.month.year hour:minute"
+msgstr ""
+
+msgctxt "#310171"
+msgid "show LiveTV in EPG"
+msgstr ""
+
+### Datenbank ###
+msgctxt "#31020"
+msgid "Database"
+msgstr ""
+
+msgctxt "#31021"
+msgid "Load program information at Kodi start"
+msgstr ""
+
+msgctxt "#31023"
+msgid "Renew Database and clear Cache"
+msgstr ""
+
+msgctxt "#31022"
+msgid "load only favorites"
+msgstr ""
+
+
+
+### liveTV KeyMap ###
+msgctxt "#31030"
+msgid "liveTV KeyMap"
+msgstr ""
+
+msgctxt "#31032"
+msgid "edit User KeyMap"
+msgstr ""
+
+msgctxt "#31033"
+msgid "Select KeyMap"
+msgstr ""
+
+msgctxt "#31034"
+msgid "User KeyMap"
+msgstr ""
+
+msgctxt "#31035"
+msgid "Default KeyMap"
+msgstr ""
+
+msgctxt "#31036"
+msgid "Manual Keymap"
+msgstr ""
+
+msgctxt "#31037"
+msgid "For manual keymap, the file myKeymap.xml \nmust exist in the Userdata directory"
+msgstr ""
+
+### Hauptmenu ###
+msgctxt "#31099"
+msgid "Most Popular"
+msgstr ""
+
+msgctxt "#31100"
+msgid "All Channels"
+msgstr ""
+
+msgctxt "#31101"
+msgid "Favourites"
+msgstr ""
+
+msgctxt "#31102"
+msgid "Channellist"
+msgstr ""
+
+msgctxt "#31103"
+msgid "Preview"
+msgstr ""
+
+msgctxt "#31104"
+msgid "EPG"
+msgstr ""
+
+msgctxt "#31105"
+msgid "Search"
+msgstr ""
+
+msgctxt "#31106"
+msgid "Recordings"
+msgstr ""
+
+msgctxt "#31107"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#31108"
+msgid "Categories"
+msgstr ""
+
+msgctxt "#31200"
+msgid "Search show:"
+msgstr ""
+
+msgctxt "#31201"
+msgid "play:"
+msgstr ""
+
+msgctxt "#31202"
+msgid "record:"
+msgstr ""
+
+msgctxt "#31203"
+msgid "nothing found"
+msgstr ""
+
+msgctxt "#31204"
+msgid "play or record:"
+msgstr ""
+
+msgctxt "#31250"
+msgid "Database was cleared and current data was loaded."
+msgstr ""
+
+msgctxt "#31251"
+msgid  "Now set your folder-content to movies,only use local information and update the library...."
+msgstr ""
+
+
+msgctxt "#31300"
+msgid "Record this show"
+msgstr ""
+
+msgctxt "#31301"
+msgid "Play from beginning"
+msgstr ""
+
+msgctxt "#31302"
+msgid "Only available for Premium users"
+msgstr ""
+
+msgctxt "#31303"
+msgid "Date is too big"
+msgstr ""
+
+msgctxt "#31304"
+msgid "Date is too small"
+msgstr ""
+
+msgctxt "#31305"
+msgid "Record series"
+msgstr ""
+
+
+
+
+msgctxt "#31901"
+msgid "Content not accessible"
+msgstr ""
+
+msgctxt "#31902"
+msgid "Unable to start a session. Check your account settings!"
+msgstr ""
+
+msgctxt "#31903"
+msgid "recording request transmitted to Zattoo."
+msgstr ""
+
+msgctxt "#31904"
+msgid "The show now should be visible in Recordings!"
+msgstr ""
+
+msgctxt "#31905"
+msgid "There was an error in the transfer!"
+msgstr ""
+
+msgctxt "#31906"
+msgid "The recording already exists!"
+msgstr ""
+
+
+msgctxt "#31907"
+msgid "Set the channel as the start channel"
+msgstr ""
+
+msgctxt "#31908"
+msgid "Add channel to favourites?"
+msgstr ""
+
+msgctxt "#31909"
+msgid "Remove channel from favourites?"
+msgstr ""
+
+
+
+msgctxt "#31911"
+msgid "Delete the recording directory and the recorded movies?\nThe recordings are not deleted at Zattoo."
+msgstr ""
+
+msgctxt "#31912"
+msgid "Keypad"
+msgstr ""
+
+
+
+msgctxt "#31913"
+msgid "Clean the program table"
+msgstr ""
+
+msgctxt "#31914"
+msgid "Records delete"
+msgstr ""
+
+msgctxt "#31915"
+msgid "Load recordings"
+msgstr ""
+
+msgctxt "#31916"
+msgid "Program description"
+msgstr ""
+
+msgctxt "#31917"
+msgid "Download TV shows"
+msgstr ""
+
+msgctxt "#31918"
+msgid "ZattooHiQ - List of programs"
+msgstr ""
+
+msgctxt "#31920"
+msgid "Records are not required\nDelete records now?"
+msgstr ""
+
+msgctxt "#31921"
+msgid "delete recording"
+msgstr ""
+
+msgctxt "#31922"
+msgid "ZattooHiQ Download program information ..."
+msgstr ""
+
+msgctxt "#31923"
+msgid "Program information for channel - "
+msgstr ""
+
+msgctxt "#31924"
+msgid "enter date"
+msgstr ""
+
+msgctxt "#31925"
+msgid "Cancel serial recording"
+msgstr ""
+
+msgctxt "#31926"
+msgid "Toggle wached"
+msgstr ""
+
+
+
+
+### KeyMap ###
+msgctxt "#32000"
+msgid "select cmd to change key"
+msgstr ""
+
+msgctxt "#32001"
+msgid "press key"
+msgstr ""
+
+msgctxt "#32002"
+msgid "not key"
+msgstr ""
+
+msgctxt "#32010"
+msgid "open Zattoo OSD"
+msgstr ""
+
+msgctxt "#32011"
+msgid "previous channel"
+msgstr ""
+
+msgctxt "#32012"
+msgid "next channel"
+msgstr ""
+
+msgctxt "#32013"
+msgid "toggle channel (PiP)"
+msgstr ""
+
+msgctxt "#32014"
+msgid "switch audio channel"
+msgstr ""
+
+msgctxt "#32015"
+msgid "record current show"
+msgstr ""
+
+msgctxt "#32016"
+msgid "open Teletext"
+msgstr ""
+
+msgctxt "#32017"
+msgid "show Preview"
+msgstr ""
+
+msgctxt "#32018"
+msgid "show EPG"
+msgstr ""
+
+msgctxt "#32019"
+msgid "show Channellist"
+msgstr ""
+
+msgctxt "#32020"
+msgid "show Recordlist"
+msgstr ""
+
+msgctxt "#32021"
+msgid "show Categorylist"
+msgstr ""
+
+# msgctxt "#32022"
+# msgid "show Genrelist"
+# msgstr ""
+
+msgctxt "#32023"
+msgid "pause"
+msgstr ""
+
+msgctxt "#32024"
+msgid "stop"
+msgstr ""
+
+msgctxt "#32100"
+msgid "Download is Running"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Download"
+msgstr "Download"
+
+msgctxt "#32102"
+msgid "Video Successfully downloaded"
+msgstr "Video Successfully downloaded"
+
+msgctxt "#32103"
+msgid "Error"
+msgstr ""
+
+msgctxt "#32104"
+msgid "Download Failed"
+msgstr ""
+
+msgctxt "#32025"
+msgid "really delete"
+msgstr ""
+
+msgctxt "#32026"
+msgid "Recording can not be restored"
+msgstr ""
+
+msgctxt "#32022"
+msgid "Player OSD"
+msgstr ""
+
+
+msgctxt "#320000"
+msgid "new search"
+msgstr ""
+
+msgctxt "#320001"
+msgid "delete search"
+msgstr ""
+
+msgctxt "#320002"
+msgid "delete entry"
+msgstr ""
+
+msgctxt "#320003"
+msgid "edit entry"
+msgstr ""
+

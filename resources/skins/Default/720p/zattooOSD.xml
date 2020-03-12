@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window> <!--  -->
+	<defaultcontrol always="true">2</defaultcontrol>
+
+    <coordinates>
+        <system>1</system>
+        <posx>0</posx>
+        <posy>0</posy>
+    </coordinates>
+
+    <controls>
+
+			<control type="label">
+				<description>Date label</description>
+				<left>10</left>
+				<top>10</top>
+				<width>350</width>
+				<height>15</height>
+				<align>left</align>
+				<font>font45_title</font>
+				<textcolor>F0FFFFFF</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<!--<label>$INFO[System.Date(d.m.yy.)] $INFO[System.Time(hh:mm)]</label>-->
+				<label>$INFO[System.Time(hh:mm)]</label>
+			</control>
+
+
+		<control type="group" id="1">
+			<left>128</left>
+			<top>150</top>
+
+			<control type="image" id="1">
+				<left>0</left>
+				<top>0</top>
+				<width>1024</width>
+				<height>500</height>
+				<texture border="20">ContentPanel.png</texture>
+				<colordiffuse>FFFFFFFF</colordiffuse>
+			</control>
+
+			<!--
+    		<control type="image" id="1">
+				<description>PosterBG</description>
+				<left>15</left>
+				<top>15</top>
+				<width>340</width>
+				<height>240</height>
+				<texture>ContentPanel.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+			-->
+			<control type="image" id="1">
+				<description>poster</description>
+				<left>15</left>
+				<top>17</top>
+				<width>340</width>
+				<height>240</height>
+				<aspectratio>stretch</aspectratio>
+				<!--<texture diffuse="ClearCase/EmptyCaseMask.png">$INFO[Player.Art(poster)]</texture>-->
+				<texture>$INFO[Window(Home).Property(showThumb)]</texture>
+			</control>
+
+
+			<control type="image" id="1">
+				<description>DescriptionBG</description>
+				<left>360</left>
+				<top>15</top>
+				<width>640</width>
+				<height>400</height>
+				<texture>ContentPanel.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+
+
+			<control type="textbox" id="1">
+				<description>Description</description>
+				<left>370</left>
+				<top>60</top>
+				<width>620</width>
+				<height>300</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font14</font>
+				<!--<label>$INFO[VideoPlayer.Plot]</label>-->
+				<label>$INFO[Window(Home).Property(plot)]</label>
+				<autoscroll delay="5000" time="2200" repeat="10000">!Skin.HasSetting(StopAutoScroll)</autoscroll>
+			</control>
+
+			<control type="label" id="1">
+				<description>NextProg</description>
+				<left>370</left>
+				<top>360</top>
+				<width>620</width>
+				<height>25</height>
+				<align>center</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[Window(Home).Property(nextprog)]</label>
+				<scroll>true</scroll>
+				<scrollspeed>50</scrollspeed>
+			</control>
+			
+			<control type="label" id="1">
+				<description>title</description>
+				<left>370</left>
+				<top>25</top>
+				<width>620</width>
+				<height>25</height>
+				<align>center</align>
+				<textcolor>yellow</textcolor>
+				<font>font14</font>
+				<label>$INFO[Window(Home).Property(title)]</label>
+				<scroll>true</scroll>
+				<scrollspeed>50</scrollspeed>
+			</control>
+
+			<control type="label" id="1">
+				<description>chanel</description>
+				<left>15</left>
+				<top>260</top>
+				<width>340</width>
+				<height>25</height>
+				<align>center</align>
+				<textcolor>white</textcolor>
+				<font>font16</font>
+				<label>$INFO[Window(Home).Property(channelInfo)]</label>
+				<scroll>true</scroll>
+				<scrollspeed>50</scrollspeed>
+			</control>
+
+			<control type="label" id="1">
+				<description>genre</description>
+				<left>15</left>
+				<top>290</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[Window(Home).Property(genre)]</label>
+				<scroll>true</scroll>
+				<scrollspeed>50</scrollspeed>
+			</control>
+
+			<control type="label" id="1">
+				<description>year</description>
+				<left>15</left>
+				<top>320</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[Window(Home).Property(year)]</label>
+				<scroll>true</scroll>
+				<scrollspeed>50</scrollspeed>
+			</control>
+
+			<control type="label" id="1">
+				<description>Country</description>
+				<left>150</left>
+				<top>320</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[Window(Home).Property(country)]</label>
+			</control>
+			
+			<control type="label" id="1">
+				<description>Director</description>
+				<left>15</left>
+				<top>350</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[Window(Home).Property(director)]</label>
+				<scroll>true</scroll>
+				<scrollspeed>50</scrollspeed>
+			</control>
+			
+			<control type="label" id="1">
+				<description>Actor</description>
+				<left>15</left>
+				<top>380</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[Window(Home).Property(actor)]</label>
+				<scroll>true</scroll>
+				<scrollspeed>50</scrollspeed>
+			</control>
+
+
+<!--
+			<control type="label" id="1">
+				<description>Video info</description>
+				<left>15</left>
+				<top>380</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>[COLOR blue]Video:[/COLOR]</label>
+			</control>
+
+
+			<control type="label" id="1">
+				<description>Video</description>
+				<left>75</left>
+				<top>380</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[VideoPlayer.VideoCodec] $INFO[VideoPlayer.VideoResolution]</label>
+			</control>
+			
+			<control type="label" id="1">
+				<description>Video info</description>
+				<left>180</left>
+				<top>380</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>[COLOR blue]Audio:[/COLOR]</label>
+			</control>
+
+
+			<control type="label" id="1">
+				<description>Video</description>
+				<left>235</left>
+				<top>380</top>
+				<width>340</width>
+				<height>25</height>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<label>$INFO[VideoPlayer.AudioCodec]</label>
+			</control>
+-->
+
+
+
+			<control type="image" id="1">
+				<description>channel logo</description>
+				<left>140</left>
+				<top>0</top>
+				<width>120</width>
+				<height>96</height>
+				<aspectratio>keep</aspectratio>
+				<!--<bordertexture border="5">ContentPanel.png</bordertexture>
+				<bordersize>15</bordersize>-->
+				<texture>$INFO[Window(Home).Property(channelLogo)]</texture>
+			</control>
+
+
+			<control type="progress" id="350">
+		      <description>My first progress control</description>
+		      <left>370</left>
+		      <top>390</top>
+		      <width>620</width>
+		      <height>20</height>
+		      <texturebg>zosdprogressback.png</texturebg>
+		      <midtexture>zosdprogressmid.png</midtexture>
+		      <info>$INFO[Window(Home).Property(progress)]</info>
+			</control>
+		
+		</control>
+			<control type="group" id="2">
+			<defaultcontrol always="true">201</defaultcontrol>
+			<left>160</left>
+			<top>470</top>
+
+			<control type="button" id="201">
+				<left>0</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+<!--
+				<label>Pause</label>
+-->
+				<font>-</font>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">icon_backFO.png</texturefocus>
+				<texturenofocus>icon_backNF.png</texturenofocus>
+				<onleft>303</onleft>
+				<onright>202</onright>
+			</control>
+
+			<control type="button" id="202">
+				<left>70</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+<!--
+				<label>ChannelUp</label>
+-->
+				<font>-</font>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onleft>201</onleft>
+				<onright>203</onright>
+			</control>
+
+			<control type="button" id="203">
+				<left>140</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+<!--
+				<label>ChannelDown</label>
+-->
+				<font>-</font>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onleft>202</onleft>
+				<onright>204</onright>>
+			</control>
+
+			<control type="togglebutton" id="204">
+				<width>48</width>
+				<height>48</height>
+				<left>210</left>
+				<top>100</top>
+<!--
+				<label>31351</label>
+				<altlabel>208</altlabel>
+-->
+				<font>-</font>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">OSDPauseFO.png</texturefocus>
+				<texturenofocus>OSDPauseNF.png</texturenofocus>
+				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+				<alttexturefocus colordiffuse="$VAR[MainColorOne]">OSDPlayFO.png</alttexturefocus>
+				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+				<onclick>PlayerControl(Play)</onclick>
+				<enable>Player.PauseEnabled</enable>
+				<animation effect="fade" start="100" end="50" time="75" condition="!Player.PauseEnabled">Conditional</animation>
+				<onleft>203</onleft>
+				<onright>205</onright>
+			</control>
+
+			<control type="button" id="205">
+				<width>48</width>
+				<height>48</height>
+				<left>280</left>
+				<top>100</top>
+<!--
+				<label>31352</label>
+-->
+				<font>-</font>
+				<texturefocus>OSDStopFO.png</texturefocus>
+				<texturenofocus>OSDStopNF.png</texturenofocus>
+<!--				<onclick>PlayerControl(Stop)</onclick>  -->
+				<onleft>204</onleft>
+				<onright>206</onright>
+			</control>
+
+			<control type="button" id="206">
+				<width>48</width>
+				<height>48</height>
+				<left>350</left>
+				<top>100</top>
+<!--
+				<label>13395</label>
+-->
+				<font>-</font>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">OSDVideoFO.png</texturefocus>
+				<texturenofocus>OSDVideoNF.png</texturenofocus>
+				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
+				<onleft>205</onleft>
+				<onright>207</onright>
+			</control>
+
+			<control type="togglebutton" id="207">
+				<width>48</width>
+				<height>48</height>
+				<left>420</left>
+				<top>100</top>
+<!--
+				<label>13396</label>
+-->
+				<font>-</font>
+				<texturefocus>OSDAudioFO.png</texturefocus>
+				<texturenofocus>OSDAudioNF.png</texturenofocus>
+				<usealttexture>system.getbool(audiooutput.dspaddonsenabled)</usealttexture>
+				<alttexturefocus>OSDDSPAudioFO.png</alttexturefocus>
+				<alttexturenofocus>OSDDSPAudioNF.png</alttexturenofocus>
+				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
+				<onleft>206</onleft>
+				<onright>208</onright>
+			</control>
+
+<!--
+			<control type="button" id="208">
+				<width>48</width>
+				<height>48</height>
+				<left>490</left>
+				<top>100</top>
+				<label>298</label>
+				<font>-</font>
+				<texturefocus>OSDBookmarksFO.png</texturefocus>
+				<texturenofocus>OSDBookmarksNF.png</texturenofocus>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
+				<onleft>207</onleft>
+				<onright>209</onright>
+			</control>
+-->
+
+			<control type="button" id="208">
+				<width>48</width>
+				<height>48</height>
+				<left>490</left>
+				<top>100</top>
+<!--
+				<label>298</label>
+-->
+				<font>-</font>
+				<texturefocus>OSDFavoriteActiveFO.png</texturefocus>
+				<texturenofocus>OSDFavoriteActiveNF.png</texturenofocus>
+				<visible>Skin.HasSetting(favourite)</visible>
+				<onleft>207</onleft>
+				<onright>209</onright>
+			</control>
+
+			<control type="button" id="208">
+				<width>48</width>
+				<height>48</height>
+				<left>490</left>
+				<top>100</top>
+<!--
+				<label>298</label>
+-->
+				<font>-</font>
+				<texturefocus>OSDFavoriteFO.png</texturefocus>
+				<texturenofocus>OSDFavoriteNF.png</texturenofocus>
+				<visible>!Skin.HasSetting(favourite)</visible>
+				<onleft>207</onleft>
+				<onright>209</onright>
+			</control>
+
+			<control type="button" id="209">
+				<left>560</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">osdreplayfo.png</texturefocus>
+				<texturenofocus>osdreplaynf.png</texturenofocus>
+				<onleft>208</onleft>
+				<onright>210</onright>
+				<visible>Skin.HasSetting(restart)</visible>
+			</control>
+
+			<control type="button" id="210">
+				<left>630</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">osdrecordfo1.png</texturefocus>
+				<texturenofocus>osdrecordnf1.png</texturenofocus>
+				<onleft>209</onleft>
+				<onright>211</onright>
+				<visible>Skin.HasSetting(record)</visible>
+			</control>
+
+			<control type="button" id="211">
+				<left>700</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">osdtxtfo.png</texturefocus>
+				<texturenofocus>osdtxtnf.png</texturenofocus>
+				<onleft>210</onleft>
+				<onright>301</onright>
+			</control>
+
+			<control type="button" id="301">
+				<left>770</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">osdmyepgfo.png</texturefocus>
+				<texturenofocus>osdmyepgnf.png</texturenofocus>
+				<onleft>211</onleft>
+				<onright>302</onright>
+			</control>
+
+			<control type="button" id="302">
+				<left>840</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">osdpreviewfo.png</texturefocus>
+				<texturenofocus>osdpreviewnf.png</texturenofocus>
+				<onleft>301</onleft>
+				<onright>303</onright>
+			</control>
+
+			<control type="button" id="303">
+				<left>910</left>
+				<top>100</top>
+				<width>48</width>
+				<height>48</height>
+				<texturefocus colordiffuse="$VAR[MainColorOne]">osdlistfo.png</texturefocus>
+				<texturenofocus>osdlistnf.png</texturenofocus>
+				<onleft>302</onleft>
+				<onright>201</onright>
+			</control>
+
+
+			
+		
+	
+<!--
+			<control type="progress" id="350">
+		      <description>My first progress control</description>
+		      <left>-17</left>
+		      <top>-73</top>
+		      <width>340</width>
+		      <height>10</height>
+		      <texturebg>zosdprogressback.png</texturebg>
+		      <midtexture>zosdprogressmid.png</midtexture>
+		      <info>$INFO[Window(Home).Property(progress)]</info>
+			</control>
+
+-->
+		</control>
+	</controls>
+
+</window>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+        <category label="310031">
+                <setting label="31001" id="username" type="text" default=""/>
+                <setting label="31002" id="password" type="text" option="hidden" enable="!eq(-1,)" default=""/>
+                <setting id="channellist" enabled="false"/>
+                <setting id="provider" type="enum" label="31004" default = "0" values="Zattoo|Netplus|Quickline|m-net|WALY.TV|meinewelt.cc|BBV-tv.net|VTXtv.ch|myvisiontv.ch|GLATTvision.ch|SAKtv.ch|NetCologne|EWE.de|quantum TV|Salt.tv|1und1" />
+                <setting type="sep"/>                
+                <setting label="310033" id="dateregistered" type="date" enable="false" visible="gt(0,)"/>
+                <setting label="310038" id="country" type="text" enable="false" visible="gt(0,)"/>
+                <setting label="310032" id="recall" type="text" enable="false" visible="gt(0,)"/>
+                <setting label="310034" id="product" type="text" enable="false" visible="gt(0,)"/>
+                <setting label="310035" id="price" type="text" enable="false" visible="gt(0,)"/>
+                <setting label="310036" id="expiration" type="text" enable="false" visible="gt(0,)"/>
+                <setting label="310037" id="renewal_date" type="text" enable="false" visible="gt(0,)"/>
+        </category>
+        
+        
+    <category label="31000">
+                
+        <setting label="310067" type="bool" id="show_favourites" default="false"/>
+        <setting label="31003" type="enum" id="pip"  default="0" lvalues="310098|310097"/>
+        <setting type="sep"/>
+        <setting label="31005" id="max_bandwidth" type="labelenum" values="600|900|1500|3000|5000|8000" default="8000"/>
+        <setting label="31006" id="audio_stream" type="labelenum" values="A|B" default="A"/>
+        <setting label="310065" id="stream_type" type="labelenum" values="hls|dash|dash_widevine" default="hls"/>
+        <setting label="310066" id="dolby" type="bool" default="false"/>
+        <setting type="sep"/>
+        <setting label="31007" type="bool" id="start_liveTV" default="false"/>
+        <setting label="31009" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=selectStartChannel)" enable="eq(-1,true)"/>
+        <setting label="310091" type="text" id="start_channel" enable="false" visible="gt(0,)"/>
+	<setting type="sep"/>
+        <setting label="310099" type="bool" id="help" default="true"/>
+        <setting label="310100" type="bool" id="settings" default="false"/>
+        <setting label="310096" type="bool" id="debug" default="false"/>
+ 
+        </category>
+        
+    <category label="31010">
+        <setting label="31011"  id="time_offset" type="labelenum" values="-12|-11|-10|-9|-8|-7|-6|-5|-4|-3|-2|-1|0|1|2|3|4|5|6|7|8|9|10|11|12" default="-2"/>
+        <setting label="31012" type="bool" id="epgPlay" default="false"/>
+        <setting label="31017" id="rec_name" default="0" type="enum" lvalues="31018|31019" />
+        <setting label="310171" id="livetv" type="bool" default="false"/>
+        <setting type="sep"/>
+        <setting label="31016" type="bool" id="rec_ready" default="false"/>
+        <setting label="310161" type="bool" id="rec_now" default="false" enable="eq(-1,true)" />
+        <setting label="31013" type="folder" id="library_dir" source="video" option="writeable"/>
+        <setting label="31014" type="action" id="reset_dir" enable="!eq(-1,)" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=resetdir)"/>
+        <setting label="31015" type="action" option="hidden" enable="!eq(-2,)" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=makelibrary)"/>
+    
+    </category>
+    <category label="31020">
+        <setting label="31021" id="dbonstart" type="bool" default="false" />
+        <setting label="31022" id="onlyfav" type="bool" enable="eq(-1,true)" default="false" />
+        <setting type="sep"/>
+        <setting label="31023" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=reloadDB)"/>
+        <setting label="31913" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=cleanProg)"/>
+    </category>
+    <category label="31030">
+        <setting label="31032" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=editKeyMap)"/>       
+        <setting label="31033" type="enum" id="keymap" lvalues="31035|31034|31036"/>
+        <setting label="31037" type="lsep"/>
+<!--
+        <setting label="31036" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=showKeyMap)"/>
+-->
+        <setting type="sep"/>
+        <setting label="32010" id="key_OSD" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32011" id="key_prevChan" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32012" id="key_nextChan" type="text" default="up" enable="false" visible="gt(0,)"/>
+        <setting label="32013" id="key_toggleChan" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32014" id="key_audio" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32015" id="key_record" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32016" id="key_Teletext" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32017" id="key_Preview" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32018" id="key_EPG" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32019" id="key_List" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32020" id="key_recordlist" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32021" id="key_category" type="text" default="" enable="false" visible="gt(0,)"/>
+        <setting label="32027" id="key_playerosd" type="text" default="" enable="false" visible="gt(0,)"/>
+<!--
+        <setting label="32022" id="key_genre" type="text" default="" enable="false" visible="gt(0,)"/>
+-->
+    </category>
+
+
+
+</settings>
