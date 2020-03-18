@@ -293,7 +293,7 @@ class KeyMap:
       
       key = 'swipe'
       builder.start(key, {"direction":"up"})
-      builder.data('RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&skipDir=1")')
+      builder.data('RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&ampskipDir=1")')
       builder.end(key)
       
       key = 'swipe'

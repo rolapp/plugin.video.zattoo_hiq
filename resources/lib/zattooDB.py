@@ -105,7 +105,7 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     
     DB._createTables()
     time.sleep(5)
-    xbmcgui.Dialog().notification(localString(31916), localString(30110),  __addon__.getAddonInfo('path') + '/icon.png', 3000, False)
+    xbmcgui.Dialog().notification(localString(31916), localString(30110),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
     DB.updateChannels(True)
     #time.sleep(2)
     DB.updateProgram(datetime.datetime.now(), True)
@@ -121,7 +121,7 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     DB.getProgInfo(True, startTime, endTime)
    
     
-    xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/icon.png', 3000, False)
+    xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/rsources/icon.png', 3000, False)
     _library_.make_library()
     xbmc.executebuiltin("Dialog.Close(busydialog)")
     
@@ -342,7 +342,7 @@ class ZattooDB(object):
         return
     
 
-    xbmcgui.Dialog().notification(__addon__.getLocalizedString(31917), self.formatDate(date), __addon__.getAddonInfo('path') + '/icon.png', 5000, False)
+    xbmcgui.Dialog().notification(__addon__.getLocalizedString(31917), self.formatDate(date), __addon__.getAddonInfo('path') + '/resources/icon.png', 5000, False)
     #xbmc.executebuiltin("ActivateWindow(busydialog)")
     debug('update Program')
     #update 09.02.2018: zattoo only sends max 5h (6h?) of programdata -> load 6*4h
@@ -362,7 +362,7 @@ class ZattooDB(object):
                  #debug('Sender nicht im Abo: '+str(cid))
                 continue
             if cid == firstchan and not channel['programs']:
-                xbmcgui.Dialog().notification('Update Program', 'No Data',  __addon__.getAddonInfo('path') + '/icon.png', 3000, False)
+                xbmcgui.Dialog().notification('Update Program', 'No Data',  __addon__.getAddonInfo('path') + '/recources/icon.png', 3000, False)
                 #c.close()
                 continue
            

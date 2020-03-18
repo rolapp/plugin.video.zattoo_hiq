@@ -253,7 +253,7 @@ def build_root(__addonuri__, __addonhandle__):
     xbmcgui.Window(10000).setProperty('ZBEplayOnStart', 'false')
 
 
-  iconPath = __addon__.getAddonInfo('path') + '/icon.png'
+  iconPath = __addon__.getAddonInfo('path') + '/resources/icon.png'
   if _listMode_ == 'all': listTitle = localString(31100)
   else: listTitle = localString(31101)
 
@@ -1007,7 +1007,7 @@ def search_show(__addonuri__, __addonhandle__, search):
           record_shows.append(rec)
     elif startLocal < now and endlocal > now:
         if RECALL:
-          item['url2'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end)})
+          item['url2'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end), 'showID':showID})
           item['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'showID':showID})
           recall_shows.append(item)      
         else:
@@ -1018,7 +1018,7 @@ def search_show(__addonuri__, __addonhandle__, search):
           record_shows.append(rec)
     elif startLocal < now:
       if RECALL and record:
-        item['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end)})
+        item['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'watch_c', 'id': program['cid'], 'start': str(start+300), 'end': str(end), 'showID':showID})
         recall_shows.append(item)      
         rec['url'] = __addonuri__+ '?' + urllib.urlencode({'mode': 'record_p', 'program_id': program['id']})
         record_shows.append(rec)
@@ -1122,7 +1122,7 @@ def showCategory():
     __addonhandle__ = int(sys.argv[1])
     cat = _zattooDB_.set_category()
     #debug('Kategorien: '+str(cat))
-    iconPath = __addon__.getAddonInfo('path') + '/icon.png'
+    iconPath = __addon__.getAddonInfo('path') + '/resources/icon.png'
     content = []
       
     for record in cat: 

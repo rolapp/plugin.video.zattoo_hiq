@@ -198,6 +198,4 @@ class myPlayer(xbmc.Player):
         except:pass
 
 
-    
-
 
