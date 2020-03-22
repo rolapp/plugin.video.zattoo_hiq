@@ -76,7 +76,8 @@ def recInfo():
 
 def start():
     player=myPlayer()
-
+    
+    from resources.lib.zattooDB import ZattooDB
     if OLDVERSION != VERSION:
         #_zattooDB_.reloadDB(True)
         _zattooDB_.set_version(VERSION)
