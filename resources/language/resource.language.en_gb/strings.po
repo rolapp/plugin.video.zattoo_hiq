@@ -605,6 +605,10 @@ msgctxt "#31108"
 msgid "Categories"
 msgstr ""
 
+msgctxt "#31109"
+msgid "On Demand"
+msgstr ""
+
 msgctxt "#31200"
 msgid "Search show:"
 msgstr ""
@@ -633,7 +637,6 @@ msgctxt "#31251"
 msgid  "Now set your folder-content to movies,only use local information and update the library...."
 msgstr ""
 
-
 msgctxt "#31300"
 msgid "Record this show"
 msgstr ""
@@ -648,18 +651,15 @@ msgstr ""
 
 msgctxt "#31303"
 msgid "Date is too big"
-msgstr ""
+msgstr "Datum ist zu gross"
 
 msgctxt "#31304"
 msgid "Date is too small"
-msgstr ""
+msgstr "Datum ist zu klein"
 
 msgctxt "#31305"
 msgid "Record series"
 msgstr ""
-
-
-
 
 msgctxt "#31901"
 msgid "Content not accessible"
@@ -685,7 +685,6 @@ msgctxt "#31906"
 msgid "The recording already exists!"
 msgstr ""
 
-
 msgctxt "#31907"
 msgid "Set the channel as the start channel"
 msgstr ""
@@ -698,8 +697,6 @@ msgctxt "#31909"
 msgid "Remove channel from favourites?"
 msgstr ""
 
-
-
 msgctxt "#31911"
 msgid "Delete the recording directory and the recorded movies?\nThe recordings are not deleted at Zattoo."
 msgstr ""
@@ -707,8 +704,6 @@ msgstr ""
 msgctxt "#31912"
 msgid "Keypad"
 msgstr ""
-
-
 
 msgctxt "#31913"
 msgid "Clean the program table"

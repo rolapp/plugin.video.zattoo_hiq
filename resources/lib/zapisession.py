@@ -138,7 +138,7 @@ class ZapiSession:
     def exec_zapiCall(self, api, params, context='default'):
         #url = self.ZAPIAuthUrl + api if context == 'session' else self.ZAPIUrl + api
         url = self.ZAPIUrl + api
-        #debug( "ZapiCall  " + str(url)+str(params))
+        debug( "ZapiCall  " + str(url)+str(params))
         content = self.request_url(url, params)
         if content is None:# and self.renew_session():
             content = self.request_url(url, params)

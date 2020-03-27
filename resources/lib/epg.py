@@ -35,7 +35,7 @@ _zattooDB_ = ZattooDB()
 from resources.lib.library import library
 _library_=library()
 # from notification import Notification
-from strings import *
+from resources.lib.strings import *
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
@@ -771,9 +771,9 @@ class EPG(xbmcgui.WindowXML):
         import time, locale
         #print 'HeuteTIME  ' + str(time.strftime ('%B-%d/%A/%Y'))
         if self.redrawingEPG or self.isClosing:
-            debug('onRedrawEPG - already redrawing')
+            #debug('onRedrawEPG - already redrawing')
             return  # ignore redraw request while redrawing
-        debug('onRedrawEPG')
+        #debug('onRedrawEPG')
 
         self.redrawingEPG = True
         self._showControl(self.C_MAIN_EPG)
@@ -783,7 +783,7 @@ class EPG(xbmcgui.WindowXML):
         self._clearEpg()
 
         channels = self.db.getChannelList(self.favourites)
-        debug(channelStart)
+        #debug(channelStart)
         if channelStart < 0:
             channelStart = len(channels) - (int((float(len(channels))/8 - len(channels)/8)*8))
         elif channelStart > len(channels) - 8: channelStart = 0

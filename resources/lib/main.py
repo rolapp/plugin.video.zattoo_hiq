@@ -25,13 +25,17 @@ import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 import sys, urlparse,  os, json
 import time, datetime, threading
 import _strptime
-    
+import urllib
+
+reload(sys)
+sys.setdefaultencoding('utf8')
+ 
 from resources.lib.zattooDB import ZattooDB
 from resources.lib.library import library
 from resources.lib.guiactions import *
 from resources.lib.keymap import KeyMap
 from resources.lib.helpmy import helpmy
-
+from resources.lib.vod import vod
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
@@ -49,6 +53,7 @@ _zattooDB_=ZattooDB()
 _library_=library()
 _keymap_=KeyMap()
 _helpmy_=helpmy()
+_vod_ = vod()
 
 global lastplaying
 _umlaut_ = {ord(u'ä'): u'ae', ord(u'ö'): u'oe', ord(u'ü'): u'ue', ord(u'ß'): u'ss'}
@@ -70,7 +75,7 @@ def log(msg, level=xbmc.LOGNOTICE):
 
 # get Timezone Offset
 from tzlocal import get_localzone
-import pytz
+#import resources.lib.pytz
 try:
   tz = get_localzone()
   offset=tz.utcoffset(datetime.datetime.now()).total_seconds()
@@ -264,7 +269,7 @@ def build_root(__addonuri__, __addonhandle__):
     {'title': localString(31104), 'image': iconPath, 'isFolder': False, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'epg'})},
     {'title': localString(31102), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'channellist'})},
     {'title': localString(31105), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'searchlist', })},
-    
+    {'title': localString(31109), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'vod',})},
   ]
   if RECORD:
     content.append({'title': localString(31106), 'image': iconPath, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'recordings'})},)
@@ -304,24 +309,25 @@ def build_searchList():
           listitem=xbmcgui.ListItem('[B][COLOR blue]' + localString(320001) +'[/B][/COLOR]'),
           isFolder=True
         )
-        for chan in search['index']:
-            li = xbmcgui.ListItem(search[chan]['id'])
+
+        for chan in search:
+            li = xbmcgui.ListItem(chan)
             contextMenuItems = []
             contextMenuItems.append((localString(320002), 'RunPlugin("plugin://'+__addonId__+'/?mode=deletesearch&al=False&search='+str(chan)+'")'))
             contextMenuItems.append((localString(320003), 'RunPlugin("plugin://'+__addonId__+'/?mode=editsearch&search='+str(chan)+'")'))
             li.addContextMenuItems(contextMenuItems, replaceItems=True)
             xbmcplugin.addDirectoryItem(
               handle=__addonhandle__,
-              url=__addonuri__+ '?' + urllib.urlencode({'mode': 'search', 'id': search[chan]['id']}),
+              url=__addonuri__+ '?' + urllib.urlencode({'mode': 'search', 'id': chan}),
               listitem=li,
               isFolder=True
             )
-            
+
             
   xbmcplugin.setContent(__addonhandle__, 'movie')
   xbmcplugin.addSortMethod(__addonhandle__, xbmcplugin.SORT_METHOD_LABEL)
   xbmcplugin.endOfDirectory(__addonhandle__)
-  
+ 
   
 def build_channelsList(__addonuri__, __addonhandle__):
   import urllib
@@ -688,24 +694,6 @@ def delete_series(recording_id, series):
   resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/series_recording/remove', params)
   xbmc.executebuiltin('Container.Refresh')
 
-def start_download(recording_id, title, duration):
-    max_bandwidth = __addon__.getSetting('max_bandwidth')
-    params = {'recording_id': recording_id, 'stream_type': 'hls', 'maxrate':max_bandwidth}
-    resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch', params)
-    debug ('Result:'+str(resultData))
-    streams = None
-    if resultData is not None:
-      streams = resultData['stream']['watch_urls']
-    
-    if len(streams)==0:
-      xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", channelInfo['logo'], 5000, False)
-      return
-    elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
-    else: streamNr = 0
-    url = streams[streamNr]['url']
-   
-    _ffmpg_.start_download(url, title, duration)
-
 def slugify(value):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
@@ -896,8 +884,8 @@ def change_stream(dir):
 
 def search_show(__addonuri__, __addonhandle__, search):
   import urllib
-
-  resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/program/search?query=' + search.replace(" ", "_"), None)
+  
+  resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/program/search?query=' + urllib.quote(search.replace(" ", "_"), safe=''),None)
   debug('Suche: '+str(resultData))
   _zattooDB_.set_search(search)
   if resultData is None:
@@ -1037,7 +1025,7 @@ def search_show(__addonuri__, __addonhandle__, search):
   if record_shows == [] and recall_shows ==[]:
     content.append({'title': __addon__.getLocalizedString(31203), 'isFolder': False, 'url':''})
   build_directoryContent(content, __addonhandle__, True, False)
-
+  
 
 def showPreview(popularList=''):
   xbmc.executebuiltin("Dialog.Close(all, true)")
@@ -1063,6 +1051,7 @@ def showHelp(__addonuri__, __addonhandle__):
   
   ]
   build_directoryContent(content, __addonhandle__, True, False, 'files')
+  
   
 def showEpg():
   from resources.lib.epg import EPG
@@ -1622,18 +1611,12 @@ def main():
     _helpmy_.showHelp(img)
     
   elif action == 'showhelp': showHelp(__addonuri__, __addonhandle__)
-  
-  elif action == 'download':
-    recording_id = args.get('recording_id')[0]
-    title = args.get('title')[0]
-    duration = args.get('duration')[0]
-    start_download(recording_id, title, duration)
     
   elif action == 'inputsearch':
     __addonuri__= sys.argv[0]
     __addonhandle__ = int(sys.argv[1])
     search = xbmcgui.Dialog().input(__addon__.getLocalizedString(31200), type=xbmcgui.INPUT_ALPHANUM)
-   
+    debug ('InputSearch: ' + search)
     if search == '': return
     search_show(__addonuri__, __addonhandle__, search)
     
@@ -1651,3 +1634,16 @@ def main():
     search = _zattooDB_.edit_search(item)
     xbmc.executebuiltin('Container.Refresh')
     
+  elif action == 'vod':
+    _vod_.main_menu()
+    
+  elif action == 'vod_sub':
+    total = args.get('total')[0]
+    path = args.get('path')[0]
+    title = args.get('title')[0]
+    _vod_.sub_menu(title, path, total)
+    
+  elif action == 'vod_watch':
+    token = args.get('token')[0]
+    _vod_.vod_watch(token)
+

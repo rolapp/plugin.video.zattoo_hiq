@@ -1,4 +1,4 @@
-# # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #
 #    copyright (C) 2017 Steffen Rolapp (github@rolapp.de)
 #
@@ -960,31 +960,24 @@ class ZattooDB(object):
         
     c = self.conn.cursor()
     c.execute('SELECT * FROM search')
-    searchList = {'index':[]}
+    searchList = []
 
     for row in c:
-        searchList[row['search']]={
-        'id': str(row['search'])
-        }
-        searchList['index'].append(str(row['search']))
+        searchList.append(str(row['search']))
   
     c.close()
     return searchList
     
             
   def set_search(self,search):
-    c = self.conn.cursor()
-    try:
-        c.execute('INSERT INTO search(search) VALUES(?)', [search])
-    except:pass
-    self.conn.commit()
-    #c.execute("SELECT Count(*) FROM `search`")
-    # for res in c:
-        # debug(res[0])
-        # if res[0] > 10:
-            # debug(res[0])
-            # c.execute('delete  from search limit 1')
-    c.close()
+	search = search.decode('utf-8')
+	debug('Setsearch: ' + search )
+	c = self.conn.cursor()
+	try:
+		c.execute('INSERT INTO search(search) VALUES(?)', [search])
+	except:pass
+	self.conn.commit()
+	c.close()
    
   def del_search(self,al=False,search=''): 
     debug('DEl-Search ' + str(al)+' ' +str(search))
@@ -996,6 +989,7 @@ class ZattooDB(object):
         c.execute('DELETE FROM search WHERE search=?', [search])
     self.conn.commit()
     c.close()
+    return
     
   def edit_search(self,search):
     

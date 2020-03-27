@@ -19,8 +19,6 @@
 #
 
 import resources.lib.service as service
-import xbmc, xbmcgui, xbmcaddon, xbmcvfs
-
 
 service.start() 
 
