@@ -34,7 +34,7 @@ __addondir__    = xbmc.translatePath( __addon__.getAddonInfo('profile') )
 __addonhandle__ = int(sys.argv[1])
 __addonuri__    = sys.argv[0]
 
-ICON_PATH       = __addon__.getAddonInfo('path') + '/resources/icon.png'
+ICON_PATH       = __addon__.getAddonInfo('path') + 'resources/icon.png'
 STREAM_TYPE     = __addon__.getSetting('stream_type')
 DOLBY           = __addon__.getSetting('dolby')
 MAX_BANDWIDTH   = __addon__.getSetting('max_bandwidth')
@@ -56,24 +56,28 @@ class vod:
     def __init__(self):
         self.zapi = _zattooDB_.zapiSession()
         
-    def main_menu(self):
+    def main_menu(self, page='vod_zattoo_webmobile'):
         # get VoD Main Menu
-        api = '/zapi/v2/cached/' + self.zapi.SessionData['session']['power_guide_hash'] + '/pages/vod_zattoo_webmobile?'
+        api = '/zapi/v2/cached/' + self.zapi.SessionData['session']['power_guide_hash'] + '/pages/' + page +'?'
         vod_main = self.zapi.exec_zapiCall(api, None)
         if vod_main is None: return
         
         for main in vod_main['elements']:
             path = main['element_zapi_path']
-            if 'avod' in path and not 'curated' in path:
-                api = path +'?page=0&per_page=10'
-                vod_sub = self.zapi.exec_zapiCall(api, None)
-
-                xbmcplugin.addDirectoryItem(
-                    handle = __addonhandle__,
-                    url = __addonuri__+ '?' + urllib.urlencode({'mode': 'vod_sub', 'path': vod_sub['zapi_path'], 'total': vod_sub['teasers_total'], 'title': vod_sub['title']}),
-                    listitem = xbmcgui.ListItem(vod_sub['title'] + ' [COLOR ff00ff00](' + str(vod_sub['teasers_total']) + ')[/COLOR]', iconImage = ICON_PATH),
-                    isFolder = True,
-                )
+            api = path +'?page=0&per_page=10'
+            vod_sub = self.zapi.exec_zapiCall(api, None)
+            debug(vod_sub)
+            if vod_sub['teasers_total'] ==0: continue
+            li = xbmcgui.ListItem(vod_sub['title'] + ' [COLOR ff00ff00](' + str(vod_sub['teasers_total']) + ')[/COLOR]')
+            if vod_sub['logo_token']:
+                li.setArt({'icon': 'https://logos.zattic.com/logos/' + vod_sub['logo_token'] + '/black/140x80.png'})
+            else: li.setArt({'icon': ICON_PATH})
+            xbmcplugin.addDirectoryItem(
+                handle = __addonhandle__,
+                url = __addonuri__+ '?' + urllib.urlencode({'mode': 'vod_sub', 'path': vod_sub['zapi_path'], 'total': vod_sub['teasers_total'], 'title': vod_sub['title']}),
+                listitem = li,
+                isFolder = True,
+            )
 
         xbmcplugin.endOfDirectory(__addonhandle__)
 
@@ -90,28 +94,48 @@ class vod:
         for page in range (int(int(total)/10)+1):
             api = path + '?page=' + str(page) + '&per_page=10'
             vod_sub = self.zapi.exec_zapiCall(api, None)
-            
+            if vod_sub['page_public_id']: self.main_menu(vod_sub['page_public_id'])
+               
+            debug(vod_sub)
             for data in vod_sub['teasers']:
+                if data['teasable_type'] != 'Avod::Video': continue
                 data = data['teasable']
+                episode = ''
+                director = []
+                cast = []
+                if data['credits'] != []:
+                    if 'directors' in data['credits']:
+                        for name in data['credits']['directors']:
+                            director.append(name['name'])
+                    if 'actors' in data['credits']:
+                        for name in data['credits']['actors']:
+                            cast.append(name['name'])
+                    
+                if data['subtitle']: episode = ' - ' + data['subtitle']
                 image_url = 'https://images.zattic.com/cms/' + data['image_token'] + '/format_480x360.jpg'
                 meta = {
-                        'title': data['title'],
+                        'title': data['title'] + episode,
                         'plot': data['description'],
                         'country': data['countries'],
                         'genre': data['genres'],
                         'year': data['year'],
-                        'duration': data['duration']
+                        'duration': data['duration'],
+                        'director': director,
+                        'cast': cast
                         }
-                li = xbmcgui.ListItem(label=data['title'])
+                li = xbmcgui.ListItem(label=data['title'] + episode)
                 li.setInfo('video', meta)
                 li.setProperty('IsPlayable','true') 
                 li.setArt({'thumb':image_url, 'fanart':image_url, 'landscape':image_url,'icon':image_url})
                 url = __addonuri__ + '?' + urllib.urlencode({'mode': 'vod_watch','token': data['token']})
+
+                debug(url)
                 isFolder = False
                 listing.append((url, li, isFolder))
                 
         xbmcplugin.addDirectoryItems(__addonhandle__, listing)
-        xbmcplugin.setContent(__addonhandle__, 'movies')    
+        xbmcplugin.setContent(__addonhandle__, 'movies')
+        xbmcplugin.addSortMethod(__addonhandle__, xbmcplugin.SORT_METHOD_LABEL )    
         xbmcplugin.endOfDirectory(__addonhandle__)
         
     def vod_watch(self, token):

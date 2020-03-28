@@ -1,4 +1,11 @@
 ===================================================
+[B] ZattooHiQ v2.0.10 [/B]28.03.2020 Steffen Rolapp
+===================================================
+- Umstellung der Addon_id nach Kodi Guidelines
+- Fehler in der Suche behoben
+- Video on Demand hinzugefügt
+
+===================================================
 [B]ZattooHiQ v1.7.0.8 [/B]26.02.2020 Steffen Rolapp
 ===================================================
 - Fehler beim Erstellen behoben
