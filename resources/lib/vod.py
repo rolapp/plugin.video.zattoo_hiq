@@ -34,7 +34,7 @@ __addondir__    = xbmc.translatePath( __addon__.getAddonInfo('profile') )
 __addonhandle__ = int(sys.argv[1])
 __addonuri__    = sys.argv[0]
 
-ICON_PATH       = __addon__.getAddonInfo('path') + 'resources/icon.png'
+ICON_PATH       = __addon__.getAddonInfo('path') + '/resources/icon.png'
 STREAM_TYPE     = __addon__.getSetting('stream_type')
 DOLBY           = __addon__.getSetting('dolby')
 MAX_BANDWIDTH   = __addon__.getSetting('max_bandwidth')
