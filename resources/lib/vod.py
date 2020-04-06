@@ -67,7 +67,8 @@ class vod:
             api = path +'?page=0&per_page=10'
             vod_sub = self.zapi.exec_zapiCall(api, None)
             debug(vod_sub)
-            if vod_sub['teasers_total'] ==0: continue
+            if not vod_sub: continue
+            if vod_sub['teasers_total'] == 0: continue
             li = xbmcgui.ListItem(vod_sub['title'] + ' [COLOR ff00ff00](' + str(vod_sub['teasers_total']) + ')[/COLOR]')
             if vod_sub['logo_token']:
                 li.setArt({'icon': 'https://logos.zattic.com/logos/' + vod_sub['logo_token'] + '/black/140x80.png'})
@@ -87,7 +88,7 @@ class vod:
         xbmcplugin.addDirectoryItem(
 			handle = __addonhandle__,
 			isFolder = True,
-			listitem = xbmcgui.ListItem('[COLOR blue]' + title + '[/COLOR]', iconImage = ICON_PATH),
+			listitem = xbmcgui.ListItem('[COLOR blue]' + title + '[/COLOR]'),
 		url = __addonuri__+ '?' + urllib.urlencode({'mode': 'vod_sub', 'path': path, 'title': title, 'total': total}),
         )
         listing = []

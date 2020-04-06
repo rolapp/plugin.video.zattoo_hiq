@@ -992,7 +992,7 @@ class ZattooDB(object):
     return
     
   def edit_search(self,search):
-    
+    search = search.decode('utf-8')
     item = xbmcgui.Dialog().input(__addon__.getLocalizedString(31200), defaultt=search, type=xbmcgui.INPUT_ALPHANUM)
     if item == "": return
     c = self.conn.cursor()
