@@ -156,9 +156,9 @@ class ZapiSession:
     def fetch_appToken(self):
         #debug("ZapiUrL= "+str(self.ZAPIUrl))
         try:
-            handle = urllib2.urlopen(self.ZAPIUrl + '/')
+            handle = urllib2.urlopen(self.ZAPIUrl + '/int/')
         except:
-            handle = urllib.urlopen(self.ZAPIUrl + '/')
+            handle = urllib.urlopen(self.ZAPIUrl + '/int/')
         html = handle.read()
         return re.search("window\.appToken\s*=\s*'(.*)'", html).group(1)
 
