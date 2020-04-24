@@ -1,87 +1,716 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
-        <category label="310031">
-                <setting label="31001" id="username" type="text" default=""/>
-                <setting label="31002" id="password" type="text" option="hidden" enable="!eq(-1,)" default=""/>
-                <setting id="channellist" enabled="false"/>
-                <setting id="provider" type="enum" label="31004" default = "0" values="Zattoo|Netplus|Quickline|m-net|WALY.TV|meinewelt.cc|BBV-tv.net|VTXtv.ch|myvisiontv.ch|GLATTvision.ch|SAKtv.ch|NetCologne|EWE.de|quantum TV|Salt.tv|1und1" />
-                <setting type="sep"/>                
-                <setting label="310033" id="dateregistered" type="date" enable="false" visible="gt(0,)"/>
-                <setting label="310038" id="country" type="text" enable="false" visible="gt(0,)"/>
-                <setting label="310032" id="recall" type="text" enable="false" visible="gt(0,)"/>
-                <setting label="310034" id="product" type="text" enable="false" visible="gt(0,)"/>
-                <setting label="310035" id="price" type="text" enable="false" visible="gt(0,)"/>
-                <setting label="310036" id="expiration" type="text" enable="false" visible="gt(0,)"/>
-                <setting label="310037" id="renewal_date" type="text" enable="false" visible="gt(0,)"/>
-        </category>
-        
-        
-    <category label="31000">
-                
-        <setting label="310067" type="bool" id="show_favourites" default="false"/>
-        <setting label="31003" type="enum" id="pip"  default="0" lvalues="310098|310097"/>
-        <setting type="sep"/>
-        <setting label="31005" id="max_bandwidth" type="labelenum" values="600|900|1500|3000|5000|8000" default="8000"/>
-        <setting label="31006" id="audio_stream" type="labelenum" values="A|B" default="A"/>
-        <setting label="310065" id="stream_type" type="labelenum" values="hls|dash|dash_widevine" default="hls"/>
-        <setting label="310066" id="dolby" type="bool" default="false"/>
-        <setting type="sep"/>
-        <setting label="31007" type="bool" id="start_liveTV" default="false"/>
-        <setting label="31009" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=selectStartChannel)" enable="eq(-1,true)"/>
-        <setting label="310091" type="text" id="start_channel" enable="false" visible="gt(0,)"/>
-	<setting type="sep"/>
-        <setting label="310099" type="bool" id="help" default="true"/>
-        <setting label="310100" type="bool" id="settings" default="false"/>
-        <setting label="310096" type="bool" id="debug" default="false"/>
- 
-        </category>
-        
-    <category label="31010">
-        <setting label="31011"  id="time_offset" type="labelenum" values="-12|-11|-10|-9|-8|-7|-6|-5|-4|-3|-2|-1|0|1|2|3|4|5|6|7|8|9|10|11|12" default="-2"/>
-        <setting label="31012" type="bool" id="epgPlay" default="false"/>
-        <setting label="31017" id="rec_name" default="0" type="enum" lvalues="31018|31019" />
-        <setting label="310171" id="livetv" type="bool" default="false"/>
-        <setting type="sep"/>
-        <setting label="31016" type="bool" id="rec_ready" default="false"/>
-        <setting label="310161" type="bool" id="rec_now" default="false" enable="eq(-1,true)" />
-        <setting label="31013" type="folder" id="library_dir" source="video" option="writeable"/>
-        <setting label="31014" type="action" id="reset_dir" enable="!eq(-1,)" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=resetdir)"/>
-        <setting label="31015" type="action" option="hidden" enable="!eq(-2,)" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=makelibrary)"/>
-    
-    </category>
-    <category label="31020">
-        <setting label="31021" id="dbonstart" type="bool" default="false" />
-        <setting label="31022" id="onlyfav" type="bool" enable="eq(-1,true)" default="false" />
-        <setting type="sep"/>
-        <setting label="31023" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=reloadDB)"/>
-        <setting label="31913" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=cleanProg)"/>
-    </category>
-    <category label="31030">
-        <setting label="31032" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=editKeyMap)"/>       
-        <setting label="31033" type="enum" id="keymap" lvalues="31035|31034|31036"/>
-        <setting label="31037" type="lsep"/>
-<!--
-        <setting label="31036" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=showKeyMap)"/>
--->
-        <setting type="sep"/>
-        <setting label="32010" id="key_OSD" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32011" id="key_prevChan" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32012" id="key_nextChan" type="text" default="up" enable="false" visible="gt(0,)"/>
-        <setting label="32013" id="key_toggleChan" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32014" id="key_audio" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32015" id="key_record" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32016" id="key_Teletext" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32017" id="key_Preview" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32018" id="key_EPG" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32019" id="key_List" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32020" id="key_recordlist" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32021" id="key_category" type="text" default="" enable="false" visible="gt(0,)"/>
-        <setting label="32027" id="key_playerosd" type="text" default="" enable="false" visible="gt(0,)"/>
-<!--
-        <setting label="32022" id="key_genre" type="text" default="" enable="false" visible="gt(0,)"/>
--->
-    </category>
-
-
-
+<?xml version="1.0" ?>
+<settings version="1">
+	<section id="plugin.video.zattoo_hiq">
+		<category help="" id="kontodaten" label="310031">
+			<group id="1">
+				<setting help="" id="username" label="31001" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control format="string" type="edit">
+						<heading>31001</heading>
+					</control>
+				</setting>
+				<setting help="" id="password" label="31002" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="!is" setting="username"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>31002</heading>
+						<hidden>true</hidden>
+					</control>
+				</setting>
+				<setting help="" id="channellist" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+					</dependencies>
+					<visible>false</visible>
+					<control format="string" type="edit">
+						<heading/>
+					</control>
+				</setting>
+				<setting help="" id="provider" label="31004" type="integer">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<options>
+							<option label="33100">0</option> <!-- Zattoo -->
+							<option label="33101">1</option> <!-- Netplus -->
+							<option label="33102">2</option> <!-- Quickline -->
+							<option label="33103">3</option> <!-- m-net -->
+							<option label="33104">4</option> <!-- WALY.TV -->
+							<option label="33105">5</option> <!-- meinewelt.cc -->
+							<option label="33106">6</option> <!-- BBV-tv.net -->
+							<option label="33107">7</option> <!-- VTXtv.ch -->
+							<option label="33108">8</option> <!-- myvisiontv.ch -->
+							<option label="33109">9</option> <!-- GLATTvision.ch -->
+							<option label="33110">10</option> <!-- SAKtv.ch -->
+							<option label="33111">11</option> <!-- NetCologne -->
+							<option label="33112">12</option> <!-- EWE.de -->
+							<option label="33113">13</option> <!-- quantum.tv -->
+							<option label="33114">14</option> <!-- Salt.tv -->
+							<option label="33115">15</option> <!-- swb TV -->
+							<option label="33116">16</option> <!-- 1und1 -->
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+			</group>
+			<group id="2">
+				<setting help="" id="dateregistered" label="310033" type="date">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="dateregistered"/>
+						</dependency>
+					</dependencies>
+					<control format="date" type="button">
+						<heading>310033</heading>
+					</control>
+				</setting>
+				<setting help="" id="country" label="310038" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="country"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>310038</heading>
+					</control>
+				</setting>
+				<setting help="" id="recall" label="310032" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="recall"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>310032</heading>
+					</control>
+				</setting>
+				<setting help="" id="product" label="310034" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="product"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>310034</heading>
+					</control>
+				</setting>
+				<setting help="" id="price" label="310035" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="price"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>310035</heading>
+					</control>
+				</setting>
+				<setting help="" id="expiration" label="310036" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="expiration"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>310036</heading>
+					</control>
+				</setting>
+				<setting help="" id="renewal_date" label="310037" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="renewal_date"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>310037</heading>
+					</control>
+				</setting>
+			</group>
+		</category>
+		<category help="" id="zattoo einstellungen" label="31000">
+			<group id="1">
+				<setting help="" id="show_favourites" label="310067" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="pip" label="31003" type="integer">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<options>
+							<option label="310098">0</option>
+							<option label="310097">1</option>
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+			</group>
+			<group id="2">
+				<setting help="" id="max_bandwidth" label="31005" type="string">
+					<level>0</level>
+					<default>8000</default>
+					<constraints>
+						<options>
+							<option label="33160">600</option>
+							<option label="33161">900</option>
+							<option label="33162">1500</option>
+							<option label="33163">3000</option>
+							<option label="33164">5000</option>
+							<option label="33165">8000</option>
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+				<setting help="" id="stream_type" label="310065" type="string">
+					<level>0</level>
+					<default>dash</default>
+					<constraints>
+						<options>
+							<option label="33150">dash</option>
+							<option label="33151">hls</option>
+							<option label="33152">dash_widevine</option>
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+				<setting help="" id="audio_stream" label="31006" type="string">
+					<level>0</level>
+					<default>A</default>
+					<constraints>
+						<options>
+							<option label="33170">A</option>
+							<option label="33171">B</option>
+						</options>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" setting="stream_type">hls</dependency>
+					</dependencies>
+					<control format="string" type="spinner"/>
+				</setting>
+				<setting help="" id="dolby" label="310066" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+			</group>
+			<group id="3">
+				<setting help="" id="start_liveTV" label="31007" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="select_start_Channel" label="31009" type="action">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=selectStartChannel)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="start_liveTV">true</condition>
+						</dependency>
+					</dependencies>
+					<control format="action" type="button"/>
+				</setting>
+				<setting help="" id="start_channel" label="310091" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="start_channel"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>310091</heading>
+					</control>
+				</setting>
+			</group>
+			<group id="4">
+				<setting help="" id="help" label="310099" type="boolean">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="settings" label="310100" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="debug" label="310096" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+			</group>
+		</category>
+		<category help="" id="epg/aufnahmen" label="31010">
+			<group id="1">
+				<setting help="" id="time_offset" label="31011" type="integer">
+					<level>0</level>
+					<default>-2</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<step>1</step>
+						<maximum>12</maximum>
+					</constraints>
+					<control type="slider" format="integer">
+						<popup>true</popup>
+					</control>
+				</setting>
+				<setting help="" id="epgPlay" label="31012" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="rec_name" label="31017" type="integer">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<options>
+							<option label="31018">0</option>
+							<option label="31019">1</option>
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+				<setting help="" id="livetv" label="310171" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+			</group>
+			<group id="2">
+				<setting help="" id="rec_ready" label="31016" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="rec_now" label="310161" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="rec_ready">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="library_dir" label="31013" type="path">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<sources>
+							<source>video</source>
+						</sources>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control format="path" type="button">
+						<heading>31013</heading>
+					</control>
+				</setting>
+				<setting help="" id="reset_dir" label="31014" type="action">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=resetdir)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="!is" setting="library_dir"/>
+						</dependency>
+					</dependencies>
+					<control format="action" type="button"/>
+				</setting>
+				<setting help="" id="make_library" label="31015" type="action">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=makelibrary)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="!is" setting="library_dir"/>
+						</dependency>
+					</dependencies>
+					<control format="action" type="button"/>
+				</setting>
+			</group>
+		</category>
+		<category help="" id="datenbank" label="31020">
+			<group id="1">
+				<setting help="" id="dbonstart" label="31021" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="onlyfav" label="31022" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="dbonstart">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+			</group>
+			<group id="2">
+				<setting help="" id="reloadDB" label="31023" type="action">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=reloadDB)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control format="action" type="button"/>
+				</setting>
+				<setting help="" id="CleanProg" label="31913" type="action">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=cleanProg)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control format="action" type="button"/>
+				</setting>
+			</group>
+		</category>
+		<category help="" id="livetv keymap" label="31030">
+			<group id="1">
+				<setting help="" id="editKeymap" label="31032" type="action">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=editKeyMap)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control format="action" type="button"/>
+				</setting>
+				<setting help="" id="keymap" label="31033" type="integer">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<options>
+							<option label="31035">0</option>
+							<option label="31034">1</option>
+							<option label="31036">2</option>
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+			</group>
+			<group id="2" label="31037"/>
+			<group id="3">
+				<setting help="" id="key_OSD" label="32010" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_OSD"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32010</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_prevChan" label="32011" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_prevChan"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32011</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_nextChan" label="32012" type="string">
+					<level>0</level>
+					<default>up</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_nextChan"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32012</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_toggleChan" label="32013" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_toggleChan"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32013</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_audio" label="32014" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_audio"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32014</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_record" label="32015" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_record"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32015</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_Teletext" label="32016" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_Teletext"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32016</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_Preview" label="32017" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_Preview"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32017</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_EPG" label="32018" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_EPG"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32018</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_List" label="32019" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_List"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32019</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_recordlist" label="32020" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_recordlist"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32020</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_category" label="32021" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_category"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32021</heading>
+					</control>
+				</setting>
+				<setting help="" id="key_playerosd" label="32027" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition name="InfoBool" on="property">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="gt" setting="key_playerosd"/>
+						</dependency>
+					</dependencies>
+					<control format="string" type="edit">
+						<heading>32027</heading>
+					</control>
+				</setting>
+			</group>
+		</category>
+	</section>
 </settings>

@@ -858,3 +858,124 @@ msgstr "Eintrag löschen"
 msgctxt "#320003"
 msgid "edit entry"
 msgstr "Eintrag bearbeiten"
+
+
+### Provider ####
+
+msgctxt "#33100"
+msgid "Zattoo"
+msgstr ""
+
+msgctxt "#33101"
+msgid "Netplus"
+msgstr ""
+
+msgctxt "#33102"
+msgid "Quickline"
+msgstr ""
+
+msgctxt "#33103"
+msgid "m-net"
+msgstr ""
+
+msgctxt "#33104"
+msgid "WALY.TV"
+msgstr ""
+
+msgctxt "#33105"
+msgid "meinewelt.cc"
+msgstr ""
+
+msgctxt "#33106"
+msgid "BBV-tv.net"
+msgstr ""
+
+msgctxt "#33107"
+msgid "VTXtv.ch"
+msgstr ""
+
+msgctxt "#33108"
+msgid "myvisiontv.ch"
+msgstr ""
+
+msgctxt "#33109"
+msgid "GLATTvision.ch"
+msgstr ""
+
+msgctxt "#33110"
+msgid "SAKtv.ch"
+msgstr ""
+
+msgctxt "#33111"
+msgid "NetCologne"
+msgstr ""
+
+msgctxt "#33112"
+msgid "EWE.de"
+msgstr ""
+
+msgctxt "#33113"
+msgid "quantum TV"
+msgstr ""
+
+msgctxt "#33114"
+msgid "Salt.ch"
+msgstr ""
+
+msgctxt "#33115"
+msgid "swb TV"
+msgstr ""
+
+msgctxt "#33116"
+msgid "1&1 TV"
+msgstr ""
+
+### stream_type###
+
+msgctxt "#33150"
+msgid "dash"
+msgstr ""
+
+msgctxt "#33151"
+msgid "hls"
+msgstr ""
+
+msgctxt "#33152"
+msgid "dash_widevine"
+msgstr ""
+
+### Bandwidth ###
+
+msgctxt "#33160"
+msgid "600"
+msgstr ""
+
+msgctxt "#33161"
+msgid "900"
+msgstr ""
+
+msgctxt "#33162"
+msgid "1500"
+msgstr ""
+
+msgctxt "#33163"
+msgid "3000"
+msgstr ""
+
+msgctxt "#33164"
+msgid "5000"
+msgstr ""
+
+msgctxt "#33165"
+msgid "8000"
+msgstr ""
+
+### Audio-Spur ###
+
+msgctxt "#33170"
+msgid "Tone A"
+msgstr "Ton A"
+
+msgctxt "#33171"
+msgid "Tone B"
+msgstr "Ton B"
