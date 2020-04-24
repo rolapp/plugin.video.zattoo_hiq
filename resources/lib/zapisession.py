@@ -101,7 +101,7 @@ class ZapiSession:
     def persist_sessionId(self, sessionId):
         with open(self.COOKIE_FILE, 'wb') as f:
             f.write(base64.b64encode(sessionId.encode('utf-8')))
-        
+
 
     def persist_sessionData(self, sessionData):
         with open(self.SESSION_FILE, 'wb') as f:
@@ -114,18 +114,18 @@ class ZapiSession:
 
 
     def request_url(self, url, params):
-        
+
         try:
-           
+
             if params is not None:
-                f = urllib.parse.urlencode(params) 
+                f = urllib.parse.urlencode(params)
                 f = f.encode('utf-8')
                 debug(f)
             response = self.HttpHandler.open(url,f if params is not None else None)
-          
+
             if response is not None:
                 sessionId = self.extract_sessionId(response.info())
-                
+
                 if sessionId is not None:
                     self.set_cookie(sessionId)
                     self.persist_sessionId(sessionId)
@@ -164,13 +164,13 @@ class ZapiSession:
     def fetch_appToken(self):
         #debug("ZapiUrL= "+str(self.ZAPIUrl))
         try:
-            handle = urllib.request.urlopen(self.ZAPIUrl + '/')
+            handle = urllib.request.urlopen(self.ZAPIUrl + '/int/')
         except:
-            handle = urllib.request.urlopen(self.ZAPIUrl + '/')
-        
+            handle = urllib.request.urlopen(self.ZAPIUrl + '/int/')
+
         html = handle.read()
         html = html.decode('utf-8')
-        
+
         return re.search("window\.appToken\s*=\s*'(.*)'", html).group(1)
 
 
@@ -181,7 +181,7 @@ class ZapiSession:
                   "lang"    : "en",
                   "format"  : "json"}
         sessionData = self.exec_zapiCall(api, params, 'session')
-        
+
         debug('SessionData: '+str(sessionData))
         if sessionData is not None:
             self.SessionData = sessionData
