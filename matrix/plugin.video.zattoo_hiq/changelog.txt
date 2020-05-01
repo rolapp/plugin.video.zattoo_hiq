@@ -1,0 +1,15 @@
+====================================================
+[B]ZattooHiQ-19 v1.0.3 [/B]19.02.2020 Steffen Rolapp
+====================================================
+- Fehler beim Erstellen der Aufnahmeliste behoben
+====================================================
+[B]ZattooHiQ-19 v1.0.1 [/B]19.02.2020 Steffen Rolapp
+====================================================
+- Verzeichnis-Struktur an Kodi Richtlinien angepasst
+- Dolby Digital Unterstützung hinzu gefügt
+- Zattoo Urls angepasst
+
+===================================================
+[B]ZattooHiQ-19 v1.0 [/B]03.01.2020 Steffen Rolapp
+===================================================
+- Portierung von ZattooHiQ zu Python3 (Kodi19)

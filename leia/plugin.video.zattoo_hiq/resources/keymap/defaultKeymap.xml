@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keymap>
+	<fullscreenvideo>
+		<keyboard>
+			<!-- Skip Channel Up -->
+			<up>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=1")</up>
+			<pageup>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=1")</pageup>
+			<key id="223">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=1")</key>
+			<key id="166">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=1")</key>
+			<!-- Skip Channel Down -->
+			<down>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=-1")</down>
+			<pagedown>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=-1")</pagedown>
+			<key id="221">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=-1")</key>
+			<key id="167">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=-1")</key>
+			<!-- Toggle channel -->
+			<left>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=toggle_channel")</left>
+			<key id="169">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=toggle_channel")</key>
+			<!-- Change Audio Stream -->
+			<right>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=changeStream")</right>
+			<key id="168">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=changeStream")</key>
+			<!-- Show ZattooOSD -->
+			<return>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=showInfo")</return>
+			<enter>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=showInfo")</enter>
+			<key id="11">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=showInfo")</key>
+			<!-- Show Kodi OSD -->
+			<return mod="longpress">OSD</return>
+			<!-- Teletext -->
+			<v>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=teletext")</v>
+			<!-- EPG -->
+			<e>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=epg")</e>
+			<!-- Channellist -->
+			<h>ActivateWindow(10025,"plugin://plugin.video.zattoo_hiq/?mode=channellist")</h>
+			<!-- Recordlist -->
+			<b>ActivateWindow(10025,"plugin://plugin.video.zattoo_hiq/?mode=recordings")</b>
+			<!-- Preview -->
+			<c>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=preview")</c>
+			<!-- Record -->
+			<k>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=record_l")</k>
+			<!-- Category -->
+			<d>ActivateWindow(10025,"plugin://plugin.video.zattoo_hiq/?mode=category")</d>
+			<!-- Genres -->
+<!--
+			<n>ActivateWindow(10025,"plugin://plugin.video.zattoo_hiq/?mode=genre")</n>
+			
+-->
+			
+			<!-- Numbers -->
+			<zero>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=58")</zero>
+			<numpadzero>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=58")</numpadzero>
+			<key id="207">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=58")</key>
+			
+			<one>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=59")</one>
+			<numpadone>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=59")</numpadone>
+			<key id="206">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=59")</key>
+			
+			<two>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=60")</two>
+			<numpadtwo>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=60")</numpadtwo>
+			<key id="205">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=60")</key>
+			
+			<three>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=61")</three>
+			<numpadthree>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=61")</numpadthree>
+			<key id="204">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=61")</key>
+			
+			<four>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=62")</four>
+			<numpadfour>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=62")</numpadfour>
+			<key id="203">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=62")</key>
+			
+			<five>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=63")</five>
+			<numpadfive>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=63")</numpadfive>
+			<key id="202">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=63")</key>
+			
+			<six>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=64")</six>
+			<numpadsix>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=64")</numpadsix>
+			<key id="201">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=64")</key>
+			
+			<seven>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=65")</seven>
+			<numpadseven>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=65")</numpadseven>
+			<key id="200">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=65")</key>
+			
+			<eight>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=66")</eight>
+			<numpadeight>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=66")</numpadeight>
+			<key id="199">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=66")</key>
+			
+			<nine>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=67")</nine>
+			<numpadnine>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=67")</numpadnine>
+			<key id="198">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=nr&amp;nr=67")</key>
+			
+		</keyboard>
+		<mouse>
+			<leftclick>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=showInfo")</leftclick>
+		</mouse>
+		<touch>
+			<tap>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=showInfo")</tap>
+			<swipe direction="left">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=toggle_channel")</swipe>
+			<swipe direction="up">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=1")</swipe>
+			<swipe direction="down">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=-1")</swipe>
+		</touch>
+	</fullscreenvideo>
+</keymap>
+
