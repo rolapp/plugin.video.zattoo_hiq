@@ -37,20 +37,6 @@ local = xbmc.getLocalizedString
 DEBUG = __addon__.getSetting('debug')
 _umlaut_ = {ord(u'ä'): u'ae', ord(u'ö'): u'oe', ord(u'ü'): u'ue', ord(u'ß'): u'ss'}
 
-REMOTE_DBG = False
-
-# append pydev remote debugger
-if REMOTE_DBG:
-  # Make pydev debugger works for auto reload.
-  # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
-  try:
-    import pysrc.pydevd as pydevd  # with the addon script.module.pydevd, only use `import pydevd`
-  # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
-    #pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=False)
-    pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True)
-  except ImportError:
-    sys.stderr.write("Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
-    sys.exit(1)
 
 def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
@@ -67,41 +53,19 @@ class reloadDB(xbmcgui.WindowXMLDialog):
 
   def __init__(self, xmlFile, scriptPath):
     xbmcgui.Window(10000).setProperty('reloadDB', 'True')
-    news = __addon__.getAddonInfo('path')+'/resources/media/news.png'
-    if os.path.isfile(news):
-        self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/news.png'  , aspectRatio=0)
-    else:
-        self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/wartung.png'  , aspectRatio=0)
+
+    self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/wartung.png'  , aspectRatio=0)
     self.addControl(self.wartungImg)
     self.show()
 
-  def reloadDB(self, cache=False):
+  def reloadDB(self):
     debug('ReloadDB')
     from resources.lib.library import library
     _library_ = library()
     DB = ZattooDB()
-    news = __addon__.getAddonInfo('path')+'/resources/media/news.png'
-    xbmc.executebuiltin("ActivateWindow(busydialog)")
-    #delete zapi files to force new login
-    profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-    if os.path.isfile(news):
-        try:
-            os.remove(os.path.join(xbmc.translatePath(__addon__.getAddonInfo('path') + '/resources/media/'), 'news.png'))
-        except:
-            pass
-    if cache:
-        try:
-            os.remove(os.path.join(profilePath, 'cookie.cache'))
-            os.remove(os.path.join(profilePath, 'session.cache'))
-            os.remove(os.path.join(profilePath, 'account.cache'))
-            #os.remove(os.path.join(profilePath, 'apicall.cache'))
-            DB.zapiSession()
-            DB._createTables()
-            #xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), local(24074))
 
-        except:
-            pass
-    #DB.zapi.AccountData = None
+    xbmc.executebuiltin("ActivateWindow(busydialog)")
+
 
     DB._createTables()
     time.sleep(5)
@@ -120,8 +84,7 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     #time.sleep(2)
     DB.getProgInfo(True, startTime, endTime)
 
-
-    xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/rsources/icon.png', 3000, False)
+    xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
     _library_.make_library()
     xbmc.executebuiltin("Dialog.Close(busydialog)")
 
@@ -224,6 +187,8 @@ class ZattooDB(object):
     try: c.execute('DROP TABLE playing')
     except: pass
     try: c.execute('DROP TABLE showinfos')
+    except: pass
+    try: c.execute("VACUUM")
     except: pass
     self.conn.commit()
     c.close()
@@ -712,7 +677,7 @@ class ZattooDB(object):
 
   def reloadDB(self, cache=False):
     gui = reloadDB("wartung.xml", __addon__.getAddonInfo('path'))
-    gui.reloadDB(cache)
+    gui.reloadDB()
     gui.show()
     del gui
 
@@ -971,14 +936,14 @@ class ZattooDB(object):
 
 
   def set_search(self,search):
-	search = search.decode('utf-8')
-	debug('Setsearch: ' + search )
-	c = self.conn.cursor()
-	try:
-		c.execute('INSERT INTO search(search) VALUES(?)', [search])
-	except:pass
-	self.conn.commit()
-	c.close()
+    search = search.decode('utf-8')
+    debug('Setsearch: ' + search )
+    c = self.conn.cursor()
+    try:
+        c.execute('INSERT INTO search(search) VALUES(?)', [search])
+    except:pass
+    self.conn.commit()
+    c.close()
 
   def del_search(self,al=False,search=''):
     debug('DEl-Search ' + str(al)+' ' +str(search))

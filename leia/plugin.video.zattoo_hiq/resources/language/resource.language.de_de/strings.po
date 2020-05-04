@@ -503,13 +503,17 @@ msgctxt "#31021"
 msgid "Load program information at Kodi start"
 msgstr "Programm Information bei Kodi Start laden"
 
-msgctxt "#31023"
-msgid "Renew Database and clear Cache"
-msgstr "Datenbank erneuern und Cache löschen"
-
 msgctxt "#31022"
 msgid "load only favorites"
 msgstr "Nur Favoriten laden"
+
+msgctxt "#31023"
+msgid "Renew Database"
+msgstr "Datenbank erneuern"
+
+msgctxt "#31024"
+msgid "Renew Account Cache"
+msgstr "Account Cache erneuern"
 
 # ## liveTV KeyMap ###
 msgctxt "#31030"

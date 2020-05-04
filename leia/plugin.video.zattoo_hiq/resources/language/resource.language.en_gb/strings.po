@@ -525,15 +525,17 @@ msgctxt "#31021"
 msgid "Load program information at Kodi start"
 msgstr ""
 
-msgctxt "#31023"
-msgid "Renew Database and clear Cache"
-msgstr ""
-
 msgctxt "#31022"
 msgid "load only favorites"
 msgstr ""
 
+msgctxt "#31023"
+msgid "Renew Database"
+msgstr ""
 
+msgctxt "#31024"
+msgid "Renew Account Cache"
+msgstr ""
 
 ### liveTV KeyMap ###
 msgctxt "#31030"

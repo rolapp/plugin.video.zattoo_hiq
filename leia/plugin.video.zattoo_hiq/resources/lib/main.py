@@ -1393,7 +1393,7 @@ class zattooOSD(xbmcgui.WindowXMLDialog):
       self.close()
       #print 'Action Stop'
       xbmc.sleep(1000)
-      xbmc.executebuiltin('Action(OSD)') #close hidden gui
+      #xbmc.executebuiltin('Action(OSD)') #close hidden gui
       #xbmc.executebuiltin("Action(Back)")
     elif action == ACTION_SKIPPREW:
       xbmc.executebuiltin("Action(Left)")
@@ -1430,7 +1430,7 @@ class zattooOSD(xbmcgui.WindowXMLDialog):
     elif controlID==205: #stop
       #xbmc.executebuiltin("Action(OSD)")
       xbmc.executebuiltin("Action(Stop)")
-
+      self.close()
     #elif controlID==208: #start channel
     #  if xbmcgui.Dialog().yesno(channeltitle, __addon__.getLocalizedString(31907)):
     #     __addon__.setSetting(id="start_channel", value=channeltitle)
@@ -1497,7 +1497,7 @@ def main():
   _keymap_.toggleKeyMap()
 
 
-  if action is 'root': build_root(__addonuri__, __addonhandle__)
+  if action == 'root': build_root(__addonuri__, __addonhandle__)
   elif action == 'channellist': build_channelsList(__addonuri__, __addonhandle__)
   elif action == 'preview': showPreview()
   elif action == 'previewOSD': showPreview()
@@ -1560,7 +1560,7 @@ def main():
     series = args.get('series')[0]
     delete_series(recording_id, series)
   elif action == 'reloadDB':
-    _zattooDB_.reloadDB(True)
+    _zattooDB_.reloadDB()
   elif action == 'changeStream':
 
     if stream_type == 'hls': change_stream(1)
@@ -1647,4 +1647,13 @@ def main():
   elif action == 'vod_watch':
     token = args.get('token')[0]
     _vod_.vod_watch(token)
+
+  elif action == 'clearCache':
+    xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
+    profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+    os.remove(os.path.join(profilePath, 'cookie.cache'))
+    os.remove(os.path.join(profilePath, 'session.cache'))
+    os.remove(os.path.join(profilePath, 'account.cache'))
+    _zattooDB_.zapiSession()
+
 
