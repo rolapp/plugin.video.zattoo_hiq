@@ -19,7 +19,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
-import xbmc, xbmcgui, xbmcaddon, time, datetime, threading
+import xbmc, xbmcgui, xbmcaddon, time, datetime, threading, xbmcvfs
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')

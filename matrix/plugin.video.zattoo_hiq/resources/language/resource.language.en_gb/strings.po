@@ -377,19 +377,19 @@ msgid "Country"
 msgstr ""
 
 msgctxt "#310033"
-msgid "Date registered"
+msgid "Account Type"
 msgstr ""
 
 msgctxt "#310034"
-msgid "Product"
+msgid "Recall"
 msgstr ""
 
 msgctxt "#310035"
-msgid "Price"
+msgid "Recording Limit"
 msgstr ""
 
 msgctxt "#310036"
-msgid "expiration day"
+msgid "needs_activation"
 msgstr ""
 
 msgctxt "#310037"
@@ -398,6 +398,10 @@ msgstr ""
 
 msgctxt "#310032"
 msgid "Recall eligible"
+msgstr ""
+
+msgctxt "#310039"
+msgid "Not available"
 msgstr ""
 
 
@@ -525,15 +529,17 @@ msgctxt "#31021"
 msgid "Load program information at Kodi start"
 msgstr ""
 
-msgctxt "#31023"
-msgid "Renew Database and clear Cache"
-msgstr ""
-
 msgctxt "#31022"
 msgid "load only favorites"
 msgstr ""
 
+msgctxt "#31023"
+msgid "Renew Database"
+msgstr ""
 
+msgctxt "#31024"
+msgid "Renew Account Cache"
+msgstr ""
 
 ### liveTV KeyMap ###
 msgctxt "#31030"
@@ -646,7 +652,7 @@ msgid "Play from beginning"
 msgstr ""
 
 msgctxt "#31302"
-msgid "Only available for Premium users"
+msgid "Function not available!"
 msgstr ""
 
 msgctxt "#31303"

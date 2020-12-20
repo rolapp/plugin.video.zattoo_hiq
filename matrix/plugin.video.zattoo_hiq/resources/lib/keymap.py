@@ -18,7 +18,7 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xbmc, xbmcgui, xbmcplugin, xbmcaddon
+import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
 import sys, urllib.parse, os
 import  time, datetime, threading
 from resources.lib.zattooDB import ZattooDB
@@ -27,7 +27,7 @@ import xml.etree.ElementTree as ET
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
-__addondir__  = xbmc.translatePath( __addon__.getAddonInfo('profile') ) 
+__addondir__  = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') ) 
 _zattooDB_ = ZattooDB()
 
 localString = __addon__.getLocalizedString
@@ -309,7 +309,7 @@ class KeyMap:
       ET.ElementTree(element).write(dest, 'utf-8')
   
   def deleteKeyMap(self):
-      path=xbmc.translatePath(__addondir__ + '/userKeymap.xml')
+      path=xbmcvfs.translatePath(__addondir__ + '/userKeymap.xml')
       if os.path.isfile(path):
         try:
           os.remove(path)

@@ -6,9 +6,9 @@
 #   modified by Daniel Griner
 #
 
-import xbmc, xbmcgui, xbmcplugin, xbmcaddon
+import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
 import os, re, base64,sys
-import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse
+import urllib.request, urllib.parse, urllib.error
 import json
 
 __addon__ = xbmcaddon.Addon()
@@ -19,14 +19,15 @@ KODIVERSION = xbmc.getInfoLabel( "System.BuildVersion" ).split()[0]
 DEBUG = __addon__.getSetting('debug')
 
 USERAGENT = 'Kodi-'+str(KODIVERSION)+' '+str(__addonname__)+'-'+str(__addonVersion__)+' (Kodi Video Addon)'
+#USERAGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0'
 
 def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
 
 def notice(content):
-    log(content, xbmc.LOGNOTICE)
+    log(content, xbmc.LOGINFO)
 
-def log(msg, level=xbmc.LOGNOTICE):
+def log(msg, level=xbmc.LOGINFO):
     addon = xbmcaddon.Addon()
     addonID = addon.getAddonInfo('id')
     xbmc.log('%s: %s' % (addonID, msg), level)
@@ -54,6 +55,9 @@ class ZapiSession:
         self.SESSION_FILE = os.path.join(dataFolder, 'session.cache')
         self.ACCOUNT_FILE = os.path.join(dataFolder, 'account.cache')
         self.APICALL_FILE = os.path.join(dataFolder, 'apicall.cache')
+        self.SESSION_TXT = os.path.join(dataFolder, 'session.txt')
+        self.ACCOUNT_TXT = os.path.join(dataFolder, 'account.txt')
+        self.COOKIE_TXT = os.path.join(dataFolder, 'cookie.txt')
         self.HttpHandler = urllib.request.build_opener()
         self.HttpHandler.addheaders = [('User-Agent', USERAGENT), ('Content-type', 'application/x-www-form-urlencoded'), ('Accept', 'application/json')]
 
@@ -71,7 +75,7 @@ class ZapiSession:
         #if os.path.isfile(self.COOKIE_FILE) and os.path.isfile(self.ACCOUNT_FILE):
             with open(self.ACCOUNT_FILE, 'r') as f:
                 accountData = json.loads(base64.b64decode(f.readline()))
-            if accountData['success'] == True:
+            if accountData['active'] == True:
                 self.AccountData = accountData
                 with open(self.COOKIE_FILE, 'r') as f:
                     self.set_cookie(base64.b64decode(f.readline()).decode('utf-8'))
@@ -97,17 +101,18 @@ class ZapiSession:
     def persist_accountData(self, accountData):
         with open(self.ACCOUNT_FILE, 'wb') as f:
             f.write(base64.b64encode(json.dumps(accountData).encode('utf-8')))
+       # with open(self.ACCOUNT_TXT, 'w') as f:
+        #    f.write(json.dumps(accountData))
 
     def persist_sessionId(self, sessionId):
         with open(self.COOKIE_FILE, 'wb') as f:
             f.write(base64.b64encode(sessionId.encode('utf-8')))
 
-
     def persist_sessionData(self, sessionData):
         with open(self.SESSION_FILE, 'wb') as f:
             f.write(base64.b64encode(json.dumps(sessionData).encode('utf-8')))
-
-
+       # with open(self.SESSION_TXT, 'w') as f:
+        #    f.write(json.dumps(sessionData))
 
     def set_cookie(self, sessionId):
         self.HttpHandler.addheaders.append(('Cookie', 'beaker.session.id=' + sessionId))
@@ -118,6 +123,7 @@ class ZapiSession:
         try:
 
             if params is not None:
+                debug(params)
                 f = urllib.parse.urlencode(params)
                 f = f.encode('utf-8')
                 debug(f)
@@ -135,8 +141,11 @@ class ZapiSession:
            debug(str(e))
            if '403' in str(e):
                 debug('Error 403')
-                profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-                os.remove(os.path.join(profilePath, 'session.cache'))
+               # profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
+                # if os.path.isfile(os.path.join(profilePath, 'session.cache')):
+                    # os.remove(os.path.join(profilePath, 'session.cache'))
+                # if os.path.isfile(os.path.join(profilePath, 'account.cache')):
+                    # os.remove(os.path.join(profilePath, 'account.cache'))
                 self.renew_session()
         return None
 
@@ -162,24 +171,30 @@ class ZapiSession:
         # return None
 
     def fetch_appToken(self):
-        #debug("ZapiUrL= "+str(self.ZAPIUrl))
-        try:
-            handle = urllib.request.urlopen(self.ZAPIUrl + '/int/')
-        except:
-            handle = urllib.request.urlopen(self.ZAPIUrl + '/int/')
-
-        html = handle.read()
-        html = html.decode('utf-8')
-
-        return re.search("window\.appToken\s*=\s*'(.*)'", html).group(1)
-
+        handle = urllib.request.urlopen(self.ZAPIUrl)
+        html = str(handle.read())
+        js = re.search(r"\/app-\w+\.js", html).group(0)
+        handle = urllib.request.urlopen(self.ZAPIUrl + js)
+        html = str(handle.read())
+        token_js = re.search(r'token-(.+?)\.json', html).group(0)
+        debug(token_js)
+        handle = urllib.request.urlopen(self.ZAPIUrl + '/' + token_js)
+        htmlJson = json.loads(handle.read())                        
+        return htmlJson['session_token']
+                
+    def fetch_appVersion(self):
+        handle = urllib.request.urlopen(self.ZAPIUrl)
+        html = str(handle.read())
+        return re.search("<!--(.+?)-v(.+?)-", html).group(2)
 
     def session(self):
-        api = '/zapi/session/hello'
+        api = '/zapi/v3/session/hello'
         params = {"client_app_token" : self.fetch_appToken(),
                   "uuid"    : "d7512e98-38a0-4f01-b820-5a5cf98141fe",
-                  "lang"    : "en",
-                  "format"  : "json"}
+                  "app_version" : self.fetch_appVersion(),
+                 # "lang"    : "en",
+                 # "format"  : "json",
+                  }
         sessionData = self.exec_zapiCall(api, params, 'session')
 
         debug('SessionData: '+str(sessionData))
@@ -190,7 +205,7 @@ class ZapiSession:
         return False
 
     def login(self):
-        api = '/zapi/v2/account/login'
+        api = '/zapi/v3/account/login'
         params = {"login": self.Username, "password" : self.Password}
         accountData = self.exec_zapiCall(api, params, 'session')
         debug ('Login: '+str(accountData))

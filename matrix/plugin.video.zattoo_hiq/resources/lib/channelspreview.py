@@ -20,13 +20,26 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xbmc, xbmcgui, xbmcaddon, time, datetime, threading
+import xbmc, xbmcgui, xbmcaddon, time, datetime, threading, xbmcvfs
 from resources.lib.zattooDB import ZattooDB
 from resources.lib.guiactions import *
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
 localString = __addon__.getLocalizedString
+DEBUG = __addon__.getSetting('debug')
+
+def debug(content):
+    if DEBUG:log(content, xbmc.LOGDEBUG)
+
+def notice(content):
+    log(content, xbmc.LOGINFO)
+
+def log(msg, level=xbmc.LOGINFO):
+    addon = xbmcaddon.Addon()
+    addonID = addon.getAddonInfo('id')
+    xbmc.log('%s: %s' % (addonID, msg), level)
+
 
 class ChannelsPreview(xbmcgui.WindowXML): #needs to be WindowXML or onInit won't fire
     #print('FAV:'+str(fav))
@@ -80,8 +93,8 @@ class ChannelsPreview(xbmcgui.WindowXML): #needs to be WindowXML or onInit won't
             self.moveHighlight(5)
         elif actionID in [ACTION_SELECT_ITEM, ACTION_MOUSE_LEFT_CLICK]:
             self.refreshTimerRunning=False
-            url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + self.controls[self.selected%16]['channel']
-            xbmc.executebuiltin('XBMC.RunPlugin(%s)' % url)
+            url = "plugin://"+__addonId__+"/?mode=watch_c&showID=" + self.controls[self.selected%16]['program']['showID'] + "&id=" + self.controls[self.selected%16]['channel']
+            xbmc.executebuiltin('RunPlugin(%s)' % url)
             #xbmc.executebuiltin("Action(FullScreen)")
         elif actionID == ACTION_MOUSE_MOVE:
             x=int(action.getAmount1()/(self.getWidth()/5))
@@ -323,10 +336,9 @@ class ChannelsPreview(xbmcgui.WindowXML): #needs to be WindowXML or onInit won't
         src = 'http://thumb.zattic.com/' + self.controls[controlNr]['channel'] + '/256x144.jpg?r=' + str(int(time.time()))
         self.refreshImageTimer = threading.Timer(1, lambda: self.controls[controlNr]['image'].setImage(src, False))
         self.refreshImageTimer.start()
-                
-        
 
         #program= self.controls[controlNr]['program']
+
         program=ZattooDB().getPrograms({'index':[self.controls[controlNr]['channel']]}, False, datetime.datetime.now(), datetime.datetime.now())[0]
         nextprog = ZattooDB().getPrograms({'index':[self.controls[controlNr]['channel']]}, False, program['end_date']+datetime.timedelta(seconds=60), program['end_date']+datetime.timedelta(seconds=60))
 

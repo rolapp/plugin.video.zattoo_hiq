@@ -20,7 +20,7 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xbmc, xbmcgui, xbmcaddon, os, xbmcplugin, datetime, time
+import xbmc, xbmcgui, xbmcaddon, os, xbmcplugin, datetime, time, xbmcvfs
 import json
 from resources.lib.zapisession import ZapiSession
 import sqlite3
@@ -43,22 +43,23 @@ def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
 
 def notice(content):
-    log(content, xbmc.LOGNOTICE)
+    log(content, xbmc.LOGINFO)
 
-def log(msg, level=xbmc.LOGNOTICE):
+def log(msg, level=xbmc.LOGINFO):
     addon = xbmcaddon.Addon()
     addonID = addon.getAddonInfo('id')
     xbmc.log('%s: %s' % (addonID, msg), level)
+    
+        
+def to_seconds(date):
+    return time.mktime(date.timetuple())
 
 class reloadDB(xbmcgui.WindowXMLDialog):
 
   def __init__(self, xmlFile, scriptPath):
     xbmcgui.Window(10000).setProperty('reloadDB', 'True')
-    news = __addon__.getAddonInfo('path')+'/resources/media/news.png'
-    if os.path.isfile(news):
-        self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/news.png'  , aspectRatio=0)
-    else:
-        self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/wartung.png'  , aspectRatio=0)
+
+    self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/wartung.png'  , aspectRatio=0)
     self.addControl(self.wartungImg)
     self.show()
 
@@ -67,28 +68,7 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     from resources.lib.library import library
     _library_ = library()
     DB = ZattooDB()
-    news = __addon__.getAddonInfo('path')+'/resources/media/news.png'
     xbmc.executebuiltin("ActivateWindow(busydialog)")
-    #delete zapi files to force new login
-    profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-    if os.path.isfile(news):
-        try:
-            os.remove(os.path.join(xbmc.translatePath(__addon__.getAddonInfo('path') + '/resources/media/'), 'news.png'))
-        except:
-            pass
-    if cache:
-        try:
-            os.remove(os.path.join(profilePath, 'cookie.cache'))
-            os.remove(os.path.join(profilePath, 'session.cache'))
-            os.remove(os.path.join(profilePath, 'account.cache'))
-            #os.remove(os.path.join(profilePath, 'apicall.cache'))
-            DB.zapiSession()
-            DB._createTables()
-            #xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), local(24074))
-
-        except:
-            pass
-    #DB.zapi.AccountData = None
 
     DB._createTables()
     time.sleep(5)
@@ -107,7 +87,6 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     #time.sleep(2)
     DB.getProgInfo(True, startTime, endTime)
 
-
     xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
     _library_.make_library()
     xbmc.executebuiltin("Dialog.Close(busydialog)")
@@ -122,33 +101,30 @@ class reloadDB(xbmcgui.WindowXMLDialog):
 class ZattooDB(object):
   def __init__(self):
     self.conn = None
-    profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+    profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
     if not os.path.exists(profilePath): os.makedirs(profilePath)
     self.databasePath = os.path.join(profilePath, "zattoo.db")
     self.connectSQL()
     self.zapi=self.zapiSession()
 
   def zapiSession(self):
-    zapiSession   = ZapiSession(xbmc.translatePath(__addon__.getAddonInfo('profile')))
+    zapiSession   = ZapiSession(xbmcvfs.translatePath(__addon__.getAddonInfo('profile')))
     PROVIDER = __addon__.getSetting('provider')
     #debug('Provider '+str(PROVIDER))
     if PROVIDER == "0": ZAPIUrl = "https://zattoo.com"
-    elif PROVIDER == "1": ZAPIUrl = "https://www.netplus.tv"
-    elif PROVIDER == "2": ZAPIUrl = "https://mobiltv.quickline.com"
+    elif PROVIDER == "1": ZAPIUrl = "https://www.1und1.tv"
+    elif PROVIDER == "2": ZAPIURL =  "https://tvonline.swb-gruppe.de"
     elif PROVIDER == "3": ZAPIUrl = "https://tvplus.m-net.de"
     elif PROVIDER == "4": ZAPIUrl = "https://player.waly.tv"
     elif PROVIDER == "5": ZAPIUrl = "https://www.meinewelt.cc"
     elif PROVIDER == "6": ZAPIUrl = "https://www.bbv-tv.net"
     elif PROVIDER == "7": ZAPIUrl = "https://www.vtxtv.ch"
-    elif PROVIDER == "8": ZAPIUrl = "https://www.myvisiontv.ch"
+    elif PROVIDER == "8": ZAPIUrl = "https://tv.salt.ch"
     elif PROVIDER == "9": ZAPIUrl = "https://iptv.glattvision.ch"
     elif PROVIDER == "10": ZAPIUrl = "https://www.saktv.ch"
     elif PROVIDER == "11": ZAPIUrl = "https://nettv.netcologne.de"
     elif PROVIDER == "12": ZAPIUrl = "https://tvonline.ewe.de"
     elif PROVIDER == "13": ZAPIUrl = "https://www.quantum-tv.com"
-    elif PROVIDER == "14": ZAPIUrl = "https://tv.salt.ch"
-    elif PROVIDER == "15": ZAPIURL =  "https://tvonline.swb-gruppe.de"
-    elif PROVIDER == "16": ZAPIUrl = "https://www.1und1.tv"
 
     if zapiSession.init_session(__addon__.getSetting('username'), __addon__.getSetting('password'), ZAPIUrl):
       return zapiSession
@@ -212,13 +188,15 @@ class ZattooDB(object):
     except: pass
     try: c.execute('DROP TABLE showinfos')
     except: pass
+    try: c.execute("VACUUM")
+    except: pass
     self.conn.commit()
     c.close()
 
     try:
       c = self.conn.cursor()
       c.execute('CREATE TABLE channels(id TEXT, title TEXT, logo TEXT, weight INTEGER, favourite BOOLEAN, PRIMARY KEY (id) )')
-      c.execute('CREATE TABLE programs(showID TEXT, title TEXT, channel TEXT, start_date TIMESTAMP, end_date TIMESTAMP, restart BOOLEAN, series BOOLEAN, record BOOLEAN, description TEXT, description_long TEXT, year TEXT, country TEXT, genre TEXT, category TEXT, image_small TEXT, credits TEXT, PRIMARY KEY (showID), FOREIGN KEY(channel) REFERENCES channels(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)')
+      c.execute('CREATE TABLE programs(showID TEXT, title TEXT, channel TEXT, start_date TIMESTAMP, end_date TIMESTAMP, restart TIMESTAMP DEFAULT 0, series BOOLEAN, record TIMESTAMP DEFAULT 0, description TEXT, description_long TEXT, year TEXT, country TEXT, genre TEXT, category TEXT, image_small TEXT, credits TEXT, PRIMARY KEY (showID), FOREIGN KEY(channel) REFERENCES channels(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)')
 
       c.execute('CREATE INDEX program_list_idx ON programs(channel, start_date, end_date)')
       c.execute('CREATE INDEX start_date_idx ON programs(start_date)')
@@ -230,7 +208,6 @@ class ZattooDB(object):
       c.execute('CREATE TABLE playing(channel TEXT, showID TEXT, current_stream INTEGER, streams TEXT, PRIMARY KEY (channel))')
       c.execute('CREATE TABLE version(version TEXT, PRIMARY KEY (version))')
       c.execute('CREATE TABLE search(search TEXT, PRIMARY KEY (search))')
-
 
       self.conn.commit()
       c.close()
@@ -257,7 +234,7 @@ class ZattooDB(object):
     if rebuild: c.execute('DELETE FROM channels')
 
 
-    api = '/zapi/v2/cached/channels/' + self.zapi.AccountData['session']['power_guide_hash'] + '?details=False'
+    api = '/zapi/v3/cached/' + self.zapi.AccountData['power_guide_hash'] + '/channels?'
     channelsData = self.zapi.exec_zapiCall(api, None)
     if channelsData == None:
         channelsData = self.zapi.exec_zapiCall(api, None)
@@ -273,15 +250,15 @@ class ZattooDB(object):
     debug (str(favoritesData))
 
     nr = 0
-    for group in channelsData['channel_groups']:
-      for channel in group['channels']:
+    #for group in channelsData['channel_groups']:
+    for channel in channelsData['channels']:
         if channel['qualities'][0]['availability'] == 'subscribable':
             try:
                 if channel['qualities'][1]['availability'] == 'subscribable': continue
                 #else: debug(str(channel['title'].encode('utf-8')+"  "+channel['qualities'][1]['availability'].encode('utf-8')))
             except: continue
         #else: debug(str(channel['title'].encode('utf-8')+"  "+channel['qualities'][0]['availability'].encode('utf-8')))
-
+        
         logo = 'http://logos.zattic.com' + channel['qualities'][0]['logo_black_84'].replace('/images/channels', '')
         try:
           favouritePos = favoritesData['favorites'].index(channel['id'])
@@ -290,7 +267,7 @@ class ZattooDB(object):
         except:
           weight = 1000 + nr
           favourite = False
-
+        
         c.execute('INSERT OR IGNORE INTO channels(id, title, logo, weight, favourite) VALUES(?, ?, ?, ?, ?)',
             [channel['id'], channel['title'], logo, weight, favourite])
         if not c.rowcount:
@@ -335,38 +312,53 @@ class ZattooDB(object):
     debug('update Program')
     #update 09.02.2018: zattoo only sends max 5h (6h?) of programdata -> load 6*4h
     for nr in range(0, 6):
-        api = '/zapi/v2/cached/program/power_guide/' + self.zapi.AccountData['session']['power_guide_hash'] + '?end=' + str(fromTime+14400) + '&start=' + str(fromTime)
+        api = '/zapi/v3/cached/' + self.zapi.AccountData['power_guide_hash'] + '/guide' + '?end=' + str(fromTime+14400) + '&start=' + str(fromTime)
         fromTime+=14400
 
         #print "apiData   "+api
         programData = self.zapi.exec_zapiCall(api, None)
         debug ('ProgrammData: '+str(programData))
         count=0
-        for channel in programData['channels']:
-            cid = channel['cid']
+        
+        for cid in programData['channels']:
+            debug(cid)
+            debug(len(programData['channels'][cid]))
             c.execute('SELECT * FROM channels WHERE id==?', [cid])
             countt=c.fetchall()
-            if len(countt)==0:
-                 #debug('Sender nicht im Abo: '+str(cid))
-                continue
-            if cid == firstchan and not channel['programs']:
-                xbmcgui.Dialog().notification('Update Program', 'No Data',  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
-                #c.close()
-                continue
 
-            for program in channel['programs']:
+            if len(countt)==0:
+                debug('Sender nicht im Abo: '+str(cid))
+                continue
+            # if cid == firstchan and not channel['programs']:
+                # xbmcgui.Dialog().notification('Update Program', 'No Data',  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
+                # #c.close()
+                # continue
+            
+            for i in range(0, len(programData['channels'][cid])):
+                debug(programData['channels'][cid][i])
                 count+=1
                 #debug ('Programm: '+str(cid)+' '+str(program))
-
+                program = programData['channels'][cid][i]
+                debug(program['i'])
+                try:
+                    restart = program['ry_u']
+                    debug(program['ry_u'])
+                except:
+                    restart = 0
+                try:
+                    record = program['rg_u']
+                except:
+                    record = 0
+                    
                 if program['i'] != None:
-                  image = "https://images.zattic.com/cms/" + program['i_t'] + "/format_480x360.jpg"
+                  image = program['i_url']
                   #https://images.zattic.com/cms/64ab6db7f62b325f4148/original.jpg
                   #http://images.zattic.com/system/images/6dcc/8817/50d1/dfab/f21c/format_480x360.jpg
                 else: image = ""
 
-                c.execute('INSERT OR IGNORE INTO programs(channel, title, start_date, end_date, description,  genre, image_small, showID, category) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    [cid, program['t'], program['s'], program['e'], program['et'], ', '.join(program['g']), image, program['id'], ', '.join(program['c']) ])
-
+                c.execute('INSERT OR IGNORE INTO programs(channel, title, start_date, end_date, description,  genre, image_small, showID, category, restart, record) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [cid, program['t'], program['s'], program['e'], program['et'], ', '.join(program['g']), image, program['id'], ', '.join(program['c']), restart, record])
+            i+=1
 
     if count>0:
       c.execute('INSERT into updates(date, type) VALUES(?, ?)', [date, 'program'])
@@ -420,7 +412,7 @@ class ZattooDB(object):
     nr=0
     #max 10 items per request -> request 3times for 30 items
     for page in range(3):
-          api = '/zapi/v2/cached/' + self.zapi.SessionData['session']['power_guide_hash'] + '/teaser_collections/most_watched_live_now_de?page='+str(page)+'&per_page=10'
+          api = '/zapi/v2/cached/' + self.zapi.AccountData['power_guide_hash'] + '/teaser_collections/most_watched_live_now_de?page='+str(page)+'&per_page=10'
           #api = '/zapi/v2/cached/' + self.zapi.SessionData['session']['power_guide_hash'] + '/teaser_collections/avod_highlights_page?page='+str(page)+'&per_page=10'
           mostWatched = self.zapi.exec_zapiCall(api, None)
           debug('Popular '+str(mostWatched))
@@ -444,6 +436,7 @@ class ZattooDB(object):
     programList = []
 
     for chan in channels['index']:
+      debug(chan)
       try:
         c.execute('SELECT * FROM programs WHERE channel = ? AND start_date < ? AND end_date > ?', [chan, endTime, startTime])
       except:pass
@@ -478,11 +471,13 @@ class ZattooDB(object):
             'end_date' : row['end_date'],
             'image_small' : row['image_small'],
             'credits' : row['credits'],
-            'restart': row['restart']
+            'restart': row['restart'],
+            'record': row['record']
 
             })
 
     c.close()
+    debug(programList)
 
     return programList
 
@@ -512,23 +507,24 @@ class ZattooDB(object):
         category = show ['category']
         series = show['series']
         restart = show['restart']
+        record = show['record']
         genre = show['genre']
         cred = show['credits']
-        if longDesc is None:
+        if longDesc is None or int(to_seconds(show['restart'])) == 0:
             import json
 
-            profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+            profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
             while os.path.exists(profilePath+"/zattoo.db-journal"):
                 debug('Database is locked')
                 time.sleep(1)
             #api = '/zapi/program/details?program_id=' + showID + '&complete=True'
-            api = '/zapi/v2/cached/program/power_details/'+ self.zapi.AccountData['session']['power_guide_hash'] + '?program_ids='+str(showID)
+            api = '/zapi/v2/cached/program/power_details/'+ self.zapi.AccountData['power_guide_hash'] + '?program_ids='+str(showID)
             showInfo = self.zapiSession().exec_zapiCall(api, None)
             #infoall = showInfo['program']
 
             #info.execute('UPDATE programs SET info=? WHERE showID=?',[json.dumps(infoall), showID ])
 
-            #debug ('Showinfo  ' + str(showInfo))
+            debug ('Showinfo  ' + str(showInfo))
 
             if showInfo is None:
                 longDesc=''
@@ -562,14 +558,16 @@ class ZattooDB(object):
 
             info.execute('UPDATE programs SET credits=? WHERE showID=?', [json.dumps(cred), showID])
             try:
-                restart = showInfo['programs'][0]['sr_u']
-                info.execute('UPDATE programs SET restart=? WHERE showID=?', [True, showID])
+                restart = showInfo['programs'][0]['ry_u']
+                info.execute('UPDATE programs SET restart=? WHERE showID=?', [restart, showID])
             except:
-                info.execute('UPDATE programs SET restart=? WHERE showID=?', [False, showID])
+                info.execute('UPDATE programs SET restart=? WHERE showID=?', [0, showID])
 
-
-            record = showInfo['programs'][0]['r_e']
-            info.execute('UPDATE programs SET record=? WHERE showID=?', [record, showID])
+            try:
+                record = showInfo['programs'][0]['rg_u']
+                info.execute('UPDATE programs SET record=? WHERE showID=?', [record, showID])
+            except:
+                info.execute('UPDATE programs SET record=? WHERE showID=?', [0, showID])
 
         try:
             self.conn.commit()
@@ -596,7 +594,7 @@ class ZattooDB(object):
             showInfo=json.loads(showInfoJson)
         else:
             #api = '/zapi/program/details?program_id=' + str(showID) + '&complete=True'
-            api = '/zapi/v2/cached/program/power_details/' + self.zapi.AccountData['session']['power_guide_hash']+'?program_ids='+str(showID)
+            api = '/zapi/v2/cached/program/power_details/' + self.zapi.AccountData['power_guide_hash']+'?program_ids='+str(showID)
             debug(api)
             showInfo = self.zapi.exec_zapiCall(api, None)
             if showInfo is None:
@@ -614,7 +612,7 @@ class ZattooDB(object):
     c = self.conn.cursor()
 
     #api = '/zapi/program/details?program_id=' + str(showID) + '&complete=True'
-    api = '/zapi/v2/cached/program/power_details/' + self.zapi.AccountData['session']['power_guide_hash'] + '?program_ids='+str(showID)
+    api = '/zapi/v2/cached/program/power_details/' + self.zapi.AccountData['power_guide_hash'] + '?program_ids='+str(showID)
     showInfo = self.zapi.exec_zapiCall(api, None)
     debug(showInfo)
     if showInfo is None:
@@ -634,8 +632,16 @@ class ZattooDB(object):
     country = showInfo['programs'][0]['country']
     description = showInfo['programs'][0]['d']
     cred = showInfo['programs'][0]['cr']
-
-    c.execute('INSERT OR IGNORE INTO programs(showID, title, channel, start_date, end_date, genre, year, country, description_long, credits) VALUES(?,?,?,?,?,?,?,?,?,?)', [showID, title, channel, start, end, ', '.join(genre) ,year, country, description, json.dumps(cred)])
+    try:
+        recall = showInfo['programs'][0]['ry_u']
+    except:
+        recall = 0
+    try:
+        record = showInfo['programs'][0]['rg_u']
+    except:
+        record = 0
+        
+    c.execute('INSERT OR IGNORE INTO programs(showID, title, channel, start_date, end_date, genre, year, country, description_long, credits, restart, record) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', [showID, title, channel, start, end, ', '.join(genre) ,year, country, description, json.dumps(cred), recall, record])
 
     self.conn.commit()
     c.close()
@@ -688,7 +694,8 @@ class ZattooDB(object):
             'end_date' : row['end_date'],
             'image_small' : row['image_small'],
             'credits' : row['credits'],
-            'restart': row['restart']
+            'restart': row['restart'],
+            'description_long': row['description_long']
 
             })
         c.close
@@ -700,9 +707,9 @@ class ZattooDB(object):
     self.conn.commit()
     c.close()
 
-  def reloadDB(self, cache=False):
+  def reloadDB(self):
     gui = reloadDB("wartung.xml", __addon__.getAddonInfo('path'))
-    gui.reloadDB(cache)
+    gui.reloadDB()
     gui.show()
     del gui
 
@@ -776,12 +783,13 @@ class ZattooDB(object):
             for row in f:
 
                 description_long = row['description_long']
+                restart = to_seconds(row['restart'])
                 #debug(str(row['channel'])+' ' +str(row['description_long']))
                 if notify:
                     bar += 1
                     percent = int(bar * 100 / counter)
-
-                if description_long is None:
+                
+                if description_long is None or int(restart) == 0:
                     #debug (str(row['channel'])+' ' +str(row["showID"]))
                     if notify:
                         PopUp.update(percent,localString(31922), localString(31923) + str(row['channel']))
@@ -918,21 +926,18 @@ class ZattooDB(object):
         c = self.conn.cursor()
         c.execute('SELECT restart FROM programs WHERE showID = ?', [showID])
         restart = c.fetchone()
-        if restart is None:
-            api = '/zapi/program/details?program_id=' + showID + '&complete=True'
-            showInfo = self.zapiSession().exec_zapiCall(api, None)
-            #debug("ShowInfo :" + str(showInfo))
-            try:
-                restart = showInfo['program']['selective_recall_until']
-                c.execute('UPDATE programs SET restart=? WHERE showID=?', [True, showID])
-                #print 'Restart  ' +str(showID) + '  ' + str(restart)
-            except:
-                debug('No Restart')
-                c.execute('UPDATE programs SET restart=? WHERE showID=?', [False, showID])
-            self.conn.commit()
-
         c.close()
+
         return restart['restart']
+  
+  def getRecord(self, showID):
+
+        c = self.conn.cursor()
+        c.execute('SELECT record FROM programs WHERE showID = ?', [showID])
+        record = c.fetchone()
+        c.close()
+
+        return record['record']
 
   def get_version(self, version):
         try:
@@ -1080,7 +1085,8 @@ class ZattooDB(object):
             'start_date' : row['start_date'],
             'end_date' : row['end_date'],
             'image_small' : row['image_small'],
-            'credits': row['credits']
+            'credits': row['credits'],
+            'restart': row['restart']
         }
         programList['index'].append(str(row['channel']))
     c.close()

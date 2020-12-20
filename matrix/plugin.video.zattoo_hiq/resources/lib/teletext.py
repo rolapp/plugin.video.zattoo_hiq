@@ -22,14 +22,14 @@
 #
 
 
-import xbmc, xbmcgui, xbmcaddon, time, threading
+import xbmc, xbmcgui, xbmcaddon, time, threading, xbmcvfs
 from resources.lib.zattooDB import ZattooDB
 import os, base64
 import urllib.request, urllib.error, urllib.parse
 
 
 __addon__ = xbmcaddon.Addon()
-_dataFolder_ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+_dataFolder_ = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
 localString = __addon__.getLocalizedString
 DEBUG = __addon__.getSetting('debug')
 
@@ -37,9 +37,9 @@ def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
     
 def notice(content):
-    log(content, xbmc.LOGNOTICE)
+    log(content, xbmc.LOGINFO)
 
-def log(msg, level=xbmc.LOGNOTICE):
+def log(msg, level=xbmc.LOGINFO):
     addon = xbmcaddon.Addon()
     addonID = addon.getAddonInfo('id')
     xbmc.log('%s: %s' % (addonID, msg), level) 

@@ -352,20 +352,20 @@ msgid "Recall eligible"
 msgstr "Recall ist möglich"
 
 msgctxt "#310033"
-msgid "Date registered"
-msgstr "registriert am"
+msgid "Account Type"
+msgstr "Konto Typ"
 
 msgctxt "#310034"
-msgid "Product"
-msgstr "Produkt"
+msgid "Recall"
+msgstr "Recall"
 
 msgctxt "#310035"
-msgid "Price"
-msgstr "Preis"
+msgid "Recording Limit"
+msgstr "Anzahl Aufnahmen"
 
 msgctxt "#310036"
-msgid "expiration day"
-msgstr "Ablaufdatum"
+msgid "needs_activation"
+msgstr "muss aktiviert werden"
 
 msgctxt "#310037"
 msgid "renewal_date"
@@ -375,6 +375,9 @@ msgctxt "#310038"
 msgid "Country"
 msgstr "Land"
 
+msgctxt "#310039"
+msgid "Not available"
+msgstr "Nicht verfügbar"
 
 # ## Zattoo Einstellungen ###
 msgctxt "#31000"
@@ -503,13 +506,17 @@ msgctxt "#31021"
 msgid "Load program information at Kodi start"
 msgstr "Programm Information bei Kodi Start laden"
 
-msgctxt "#31023"
-msgid "Renew Database and clear Cache"
-msgstr "Datenbank erneuern und Cache löschen"
-
 msgctxt "#31022"
 msgid "load only favorites"
 msgstr "Nur Favoriten laden"
+
+msgctxt "#31023"
+msgid "Renew Database"
+msgstr "Datenbank erneuern"
+
+msgctxt "#31024"
+msgid "Renew Account Cache"
+msgstr "Account Cache erneuern"
 
 # ## liveTV KeyMap ###
 msgctxt "#31030"
@@ -627,8 +634,8 @@ msgid "Play from beginning"
 msgstr "Von Anfang abspielen"
 
 msgctxt "#31302"
-msgid "Only available for Premium users"
-msgstr "Nur für Premium Kunden verfügbar"
+msgid "Function not available!"
+msgstr "Funktion nicht verfügbar!"
 
 msgctxt "#31303"
 msgid "Date is too big"

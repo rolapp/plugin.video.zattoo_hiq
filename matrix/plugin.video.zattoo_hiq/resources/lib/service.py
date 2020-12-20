@@ -20,7 +20,7 @@
 
 #print 'ZattooHiq-Service started'
 
-import xbmc, xbmcgui, xbmcaddon, datetime, time
+import xbmc, xbmcgui, xbmcaddon, datetime, time, xbmcvfs
 import os, urllib.parse
 
 from resources.lib.library import library
@@ -42,9 +42,9 @@ def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
 
 def notice(content):
-    log(content, xbmc.LOGNOTICE)
+    log(content, xbmc.LOGINFO)
 
-def log(msg, level=xbmc.LOGNOTICE):
+def log(msg, level=xbmc.LOGINFO):
     addon = xbmcaddon.Addon()
     addonID = addon.getAddonInfo('id')
     xbmc.log('%s: %s' % (addonID, msg), level)
@@ -73,22 +73,34 @@ def recInfo():
     import urllib.request, urllib.parse, urllib.error
     from resources.lib.zattooDB import ZattooDB
     _zattooDB_ = ZattooDB()
-
-    resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/playlist', None)
-    if resultData is None: return
-    for record in resultData['recordings']:
-        _zattooDB_.getShowInfo(record['program_id'])
-
+    try:
+        if accountData['nonlive']['recording_number_limit'] > 0:
+            resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/playlist', None)
+            if resultData is None: return
+            for record in resultData['recordings']:
+                _zattooDB_.getShowInfo(record['program_id'])
+            _library_.delete_library() # add by samoth
+            _library_.make_library()
+    except: return
+    
 def start():
-
     from resources.lib.zattooDB import ZattooDB
     _zattooDB_ = ZattooDB()
+    
+	# reload Account
+    xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)
+    profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
+    os.remove(os.path.join(profilePath, 'cookie.cache'))
+    os.remove(os.path.join(profilePath, 'session.cache'))
+    os.remove(os.path.join(profilePath, 'account.cache'))
+    _zattooDB_.zapiSession()
+
     player=myPlayer()
     VERSION = __addon__.getAddonInfo('version')
     OLDVERSION = _zattooDB_.get_version(VERSION)
 
     if OLDVERSION != VERSION:
-       #_zattooDB_.reloadDB(True)
+       _zattooDB_.reloadDB(True)
        _zattooDB_.set_version(VERSION)
 
     import urllib.request, urllib.parse, urllib.error
@@ -125,8 +137,6 @@ def start():
     if __addon__.getSetting('dbonstart') == 'true':
         _zattooDB_.getProgInfo(True, startTime, endTime)
         recInfo()
-        _library_.delete_library() # add by samoth
-        _library_.make_library()
 
     refreshProg()
 
@@ -187,21 +197,22 @@ class myPlayer(xbmc.Player):
     def loadKeymap(self):
 
       source = __addondir__ + '/zattooKeymap.xml'
-      dest = xbmc.translatePath('special://profile/keymaps/zattooKeymap.xml')
+      dest = xbmcvfs.translatePath('special://profile/keymaps/zattooKeymap.xml')
+      debug(dest)
       if os.path.isfile(dest): return
       with open(source, 'r') as file: content = file.read()
       with open(dest, 'w') as file: file.write(content)
       xbmc.sleep(200)
-      xbmc.executebuiltin('XBMC.Action(reloadkeymaps)')
+      xbmc.executebuiltin('Action(reloadkeymaps)')
 
     def unloadKeymap(self):
 
-      path=xbmc.translatePath('special://profile/keymaps/zattooKeymap.xml')
+      path=xbmcvfs.translatePath('special://profile/keymaps/zattooKeymap.xml')
       if os.path.isfile(path):
         try:
           os.remove(path)
           xbmc.sleep(200)
-          xbmc.executebuiltin('XBMC.Action(reloadkeymaps)')
+          xbmc.executebuiltin('Action(reloadkeymaps)')
         except:pass
 
 

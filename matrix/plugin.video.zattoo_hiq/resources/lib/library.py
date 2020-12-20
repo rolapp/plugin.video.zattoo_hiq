@@ -18,9 +18,10 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xbmc, xbmcgui, xbmcplugin, xbmcaddon
+import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
 import sys, urllib.parse
 import  time, datetime, threading
+import io
 from resources.lib.zattooDB import ZattooDB
 
 __addon__ = xbmcaddon.Addon()
@@ -41,7 +42,7 @@ class library:
     folder=__addon__.getSetting('library_dir')
     if folder == '': return
     import os
-    libraryPath = xbmc.translatePath(folder)
+    libraryPath = xbmcvfs.translatePath(folder)
     if not os.path.exists(libraryPath): os.makedirs(libraryPath)
     
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/playlist', None)
@@ -59,11 +60,16 @@ class library:
       fileName=slugify(name)
       strmFile=os.path.join(libraryPath, fileName+"/"+fileName+".strm")
       if os.path.exists(os.path.dirname(strmFile)):continue
-      
-      os.makedirs(os.path.dirname(strmFile))
-      f = open(strmFile,"w")
-      f.write('plugin://'+__addonId__+'/?mode=watch_r&id='+str(record['id'])+'&start='+str(start))
-      f.close()
+      strmFile=str(strmFile).encode('utf-8')
+      try:
+        if not os.path.exists(os.path.dirname(strmFile)):
+            os.makedirs(os.path.dirname(strmFile))
+      except OSError as err:
+        print(err)      
+    
+      with open(strmFile, 'w', encoding="utf-8", errors='namereplace') as f:
+        f.write('plugin://'+__addonId__+'/?mode=watch_r&id='+str(record['id'])+'&start='+str(start))
+
       
       out='<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><movie>'
       out+='<title>'+name+' [COLOR red]ZBE[/COLOR]</title>'
@@ -79,28 +85,30 @@ class library:
       out+='</movie>'
       
       nfoFile=os.path.join(libraryPath, fileName+"/"+fileName+".nfo")
-      f = open(nfoFile,"w")
-      f.write(out)
-      f.close()
+      nfoFile=str(nfoFile).encode('utf-8')
+      debug(nfoFile)
+      with open(nfoFile,"w", encoding='utf-8') as f:
+        f.write(out)
+    
       
-      # max_bandwidth = __addon__.getSetting('max_bandwidth')
-      # params = {'recording_id': record['id'], 'stream_type': 'hls', 'maxrate': max_bandwidth}
-      # Data = _zattooDB_.zapi.exec_zapiCall('/zapi/watch', params)
-      # #debug('resultdata'+str(Data)+'  '+str(record['id']))
-      # if Data is not None:
-        # streams = Data['stream']['watch_urls']
-        # debug('resultData:'+str(streams))
-        # if len(streams)==0:
-          # xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", channelInfo['logo'], 5000, False)
-          # return
-        # elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
-        # else: streamNr = 0
-        # dlFile=os.path.join(libraryPath, fileName+"/"+fileName+".dl")
-        
-        # f = open(dlFile,"w")
-        # f.write(streams[streamNr]['url'])
-        # f.close()
-    #xbmcgui.Dialog().notification('Ordner für Filme aktualisiert', __addon__.getLocalizedString(31251),  __addon__.getAddonInfo('path') + '/icon.png', 5000, False)    
+      max_bandwidth = __addon__.getSetting('max_bandwidth')
+      params = {'recording_id': record['id'], 'stream_type': 'hls', 'maxrate': max_bandwidth}
+      Data = _zattooDB_.zapi.exec_zapiCall('/zapi/watch', params)
+      #debug('resultdata'+str(Data)+'  '+str(record['id']))
+      if Data is not None:
+        streams = Data['stream']['watch_urls']
+        debug('resultData:'+str(streams))
+        if len(streams)==0:
+          xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", channelInfo['logo'], 500, False)
+          return
+        elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
+        else: streamNr = 0
+        dlFile=os.path.join(libraryPath, fileName+"/"+fileName+".dl")
+        dlFile=str(dlFile).encode('utf-8')
+        with open(dlFile,"w", encoding='utf-8') as f:
+            f.write(streams[streamNr]['url'])
+
+    xbmcgui.Dialog().notification('Ordner für Filme aktualisiert', __addon__.getLocalizedString(31251),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)    
       #xbmcgui.Dialog().notification(localString(31106), localString(31915),  __addon__.getAddonInfo('path') + '/icon.png', 3000, False) 
       
 # added - by Samoth  
@@ -108,7 +116,7 @@ class library:
     folder=__addon__.getSetting('library_dir') 
     if not folder: return 
     import os, shutil 
-    libraryPath = xbmc.translatePath(folder) 
+    libraryPath = xbmcvfs.translatePath(folder) 
     if os.path.exists(libraryPath) and libraryPath != "": 
       shutil.rmtree(libraryPath)  
       
@@ -117,7 +125,7 @@ class library:
     import os, shutil 
     folder=__addon__.getSetting('library_dir') 
     if not folder: return 
-    libraryPath = xbmc.translatePath(folder)
+    libraryPath = xbmcvfs.translatePath(folder)
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/playlist', None) 
     for record in resultData['recordings']: 
       if recording_id == str(record['id']): 
@@ -140,7 +148,7 @@ def slugify(value):
     and converts spaces to hyphens.
     """
     import re, unicodedata
-    #value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+    #value = unicodedata.normalize('NFKD', value).encode('utf-8', 'ignore')
     value = str(re.sub('[^\w\s-]', '', value).strip().lower())
     value = str(re.sub('[-\s]+', '-', value))
     return value

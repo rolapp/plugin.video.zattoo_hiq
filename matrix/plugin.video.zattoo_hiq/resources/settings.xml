@@ -51,29 +51,29 @@
 					<constraints>
 						<options>
 							<option label="33100">0</option> <!-- Zattoo -->
-							<option label="33101">1</option> <!-- Netplus -->
-							<option label="33102">2</option> <!-- Quickline -->
+							<option label="33116">1</option> <!-- 1und1 -->
+							<option label="33115">2</option> <!-- swb TV -->
 							<option label="33103">3</option> <!-- m-net -->
 							<option label="33104">4</option> <!-- WALY.TV -->
 							<option label="33105">5</option> <!-- meinewelt.cc -->
 							<option label="33106">6</option> <!-- BBV-tv.net -->
 							<option label="33107">7</option> <!-- VTXtv.ch -->
-							<option label="33108">8</option> <!-- myvisiontv.ch -->
+							<option label="33114">8</option> <!-- Salt.tv -->
 							<option label="33109">9</option> <!-- GLATTvision.ch -->
 							<option label="33110">10</option> <!-- SAKtv.ch -->
 							<option label="33111">11</option> <!-- NetCologne -->
 							<option label="33112">12</option> <!-- EWE.de -->
 							<option label="33113">13</option> <!-- quantum.tv -->
-							<option label="33114">14</option> <!-- Salt.tv -->
-							<option label="33115">15</option> <!-- swb TV -->
-							<option label="33116">16</option> <!-- 1und1 -->
+							
+							
+							
 						</options>
 					</constraints>
 					<control format="string" type="spinner"/>
 				</setting>
 			</group>
-			<group id="2">
-				<setting help="" id="dateregistered" label="310033" type="date">
+			<group id="2" label="310031">
+				<setting help="" id="accounttype" label="310033" type="string">
 					<level>0</level>
 					<default/>
 					<constraints>
@@ -82,9 +82,6 @@
 					<dependencies>
 						<dependency type="enable">
 							<condition name="InfoBool" on="property">false</condition>
-						</dependency>
-						<dependency type="visible">
-							<condition operator="gt" setting="dateregistered"/>
 						</dependency>
 					</dependencies>
 					<control format="date" type="button">
@@ -101,15 +98,12 @@
 						<dependency type="enable">
 							<condition name="InfoBool" on="property">false</condition>
 						</dependency>
-						<dependency type="visible">
-							<condition operator="gt" setting="country"/>
-						</dependency>
 					</dependencies>
 					<control format="string" type="edit">
 						<heading>310038</heading>
 					</control>
 				</setting>
-				<setting help="" id="recall" label="310032" type="string">
+				<setting help="" id="recall" label="310034" type="string">
 					<level>0</level>
 					<default/>
 					<constraints>
@@ -118,34 +112,13 @@
 					<dependencies>
 						<dependency type="enable">
 							<condition name="InfoBool" on="property">false</condition>
-						</dependency>
-						<dependency type="visible">
-							<condition operator="gt" setting="recall"/>
-						</dependency>
-					</dependencies>
-					<control format="string" type="edit">
-						<heading>310032</heading>
-					</control>
-				</setting>
-				<setting help="" id="product" label="310034" type="string">
-					<level>0</level>
-					<default/>
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<dependencies>
-						<dependency type="enable">
-							<condition name="InfoBool" on="property">false</condition>
-						</dependency>
-						<dependency type="visible">
-							<condition operator="gt" setting="product"/>
 						</dependency>
 					</dependencies>
 					<control format="string" type="edit">
 						<heading>310034</heading>
 					</control>
 				</setting>
-				<setting help="" id="price" label="310035" type="string">
+				<setting help="" id="record" label="310035" type="string">
 					<level>0</level>
 					<default/>
 					<constraints>
@@ -154,49 +127,10 @@
 					<dependencies>
 						<dependency type="enable">
 							<condition name="InfoBool" on="property">false</condition>
-						</dependency>
-						<dependency type="visible">
-							<condition operator="gt" setting="price"/>
 						</dependency>
 					</dependencies>
 					<control format="string" type="edit">
 						<heading>310035</heading>
-					</control>
-				</setting>
-				<setting help="" id="expiration" label="310036" type="string">
-					<level>0</level>
-					<default/>
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<dependencies>
-						<dependency type="enable">
-							<condition name="InfoBool" on="property">false</condition>
-						</dependency>
-						<dependency type="visible">
-							<condition operator="gt" setting="expiration"/>
-						</dependency>
-					</dependencies>
-					<control format="string" type="edit">
-						<heading>310036</heading>
-					</control>
-				</setting>
-				<setting help="" id="renewal_date" label="310037" type="string">
-					<level>0</level>
-					<default/>
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<dependencies>
-						<dependency type="enable">
-							<condition name="InfoBool" on="property">false</condition>
-						</dependency>
-						<dependency type="visible">
-							<condition operator="gt" setting="renewal_date"/>
-						</dependency>
-					</dependencies>
-					<control format="string" type="edit">
-						<heading>310037</heading>
 					</control>
 				</setting>
 			</group>
@@ -444,9 +378,9 @@
 					</constraints>
 					<control format="action" type="button"/>
 				</setting>
-				<setting help="" id="CleanProg" label="31913" type="action">
+				<setting label="31024" id="clearCache" type="action">
 					<level>0</level>
-					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=cleanProg)</data>
+					<data>RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=clearCache)/</data>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>

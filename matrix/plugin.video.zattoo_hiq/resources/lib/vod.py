@@ -21,16 +21,16 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xbmc, xbmcgui, xbmcplugin, xbmcaddon
+import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
 import sys, urllib.parse, urllib.request, urllib.error
-
+import ast
 from resources.lib.zattooDB import ZattooDB
 _zattooDB_ = ZattooDB()
 
 __addon__       = xbmcaddon.Addon()
 __addonId__     =__addon__.getAddonInfo('id')
 __addonname__   = __addon__.getAddonInfo('name')
-__addondir__    = xbmc.translatePath( __addon__.getAddonInfo('profile') )
+__addondir__    = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') )
 __addonhandle__ = int(sys.argv[1])
 __addonuri__    = sys.argv[0]
 
@@ -44,9 +44,9 @@ def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
     
 def notice(content):
-    log(content, xbmc.LOGNOTICE)
+    log(content, xbmc.LOGINFO)
 
-def log(msg, level=xbmc.LOGNOTICE):
+def log(msg, level=xbmc.LOGINFO):
     addon = xbmcaddon.Addon()
     addonID = addon.getAddonInfo('id')
     xbmc.log('%s: %s' % (addonID, msg), level) 
@@ -58,17 +58,25 @@ class vod:
         
     def main_menu(self, page='vod_zattoo_webmobile'):
         # get VoD Main Menu
-        api = '/zapi/v2/cached/' + self.zapi.SessionData['session']['power_guide_hash'] + '/pages/' + page +'?'
+        api = '/zapi/v2/cached/' + self.zapi.AccountData['power_guide_hash'] + '/pages/' + page +'?'
         vod_main = self.zapi.exec_zapiCall(api, None)
         if vod_main is None: return
-
+        api = '/zapi/vod/subscriptions'
+        subscription = self.zapi.exec_zapiCall(api, None)
+        
         for main in vod_main['elements']:
             path = main['element_zapi_path']
             api = path +'?page=0&per_page=10'
             vod_sub = self.zapi.exec_zapiCall(api, None)
             debug(vod_sub)
             if not vod_sub: continue
-            if vod_sub['teasers_total'] ==0: continue
+            if vod_sub['teasers_total'] == 0: continue
+            
+            try:
+                if vod_sub['teasers'][0]['teasable']['terms_catalog'][0]['terms'][0]['subscription_sku'] not in subscription:
+                    continue
+            except:pass
+
             li = xbmcgui.ListItem(vod_sub['title'] + ' [COLOR ff00ff00](' + str(vod_sub['teasers_total']) + ')[/COLOR]')
             if vod_sub['logo_token']:
                 li.setArt({'icon': 'https://logos.zattic.com/logos/' + vod_sub['logo_token'] + '/black/140x80.png'})
@@ -92,15 +100,59 @@ class vod:
             url = __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'vod_sub', 'path': path, 'title': title, 'total': total}),
         )
         listing = []
+        pfad=''
+        token=''
+        t_type=''
+        t_id=''
+        token = ''
+        s_id=''
+        
         for page in range (int(int(total)/10)+1):
             api = path + '?page=' + str(page) + '&per_page=10'
             vod_sub = self.zapi.exec_zapiCall(api, None)
+            debug('sub' + str(vod_sub))
             if vod_sub['page_public_id']: self.main_menu(vod_sub['page_public_id'])
                
-            debug(vod_sub)
-            for data in vod_sub['teasers']:
-                if data['teasable_type'] != 'Avod::Video': continue
-                data = data['teasable']
+            for teasers in vod_sub['teasers']:
+
+                t_type = teasers['teasable_type']
+                t_id = teasers['teasable_id']
+                data = teasers['teasable']
+                try:
+                    s_id = teasers['teasable']['current_season']['id']
+                except: pass
+                if t_type == 'Avod::Video': 
+                    pfad ='avod/videos/' + data['token'] + '/watch'
+                    params = {
+                            'stream_type': STREAM_TYPE
+                            }
+                if t_type == 'Vod::Video': 
+                    pfad = 'watch/vod/video'
+                    try:
+                        token = data['terms_catalog'][0]['terms'][0]['token']
+                    except:
+                        token = data['current_season']['terms_catalog'][0]['terms'][0]['token']
+                    params = {
+                            'term_token': str(token),
+                            'teasable_id': str(t_id),
+                            'teasable_type': t_type,
+                            'stream_type': STREAM_TYPE
+                            }
+                        
+                elif t_type == 'Vod::Movie': 
+                    pfad = 'watch/vod/video'
+                    try:
+                        token = data['terms_catalog'][0]['terms'][0]['token']
+                    except:
+                        token = data['current_season']['terms_catalog'][0]['terms'][0]['token']
+                    params = {
+                            'term_token': str(token),
+                            'teasable_id': str(t_id),
+                            'teasable_type': t_type,
+                            'stream_type': STREAM_TYPE
+                            }
+                # elif t_type == 'Vod::Series': pfad = 'vod/series/' + t_id
+
                 episode = ''
                 director = []
                 cast = []
@@ -111,16 +163,28 @@ class vod:
                     if 'actors' in data['credits']:
                         for name in data['credits']['actors']:
                             cast.append(name['name'])
-                    
+                try:
+                    year = data['year']
+                except:
+                    year = ''
+                try:
+                    duration = data['duration']   
+                except:
+                    duration =''
+                try:
+                    duration = data['runtime'] * 60
+                except:
+                    duration = ''
+                
                 if data['subtitle']: episode = ' - ' + data['subtitle']
                 image_url = 'https://images.zattic.com/cms/' + data['image_token'] + '/format_480x360.jpg'
                 meta = {
                         'title': data['title'] + episode,
                         'plot': data['description'],
-                        'country': data['countries'],
+                        #'country': data['countries'],
                         'genre': data['genres'],
-                        'year': data['year'],
-                        'duration': data['duration'],
+                        'year': year,
+                        'duration': duration,
                         'director': director,
                         'cast': cast
                         }
@@ -128,20 +192,22 @@ class vod:
                 li.setInfo('video', meta)
                 li.setProperty('IsPlayable','true') 
                 li.setArt({'thumb':image_url, 'fanart':image_url, 'landscape':image_url,'icon':image_url})
-                url = __addonuri__ + '?' + urllib.parse.urlencode({'mode': 'vod_watch','token': data['token']})
+                url = __addonuri__ + '?' + urllib.parse.urlencode({'mode': 'vod_watch','pfad': pfad, 'params':params})
 
                 debug(url)
                 isFolder = False
                 listing.append((url, li, isFolder))
-                
+               
         xbmcplugin.addDirectoryItems(__addonhandle__, listing)
         xbmcplugin.setContent(__addonhandle__, 'movies')
         xbmcplugin.addSortMethod(__addonhandle__, xbmcplugin.SORT_METHOD_LABEL )    
         xbmcplugin.endOfDirectory(__addonhandle__)
         
-    def vod_watch(self, token):
-        params = {'stream_type': STREAM_TYPE, 'maxrate': MAX_BANDWIDTH, 'enable_eac3': DOLBY}
-        resultData = self.zapi.exec_zapiCall('/zapi/avod/videos/' + token + '/watch', params)
+    
+    def vod_watch(self, pfad, params):
+        params = ast.literal_eval(params)
+        debug (type(params))
+        resultData = self.zapi.exec_zapiCall('/zapi/' + pfad , params)
         debug ('ResultData: '+str(resultData))
         if resultData is not None:
             streams = resultData['stream']['watch_urls']
@@ -154,12 +220,12 @@ class vod:
             
         li = xbmcgui.ListItem(path=streams[streamNr]['url'])
         if STREAM_TYPE == 'dash':
-            li.setProperty('inputstreamaddon', 'inputstream.adaptive')
+            li.setProperty('inputstream', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
         if STREAM_TYPE == 'dash_widevine':
-            li.setProperty('inputstreamaddon', 'inputstream.adaptive')
+            li.setProperty('inputstream', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-            li.setProperty('inputstream.adaptive.license_key', streams[1]['license_url'] + "||a{SSM}|")
+            li.setProperty('inputstream.adaptive.license_key', streams[streamNr]['license_url'] + "||a{SSM}|")
             li.setProperty('inputstream.adaptive.license_type', "com.widevine.alpha")
             
         xbmcplugin.setResolvedUrl(__addonhandle__, True, li)
