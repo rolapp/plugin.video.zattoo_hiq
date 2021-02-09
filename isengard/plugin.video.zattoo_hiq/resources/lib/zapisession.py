@@ -167,16 +167,21 @@ class ZapiSession:
         return None
     
     def fetch_appToken(self):
-        handle = urllib2.urlopen(self.ZAPIUrl)
-        html = str(handle.read())
-        js = re.search(r"\/app-\w+\.js", html).group(0)
-        handle = urllib2.urlopen(self.ZAPIUrl + js)
-        html = str(handle.read())
-        token_js = re.search(r'token-(.+?)\.json', html).group(0)
-        debug(token_js)
-        handle = urllib2.urlopen(self.ZAPIUrl + '/' + token_js)
-        htmlJson = json.loads(handle.read())                        
-        return htmlJson['session_token']
+        if self.ZAPIUrl == 'https://zattoo.com':
+            handle = urllib.request.urlopen(self.ZAPIUrl + '/' + 'token.json')
+            htmlJson = json.loads(handle.read())
+            return htmlJson['session_token']
+        else:
+            handle = urllib2.urlopen(self.ZAPIUrl)
+            html = str(handle.read())
+            js = re.search(r"\/app-\w+\.js", html).group(0)
+            handle = urllib2.urlopen(self.ZAPIUrl + js)
+            html = str(handle.read())
+            token_js = re.search(r'token-(.+?)\.json', html).group(0)
+            debug(token_js)
+            handle = urllib2.urlopen(self.ZAPIUrl + '/' + token_js)
+            htmlJson = json.loads(handle.read())                        
+            return htmlJson['session_token']
                 
     def fetch_appVersion(self):
         handle = urllib2.urlopen(self.ZAPIUrl)
