@@ -33,7 +33,7 @@
 			<!-- Recordlist -->
 			<b>ActivateWindow(10025,"plugin://plugin.video.zattoo_hiq/?mode=recordings")</b>
 			<!-- Preview -->
-			<c>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=preview")</c>
+			<n>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=preview")</n>
 			<!-- Record -->
 			<k>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=record_l")</k>
 			<!-- Category -->

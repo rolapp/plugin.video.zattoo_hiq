@@ -110,7 +110,7 @@ class ZattooDB(object):
   def zapiSession(self):
     zapiSession   = ZapiSession(xbmcvfs.translatePath(__addon__.getAddonInfo('profile')))
     PROVIDER = __addon__.getSetting('provider')
-    #debug('Provider '+str(PROVIDER))
+    debug('Provider '+str(PROVIDER))
     if PROVIDER == "0": ZAPIUrl = "https://zattoo.com"
     elif PROVIDER == "1": ZAPIUrl = "https://www.1und1.tv"
     elif PROVIDER == "2": ZAPIURL =  "https://tvonline.swb-gruppe.de"
@@ -278,6 +278,14 @@ class ZattooDB(object):
     self.conn.commit()
     c.close()
     return
+    
+  def get_firstchan(self):
+    c = self.conn.cursor()
+    c.execute('SELECT * FROM channels ORDER BY weight ASC LIMIT 1')
+    row = c.fetchone()
+    c.close()
+    firstchan = row['id']
+    return firstchan
 
   def updateProgram(self, date=None, rebuild=False):
     if date is None: date = datetime.date.today()
@@ -733,7 +741,16 @@ class ZattooDB(object):
     self.conn.commit()
     c.close()
     return channelid
-
+    
+  def get_channelNr(self, cid):
+    c = self.conn.cursor()
+    c.execute('SELECT * FROM channels ORDER BY weight')
+    nr = 0
+    for row in c:
+        if cid == row['id']: break
+        nr += 1
+    return nr    
+    
   def get_channelweight(self, weight):
     c = self.conn.cursor()
     c.execute('SELECT * FROM channels WHERE weight= ? ', [weight])

@@ -45,6 +45,7 @@ __language__ = __settings__.getLocalizedString
 localString = __addon__.getLocalizedString
 local = xbmc.getLocalizedString
 accountData=_zattooDB_.zapi.get_accountData()
+DEBUG = __addon__.getSetting('debug')
 
 # get Timezone Offset
 from tzlocal import get_localzone
@@ -57,7 +58,6 @@ except:pass
 
 _datename_ = {u'Monday': u'Montag', u'Tuesday': u'Dienstag', u'Wednesday':u'Mittwoch'}
 
-DEBUG = True
 ACTION_LEFT = 1
 ACTION_RIGHT = 2
 ACTION_UP = 3
@@ -93,6 +93,10 @@ ACTION_PREVIOUS_MENU = 10
 ACTION_SHOW_INFO = 11
 ACTION_NEXT_ITEM = 14
 ACTION_PREV_ITEM = 15
+ACTION_FORWARD = 16
+ACTION_REWIND = 17
+ACTION_PLAYER_FORWARD = 77
+ACTION_PLAYER_REWIND = 78
 
 ACTION_MOUSE_WHEEL_UP = 104
 ACTION_MOUSE_WHEEL_DOWN = 105
@@ -102,6 +106,8 @@ ACTION_GESTURE_SWIPE_LEFT = 511
 ACTION_GESTURE_SWIPE_RIGHT = 521
 ACTION_GESTURE_SWIPE_UP = 531
 ACTION_GESTURE_SWIPE_DOWN = 541
+
+
 
 KEY_NAV_BACK = 92
 KEY_CONTEXT_MENU = 117
@@ -218,7 +224,6 @@ class EPG(xbmcgui.WindowXML):
         self.focusPoint = Point()
         self.epgView = EPGView()
         self.lastAction={'action':'', 'time':time.time(), 'count':0}
-       # self.premiumUser = premiumUser
 
         # find nearest half hour
         self.viewStartDate = datetime.datetime.today()
@@ -228,6 +233,7 @@ class EPG(xbmcgui.WindowXML):
     def getControl(self, controlId):
         try:
             return super(EPG, self).getControl(controlId)
+            
         except:
             if controlId in self.ignoreMissingControlIds:
                 return None
@@ -237,12 +243,12 @@ class EPG(xbmcgui.WindowXML):
             return None
 
     def close(self):
-        xbmc.executebuiltin('ActivateWindow(10025,"plugin://'+__addonId__+'")')
         xbmcgui.Window(10000).setProperty('zattoo_runningView',"")
-        #super(EPG, self).close()
-        #if not self.isClosing:
-        #   self.isClosing = True
-        #   super(EPG, self).close()
+        #xbmc.executebuiltin('ActivateWindow(10025,"plugin://'+__addonId__+'")')
+        super(EPG, self).close()
+        # if not self.isClosing:
+            # self.isClosing = True
+            # super(EPG, self).close()
 
     def onInit(self):
         self.db = ZattooDB()
@@ -267,15 +273,9 @@ class EPG(xbmcgui.WindowXML):
         self.getControl(4400).setVisible(False)
         self.getControl(4401).setVisible(True)
 
-        
-       
-
-    
-
 
     def onAction(self, action):
         actionId=action.getId()
-        #print('EPG:'+str(actionId))
         if actionId in [ACTION_PARENT_DIR, KEY_NAV_BACK, ACTION_PREVIOUS_MENU]:
             self.close()
             return
@@ -308,23 +308,22 @@ class EPG(xbmcgui.WindowXML):
         elif actionId in [ACTION_RIGHT, ACTION_6, ACTION_JUMP_SMS6]:
             self._right(currentFocus)
         elif actionId in [ACTION_UP, ACTION_2, ACTION_JUMP_SMS2]:
-
             self._up(currentFocus)
         elif actionId in [ACTION_DOWN, ACTION_8, ACTION_JUMP_SMS8]:
             self._down(currentFocus)
-        elif actionId in [ACTION_3, ACTION_JUMP_SMS3]:
+        elif actionId in [ACTION_9, ACTION_JUMP_SMS9]:
             self.viewStartDate -= datetime.timedelta(hours=2)
             self.onRedrawEPG(self.channelIdx, self.viewStartDate)
-        elif actionId in [ACTION_9, ACTION_JUMP_SMS9]:
+        elif actionId in [ACTION_3, ACTION_JUMP_SMS3]:
             self.viewStartDate += datetime.timedelta(hours=2)
             self.onRedrawEPG(self.channelIdx, self.viewStartDate)
-        elif actionId in [ACTION_NEXT_ITEM, ACTION_PAGE_UP]:
+        elif actionId in [ACTION_NEXT_ITEM, ACTION_1, ACTION_PLAYER_FORWARD]:
             self._nextDay()
-        elif actionId in [ACTION_PREV_ITEM, ACTION_PAGE_DOWN]:
+        elif actionId in [ACTION_PREV_ITEM, ACTION_7, ACTION_JUMP_SMS7, ACTION_PLAYER_REWIND]:
             self._previousDay()
-        elif actionId == ACTION_1:
+        elif actionId == ACTION_PAGE_UP:
             self._moveUp(CHANNELS_PER_PAGE)
-        elif actionId in [ACTION_7, ACTION_JUMP_SMS7]:
+        elif actionId == ACTION_PAGE_DOWN:
             self._moveDown(CHANNELS_PER_PAGE)
         elif actionId == ACTION_MOUSE_WHEEL_UP:
             self._moveUp(scrollEvent=True)
@@ -381,7 +380,7 @@ class EPG(xbmcgui.WindowXML):
         end = int(time.mktime(program['end_date'].timetuple()))
         now = time.time()
         url=''
-
+        
         try:
             if accountData['nonlive']['recording_number_limit'] > 0:
                 if _zattooDB_.getRecord(program['showID']) > datetime.datetime.now():
@@ -404,27 +403,26 @@ class EPG(xbmcgui.WindowXML):
         try:
           SERIE=accountData['nonlive']['recording_series_eligible']
         except KeyError:SERIE = False
-       
+        
+        # Set String for SubMenu
+        recall_func = __addon__.getSetting('after_recall')
+        if recall_func == "3": RECALL_MENU = ADD_TO_PLAYLIST
+        else: RECALL_MENU = PLAY_FROM_START
+        
         # if startime is in the future -> setup recording
         if start > now :
         #if not self.premiumUser: xbmcgui.Dialog().ok('Error',' ',strings(ERROR_NO_PREMIUM))
             if RECORD:
                 #print 'SERIES:  ' + str(_zattooDB_.getSeries(program['showID']))
-                if SERIE:
-                    if _zattooDB_.getSeries(program['showID']):#Series record avilable
-                        ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(RECORD_SHOW), strings(RECORD_SERIES)])
-                        if ret==0: #recording
-                            setup_recording({'program_id': program['showID']})
-                            return
-                        elif ret==1: #recording_series
-                            setup_recording({'program_id': program['showID'], 'series': 'true'})
-                            return
-                        else: return
-                
-                    elif xbmcgui.Dialog().ok(program['title'], strings(RECORD_SHOW) + "?"):
+                if SERIE and _zattooDB_.getSeries(program['showID']):#Series record avilable
+                    ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(RECORD_SHOW), strings(RECORD_SERIES)])
+                    if ret==0: #recording
                         setup_recording({'program_id': program['showID']})
                         return
-                    else:return
+                    elif ret==1: #recording_series
+                        setup_recording({'program_id': program['showID'], 'series': 'true'})
+                        return
+                    else: return
                 elif xbmcgui.Dialog().ok(program['title'], strings(RECORD_SHOW) + "?"):
                     setup_recording({'program_id': program['showID']})
                     return
@@ -438,22 +436,21 @@ class EPG(xbmcgui.WindowXML):
                 if __addon__.getSetting('epgPlay')=='true':
                     url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID'] + "&start=" + str(start) + "&end=" + str(end)
                 else:
-                    if SERIE:
-                        if _zattooDB_.getSeries(program['showID']):#Series record avilable
-                            ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(PLAY_FROM_START), strings(RECORD_SHOW), strings(RECORD_SERIES)])
-                            if ret==0:  #recall
-                                url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID'] + "&restart=true" 
-                            elif ret==1: #record
-                                #url = "plugin://"+__addonId__+"/?mode=record_p&program_id=" + program['showID']
-                                setup_recording({'program_id': program['showID']})
-                                return
-                            elif ret==2: #record series
-                                #url = "plugin://"+__addonId__+"/?mode=record_p&program_id=" + program['showID']
-                                setup_recording({'program_id': program['showID'], 'series': 'true'})
-                                return
-                            else: return
+                    if SERIE and _zattooDB_.getSeries(program['showID']):#Series record avilable
+                        ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(RECALL_MENU), strings(RECORD_SHOW), strings(RECORD_SERIES)])
+                        if ret==0:  #recall
+                            url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID'] + "&restart=true" 
+                        elif ret==1: #record
+                            #url = "plugin://"+__addonId__+"/?mode=record_p&program_id=" + program['showID']
+                            setup_recording({'program_id': program['showID']})
+                            return
+                        elif ret==2: #record series
+                            #url = "plugin://"+__addonId__+"/?mode=record_p&program_id=" + program['showID']
+                            setup_recording({'program_id': program['showID'], 'series': 'true'})
+                            return
+                        else: return
                     else: 
-                        ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(PLAY_FROM_START), strings(RECORD_SHOW)])
+                        ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(RECALL_MENU), strings(RECORD_SHOW)])
                         if ret==0:  #recall
                             url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID'] + "&restart=true" 
                         elif ret==1: #record
@@ -462,7 +459,7 @@ class EPG(xbmcgui.WindowXML):
                             return
                         else: return
             elif RECALL:
-                ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(PLAY_FROM_START)])
+                ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'),[strings(RECALL_MENU)])
                 if ret==0:  #recall
                     url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID'] + "&restart=true" 
                 else: return
@@ -475,7 +472,7 @@ class EPG(xbmcgui.WindowXML):
                 url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID']
             elif RECALL and RECORD:
                 if _zattooDB_.getSeries(program['showID']): #Series record avilable
-                    ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'), [strings(WATCH_CHANNEL), strings(PLAY_FROM_START), strings(RECORD_SHOW), strings(RECORD_SERIES)])
+                    ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'), [strings(WATCH_CHANNEL), strings(RECALL_MENU), strings(RECORD_SHOW), strings(RECORD_SERIES)])
                     if ret==0:  #watch live
                         url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID']
                     elif ret==1:  #recall
@@ -491,7 +488,7 @@ class EPG(xbmcgui.WindowXML):
                         return
                     else: return
                 else:
-                    ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'), [strings(WATCH_CHANNEL), strings(PLAY_FROM_START), strings(RECORD_SHOW)])
+                    ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'), [strings(WATCH_CHANNEL), strings(RECALL_MENU), strings(RECORD_SHOW)])
                     if ret==0:  #watch live
                         url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID']
                     elif ret==1:  #recall
@@ -513,17 +510,26 @@ class EPG(xbmcgui.WindowXML):
                     return
                 else: return
             elif RECALL:
-                ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'), [strings(WATCH_CHANNEL), strings(PLAY_FROM_START)])
+                ret = xbmcgui.Dialog().select(program['channel']+': '+program['title']+' '+program['start_date'].strftime('%H:%M')+' - '+program['end_date'].strftime('%H:%M'), [strings(WATCH_CHANNEL), strings(RECALL_MENU)])
                 if ret==0:  #watch live
                     url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID']
                 elif ret==1:  #recall
                     url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID'] + "&restart=true" 
                    
-                
             else:
                 url = "plugin://"+__addonId__+"/?mode=watch_c&id=" + program['channel'] + "&showID=" + program['showID']
- 
-        xbmc.executebuiltin('XBMC.RunPlugin(%s)' % url)
+                
+        self.channelIdx = _zattooDB_.get_channelNr(program['channel'])
+        ret = __addon__.getSetting('after_recall')
+        
+        if ret == '2':
+            player = xbmc.Player()
+            if player.isPlaying():
+                debug('Player is playing')
+                player.stop()
+            del player
+            
+        xbmc.executebuiltin('RunPlugin(%s)' % url)
         
 
     def setFocusId(self, controlId):
@@ -645,7 +651,7 @@ class EPG(xbmcgui.WindowXML):
         else: control = self._findControlOnRight(currentFocus)
         '''
         control = self._findControlOnRight(currentFocus)
-        
+
         if control is not None:
             self.setFocus(control)
         elif control is None:
@@ -744,7 +750,6 @@ class EPG(xbmcgui.WindowXML):
 
         channels = self.db.getChannelList(self.favourites)
        
-
         if channelStart < 0:
             channelStart = len(channels) - 9 # (int((float(len(channels))/8 - len(channels)/8)*8))
             self.focusPoint.y = 434
@@ -752,31 +757,12 @@ class EPG(xbmcgui.WindowXML):
         elif channelStart > len(channels) - 9:
             channelStart = 0
             focusFunction = None
-        # if channelStart < 0:
-            # channelStart = 0
-        # elif channelStart > len(channels) -1: channelStart = len(channels) - 2
+
         self.channelIdx = channelStart
 
-        
-        '''
-        #channels that are visible 
-        channels={'index':[]}
-        for nr in range(0, CHANNELS_PER_PAGE):
-            id=allChannels['index'][channelStart+nr]
-            channels[id]= allChannels[id]
-            channels['index'].append(id)
-        '''
-
-        '''
-        programs = self.db.getPrograms(channels, False, startTime, startTime + datetime.timedelta(hours=2))
-        if programs is None:
-            self.onEPGLoadError()
-            return
-#        channelsWithoutPrograms = list(channels)
-        '''
-        xbmc.executebuiltin("ActivateWindow(busydialog)")
+        #xbmc.executebuiltin("ActivateWindow(busydialog)")
         ret=self.db.updateProgram(startTime)
-        xbmc.executebuiltin("Dialog.Close(busydialog)")
+        #xbmc.executebuiltin("Dialog.Close(busydialog)")
                 
         # date and time row
         #Date = str(self.viewStartDate.strftime ('%A %d. %B %Y'))

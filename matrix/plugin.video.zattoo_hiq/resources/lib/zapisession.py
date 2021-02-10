@@ -18,8 +18,8 @@ __addonVersion__ = __addon__.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel( "System.BuildVersion" ).split()[0]
 DEBUG = __addon__.getSetting('debug')
 
-USERAGENT = 'Kodi-'+str(KODIVERSION)+' '+str(__addonname__)+'-'+str(__addonVersion__)+' (Kodi Video Addon)'
-#USERAGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0'
+#USERAGENT = 'Kodi-'+str(KODIVERSION)+' '+str(__addonname__)+'-'+str(__addonVersion__)+' (Kodi Video Addon)'
+USERAGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0'
 
 def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
@@ -75,13 +75,22 @@ class ZapiSession:
         #if os.path.isfile(self.COOKIE_FILE) and os.path.isfile(self.ACCOUNT_FILE):
             with open(self.ACCOUNT_FILE, 'r') as f:
                 accountData = json.loads(base64.b64decode(f.readline()))
-            if accountData['active'] == True:
-                self.AccountData = accountData
-                with open(self.COOKIE_FILE, 'r') as f:
-                    self.set_cookie(base64.b64decode(f.readline()).decode('utf-8'))
-                with open(self.SESSION_FILE, 'r') as f:
-                    self.SessionData = json.loads(base64.b64decode(f.readline()))
-                return True
+            try:
+                if accountData['active'] == True:
+                    self.AccountData = accountData
+                    with open(self.COOKIE_FILE, 'r') as f:
+                        self.set_cookie(base64.b64decode(f.readline()).decode('utf-8'))
+                    with open(self.SESSION_FILE, 'r') as f:
+                        self.SessionData = json.loads(base64.b64decode(f.readline()))
+                    return True
+            except: 
+                # profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
+                # if os.path.isfile(os.path.join(profilePath, 'session.cache')):
+                    # os.remove(os.path.join(profilePath, 'session.cache'))
+                # if os.path.isfile(os.path.join(profilePath, 'account.cache')):
+                    # os.remove(os.path.join(profilePath, 'account.cache'))
+                self.renew_session()
+            
         return False
 
     def extract_sessionId(self, cookieContent):
@@ -101,8 +110,8 @@ class ZapiSession:
     def persist_accountData(self, accountData):
         with open(self.ACCOUNT_FILE, 'wb') as f:
             f.write(base64.b64encode(json.dumps(accountData).encode('utf-8')))
-       # with open(self.ACCOUNT_TXT, 'w') as f:
-        #    f.write(json.dumps(accountData))
+        with open(self.ACCOUNT_TXT, 'w') as f:
+            f.write(json.dumps(accountData))
 
     def persist_sessionId(self, sessionId):
         with open(self.COOKIE_FILE, 'wb') as f:
@@ -111,8 +120,8 @@ class ZapiSession:
     def persist_sessionData(self, sessionData):
         with open(self.SESSION_FILE, 'wb') as f:
             f.write(base64.b64encode(json.dumps(sessionData).encode('utf-8')))
-       # with open(self.SESSION_TXT, 'w') as f:
-        #    f.write(json.dumps(sessionData))
+        with open(self.SESSION_TXT, 'w') as f:
+            f.write(json.dumps(sessionData))
 
     def set_cookie(self, sessionId):
         self.HttpHandler.addheaders.append(('Cookie', 'beaker.session.id=' + sessionId))
@@ -127,6 +136,9 @@ class ZapiSession:
                 f = urllib.parse.urlencode(params)
                 f = f.encode('utf-8')
                 debug(f)
+            #u = urllib.parse.quote(url)
+            #u = u.encode('utf-8')
+            #debug(u)
             response = self.HttpHandler.open(url,f if params is not None else None)
 
             if response is not None:
@@ -176,7 +188,10 @@ class ZapiSession:
         js = re.search(r"\/app-\w+\.js", html).group(0)
         handle = urllib.request.urlopen(self.ZAPIUrl + js)
         html = str(handle.read())
-        token_js = re.search(r'token-(.+?)\.json', html).group(0)
+        try:
+            token_js = re.search(r"token-(.+?)\.json", html).group(0)
+        except AttributeError:
+            token_js = 'token.json'
         debug(token_js)
         handle = urllib.request.urlopen(self.ZAPIUrl + '/' + token_js)
         htmlJson = json.loads(handle.read())                        

@@ -57,8 +57,11 @@ class reloadDB(xbmcgui.WindowXMLDialog):
 
   def __init__(self, xmlFile, scriptPath):
     xbmcgui.Window(10000).setProperty('reloadDB', 'True')
-
-    self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/wartung.png'  , aspectRatio=0)
+    news = __addon__.getAddonInfo('path')+'/resources/media/news.png'
+    if os.path.isfile(news):
+        self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/news.png'  , aspectRatio=0)
+    else:
+        self.wartungImg =xbmcgui.ControlImage(50, 50, 1180, 596,__addon__.getAddonInfo('path') + '/resources/media/wartung.png'  , aspectRatio=0)
     self.addControl(self.wartungImg)
     self.show()
 
@@ -282,16 +285,20 @@ class ZattooDB(object):
     self.conn.commit()
     c.close()
     return
+    
+  def get_firstchan(self):
+    c = self.conn.cursor()
+    c.execute('SELECT * FROM channels ORDER BY weight ASC LIMIT 1')
+    row = c.fetchone()
+    c.close()
+    firstchan = row['id']
+    return firstchan
 
   def updateProgram(self, date=None, rebuild=False):
     if date is None: date = datetime.date.today()
     else: date = date.date()
 
     c = self.conn.cursor()
-
-    # if rebuild:
-      # c.execute('DELETE FROM programs')
-      # self.conn.commit()
 
     # get whole day
     fromTime = int(time.mktime(date.timetuple()))  # UTC time for zattoo
@@ -675,30 +682,32 @@ class ZattooDB(object):
 
   def get_showID(self, showID):
         c = self.conn.cursor()
+        
         programList = []
-        try:
-            c.execute('SELECT * FROM programs WHERE showID = ? ', [showID])
-            #debug(showID)
-        except:pass
-        row = c.fetchone()
-        debug(row)
+        debug(showID)
+        #try:
+        c.execute('SELECT * FROM programs WHERE showID = ? ', [showID])
+        #except:pass
+        row = c.fetchall()
+
         programList.append({
-            'channel': row['channel'],
-            'showID' : row['showID'],
-            'title' : row['title'],
-            'description' : row['description'],
-            'year': row['year'],
-            'genre': row['genre'],
-            'country': row['country'],
-            'category': row['category'],
-            'start_date' : row['start_date'],
-            'end_date' : row['end_date'],
-            'image_small' : row['image_small'],
-            'credits' : row['credits'],
-            'restart': row['restart'],
-            'description_long': row['description_long']
+            'channel': row[0]['channel'],
+            'showID' : row[0]['showID'],
+            'title' : row[0]['title'],
+            'description' : row[0]['description'],
+            'year': row[0]['year'],
+            'genre': row[0]['genre'],
+            'country': row[0]['country'],
+            'category': row[0]['category'],
+            'start_date' : row[0]['start_date'],
+            'end_date' : row[0]['end_date'],
+            'image_small' : row[0]['image_small'],
+            'credits' : row[0]['credits'],
+            'restart': row[0]['restart'],
+            'description_long': row[0]['description_long']
 
             })
+        self.conn.commit()
         c.close
         return programList
 
@@ -734,7 +743,16 @@ class ZattooDB(object):
     self.conn.commit()
     c.close()
     return channelid
-
+    
+  def get_channelNr(self, cid):
+    c = self.conn.cursor()
+    c.execute('SELECT * FROM channels ORDER BY weight')
+    nr = 0
+    for row in c:
+        if cid == row['id']: break
+        nr += 1
+    return nr    
+    
   def get_channelweight(self, weight):
     c = self.conn.cursor()
     c.execute('SELECT * FROM channels WHERE weight= ? ', [weight])

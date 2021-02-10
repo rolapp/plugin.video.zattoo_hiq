@@ -450,8 +450,8 @@ msgstr "Zeige Einstellungen im Hauptmenü"
 
 # ## EPG/Aufnahmen ###
 msgctxt "#31010"
-msgid "EPG/Recordings"
-msgstr "EPG/Aufnahmen"
+msgid "EPG/Recall"
+msgstr "EPG/Recall"
 
 msgctxt "#31011"
 msgid "EPG time offset"
@@ -462,16 +462,33 @@ msgid "always play show in EPG"
 msgstr "im EPG immer abspielen"
 
 msgctxt "#31013"
-msgid "select folder for library"
-msgstr "Verzeichnis für Bibliothek auswählen"
+msgid "show LiveTV in EPG"
+msgstr "Zeige LiveTV im EPG"
 
 msgctxt "#31014"
-msgid "Reset Folder"
-msgstr "Verzeichnis zurücksetzen"
+msgid "function after Recall"
+msgstr "Funktion nach Recall"
 
 msgctxt "#31015"
-msgid "make library files"
-msgstr "Bibliothek Dateien erstellen"
+msgid "LiveTV"
+msgstr "Live-TV"
+
+msgctxt "#40003"
+msgid "next broadcast in recall"
+msgstr "nächste Sendung im Recall"
+
+msgctxt "#40004"
+msgid "pre_padding in seconds"
+msgstr "Vorlauf in Sekunden"
+
+msgctxt "#40005"
+msgid "post_padding in seconds"
+msgstr "Nachlauf in Sekunden"
+
+### Aufnahmen ###
+msgctxt "#40000"
+msgid "Recordings"
+msgstr "Aufnahmen"
 
 msgctxt "#31016"
 msgid "Only finished recordings"
@@ -494,8 +511,17 @@ msgid "weekday day.month.year hour:minute"
 msgstr "Wochentag Tag.Monat.Jahr Stunde:Minute"
 
 msgctxt "#310171"
-msgid "show LiveTV in EPG"
-msgstr "Zeige LiveTV im EPG"
+msgid "select folder for library"
+msgstr "Verzeichnis für Bibliothek auswählen"
+
+msgctxt "#31014"
+msgid "Reset Folder"
+msgstr "Verzeichnis zurücksetzen"
+
+msgctxt "#31015"
+msgid "make library files"
+msgstr "Bibliothek Dateien erstellen"
+
 
 # ## Datenbank ###
 msgctxt "#31020"

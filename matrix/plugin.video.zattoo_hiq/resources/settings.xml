@@ -258,7 +258,7 @@
 				</setting>
 			</group>
 		</category>
-		<category help="" id="epg/aufnahmen" label="31010">
+		<category help="" id="epg/recall" label="31010">
 			<group id="1">
 				<setting help="" id="time_offset" label="31011" type="integer">
 					<level>0</level>
@@ -277,6 +277,70 @@
 					<default>false</default>
 					<control type="toggle"/>
 				</setting>
+				<setting help="" id="livetv" label="310171" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+			</group>
+			<group id="2">
+				<setting label="310034" id="recall_bool" type="boolean" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle" />
+					<visible>false</visible>
+				</setting>
+				<setting label="40001" id="after_recall" type="integer" help="" >
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<options>
+							<option label="31352">0</option>
+							<option label="40002">1</option>
+							<option label="40003">2</option>
+						</options>
+					</constraints>
+					<dependencies>
+						<dependency type="visible" setting="recall_bool">true</dependency>
+					</dependencies>
+					<control type="list" format="string">
+						<heading>40001</heading>
+					</control>
+				</setting>
+				<setting label="40004" id="pre_padding" type="integer" help="" >
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>0</minimum>
+						<step>1</step>
+						<maximum>300</maximum>
+					</constraints>
+					<control type="slider" format="integer">
+						<popup>true</popup>
+					</control>
+					<dependencies>
+						<dependency type="visible" setting="recall_bool">true</dependency>
+					</dependencies>
+				</setting>
+				<setting label="40005" id="post_padding" type="integer" help="">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>0</minimum>
+						<step>1</step>
+						<maximum>1200</maximum>
+					</constraints>
+					<control type="slider" format="integer">
+						<popup>true</popup>
+					</control>
+					<dependencies>
+						<dependency type="visible" setting="recall_bool">true</dependency>
+					</dependencies>
+				</setting>
+			</group>
+		</category>
+		<category help="" id="Aufnahmen" label="40000">
+			<group id="1">
 				<setting help="" id="rec_name" label="31017" type="integer">
 					<level>0</level>
 					<default>0</default>
@@ -288,13 +352,6 @@
 					</constraints>
 					<control format="string" type="spinner"/>
 				</setting>
-				<setting help="" id="livetv" label="310171" type="boolean">
-					<level>0</level>
-					<default>false</default>
-					<control type="toggle"/>
-				</setting>
-			</group>
-			<group id="2">
 				<setting help="" id="rec_ready" label="31016" type="boolean">
 					<level>0</level>
 					<default>false</default>

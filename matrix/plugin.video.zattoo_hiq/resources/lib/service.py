@@ -35,8 +35,7 @@ _library_=library()
 localString = __addon__.getLocalizedString
 
 DEBUG = __addon__.getSetting('debug')
-
-
+accountData=_zattooDB_.zapi.get_accountData()
 
 def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
@@ -100,7 +99,7 @@ def start():
     OLDVERSION = _zattooDB_.get_version(VERSION)
 
     if OLDVERSION != VERSION:
-       _zattooDB_.reloadDB(True)
+       #_zattooDB_.reloadDB(True)
        _zattooDB_.set_version(VERSION)
 
     import urllib.request, urllib.parse, urllib.error
@@ -164,12 +163,14 @@ class myPlayer(xbmc.Player):
 
 
     def onPlayBackStarted(self):
+      debug('MyPlayer')
       #self.loadKeymap()
       if (self.skip>0):
         self.seekTime(self.skip)
         self.startTime=self.startTime-datetime.timedelta(seconds=self.skip)
       xbmc.sleep(200)
       playingFile=xbmc.getInfoLabel('Player.Filenameandpath')
+      debug(playingFile)
       #print "playingfile: " + str(playingFile)
       if playingFile.find('dash-live')>-1 or playingFile.find('hls-live')>-1 or playingFile.find('dashenc-live')>-1:
             self.loadKeymap()

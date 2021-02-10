@@ -71,7 +71,7 @@ class vod:
             debug(vod_sub)
             if not vod_sub: continue
             if vod_sub['teasers_total'] == 0: continue
-            
+            #for teasers in vod_sub['teasers']:
             try:
                 if vod_sub['teasers'][0]['teasable']['terms_catalog'][0]['terms'][0]['subscription_sku'] not in subscription:
                     continue
@@ -151,8 +151,22 @@ class vod:
                             'teasable_type': t_type,
                             'stream_type': STREAM_TYPE
                             }
-                # elif t_type == 'Vod::Series': pfad = 'vod/series/' + t_id
-
+                elif t_type == 'Vod::Series': 
+                    pfad = 'vod/series/' + str(t_id)
+                    params = {
+                            'stream_type': STREAM_TYPE
+                            }
+                    # try:
+                        # token = data['current_season']['terms_catalog'][0]['terms'][0]['token']
+                    # except: continue
+                       
+                    # params = {
+                            # 'term_token': str(token),
+                            # 'teasable_id': str(t_id),
+                            # 'teasable_type': t_type,
+                            # 'stream_type': STREAM_TYPE
+                            # }
+                    
                 episode = ''
                 director = []
                 cast = []
