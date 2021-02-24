@@ -56,6 +56,7 @@ class ZapiSession:
         self.ACCOUNT_FILE = os.path.join(dataFolder, 'account.cache')
         self.ACCOUNT_TXT = os.path.join(dataFolder, 'account.txt')
         self.APICALL_FILE = os.path.join(dataFolder, 'apicall.txt')
+        handler=urllib2.HTTPSHandler(debuglevel=1)
         self.HttpHandler = urllib2.build_opener()
         self.HttpHandler.addheaders = [('User-Agent', USERAGENT), ('Content-type', 'application/x-www-form-urlencoded'), ('Accept', 'application/json')]
 
@@ -125,9 +126,8 @@ class ZapiSession:
     def request_url(self, url, params):
         
         try:
-            #
             response = self.HttpHandler.open(url, urllib.urlencode(params) if params is not None else None)
-            
+            #debug(response.read())
             if response is not None:
                 sessionId = self.extract_sessionId(response.info().getheader('Set-Cookie'))
 
@@ -135,8 +135,9 @@ class ZapiSession:
                     self.set_cookie(sessionId)
                     self.persist_sessionId(sessionId)
                 return response.read()
-        except Exception as e:
-           debug(str(e))
+        except urllib2.HTTPError as e:
+           debug(e)
+
            if '403' in str(e):
                 debug('Error 403')
                 # profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
@@ -144,7 +145,8 @@ class ZapiSession:
                     # os.remove(os.path.join(profilePath, 'session.cache'))
                 # if os.path.isfile(os.path.join(profilePath, 'account.cache')):
                     # os.remove(os.path.join(profilePath, 'account.cache'))
-                self.renew_session()
+                #self.renew_session()
+
         return None
 
     # zapiCall with params=None creates GET request otherwise POST
@@ -167,12 +169,16 @@ class ZapiSession:
         return None
     
     def fetch_appToken(self):
+
         handle = urllib2.urlopen(self.ZAPIUrl)
         html = str(handle.read())
         js = re.search(r"\/app-\w+\.js", html).group(0)
         handle = urllib2.urlopen(self.ZAPIUrl + js)
         html = str(handle.read())
-        token_js = re.search(r'token-(.+?)\.json', html).group(0)
+        try:
+            token_js = re.search(r"token-(.+?)\.json", html).group(0)
+        except AttributeError:
+            token_js = 'token.json'
         debug(token_js)
         handle = urllib2.urlopen(self.ZAPIUrl + '/' + token_js)
         htmlJson = json.loads(handle.read())                        

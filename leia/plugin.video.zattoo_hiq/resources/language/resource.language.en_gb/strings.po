@@ -510,6 +510,9 @@ msgctxt "#40006"
 msgid "Recall as a playlist"
 msgstr ""
 
+msgctxt "#40007"
+msgid "Numeric keypad for Yatse"
+msgstr ""
 
 ### Recordings ###
 msgctxt "#40000"

@@ -30,8 +30,8 @@ _zattooDB_ = ZattooDB()
 __addon__       = xbmcaddon.Addon()
 __addonId__     =__addon__.getAddonInfo('id')
 __addonname__   = __addon__.getAddonInfo('name')
-__addondir__    = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') )
-__addonhandle__ = int(sys.argv[1])
+__addondir__    = xbmc.translatePath( __addon__.getAddonInfo('profile') )
+#__addonhandle__ = int(sys.argv[1])
 __addonuri__    = sys.argv[0]
 
 ICON_PATH       = __addon__.getAddonInfo('path') + '/resources/icon.png'
@@ -55,15 +55,28 @@ def log(msg, level=xbmc.LOGINFO):
 class vod:
     def __init__(self):
         self.zapi = _zattooDB_.zapiSession()
+        self.watchlist = self.get_watchlist()
+        self.wl = False
         
-    def main_menu(self, page='vod_zattoo_webmobile'):
+    def subscription(self):
+        # get VoD Subscription
+        api = '/zapi/vod/subscriptions'
+        subscription = self.zapi.exec_zapiCall(api, None)
+        for i in subscription:
+            debug('Subscription: ' + str(i))
+        return subscription
+        
+    def main_menu(self, __addonhandle__, page='vod_zattoo_webmobile'):
+        
+        if 'subscriptions' not in locals():
+            subscription = self.subscription()
+        
         # get VoD Main Menu
         api = '/zapi/v2/cached/' + self.zapi.AccountData['power_guide_hash'] + '/pages/' + page +'?'
         vod_main = self.zapi.exec_zapiCall(api, None)
+        debug(vod_main)
         if vod_main is None: return
-        api = '/zapi/vod/subscriptions'
-        subscription = self.zapi.exec_zapiCall(api, None)
-        
+
         for main in vod_main['elements']:
             path = main['element_zapi_path']
             api = path +'?page=0&per_page=10'
@@ -72,11 +85,13 @@ class vod:
             if not vod_sub: continue
             if vod_sub['teasers_total'] == 0: continue
             #for teasers in vod_sub['teasers']:
-            try:
-                if vod_sub['teasers'][0]['teasable']['terms_catalog'][0]['terms'][0]['subscription_sku'] not in subscription:
-                    continue
-            except:pass
-
+                        
+            if vod_sub['teasers'][0]['teasable_type'] == 'Vod::Series': continue
+            if vod_sub['teasers'][0]['teasable_type'] == 'Vod::Movie':
+                sub = vod_sub['teasers'][0]['teasable']['terms_catalog'][0]['terms'][0]['subscription_sku']
+                debug(sub)
+                if sub not in subscription: continue
+                
             li = xbmcgui.ListItem(vod_sub['title'] + ' [COLOR ff00ff00](' + str(vod_sub['teasers_total']) + ')[/COLOR]')
             if vod_sub['logo_token']:
                 li.setArt({'icon': 'https://logos.zattic.com/logos/' + vod_sub['logo_token'] + '/black/140x80.png'})
@@ -88,9 +103,9 @@ class vod:
                 isFolder = True,
             )
 
-        xbmcplugin.endOfDirectory(__addonhandle__)
+        xbmcplugin.endOfDirectory(__addonhandle__, succeeded=True, updateListing=True, cacheToDisc=False)
 
-    def sub_menu(self, title, path, total):
+    def sub_menu(self, __addonhandle__, title, path, total):
         # get VoD Sub Menu
         
         xbmcplugin.addDirectoryItem(
@@ -118,6 +133,9 @@ class vod:
                 t_type = teasers['teasable_type']
                 t_id = teasers['teasable_id']
                 data = teasers['teasable']
+                if t_id in self.watchlist: self.wl = True
+                else: self.wl = False
+                    
                 try:
                     s_id = teasers['teasable']['current_season']['id']
                 except: pass
@@ -151,22 +169,7 @@ class vod:
                             'teasable_type': t_type,
                             'stream_type': STREAM_TYPE
                             }
-                elif t_type == 'Vod::Series': 
-                    pfad = 'vod/series/' + str(t_id)
-                    params = {
-                            'stream_type': STREAM_TYPE
-                            }
-                    # try:
-                        # token = data['current_season']['terms_catalog'][0]['terms'][0]['token']
-                    # except: continue
-                       
-                    # params = {
-                            # 'term_token': str(token),
-                            # 'teasable_id': str(t_id),
-                            # 'teasable_type': t_type,
-                            # 'stream_type': STREAM_TYPE
-                            # }
-                    
+                
                 episode = ''
                 director = []
                 cast = []
@@ -184,16 +187,16 @@ class vod:
                 try:
                     duration = data['duration']   
                 except:
-                    duration =''
-                try:
                     duration = data['runtime'] * 60
-                except:
-                    duration = ''
-                
+
                 if data['subtitle']: episode = ' - ' + data['subtitle']
                 image_url = 'https://images.zattic.com/cms/' + data['image_token'] + '/format_480x360.jpg'
+                if self.wl:
+                    title = '[COLOR gold]' + data['title'] + episode + '[/COLOR]'
+                else:
+                    title = data['title'] + episode
                 meta = {
-                        'title': data['title'] + episode,
+                        'title': title,
                         'plot': data['description'],
                         #'country': data['countries'],
                         'genre': data['genres'],
@@ -211,14 +214,22 @@ class vod:
                 debug(url)
                 isFolder = False
                 listing.append((url, li, isFolder))
-               
+                contextMenuItems = []
+                contextMenuItems.append(('Info', 'Action(Info)'))
+                if t_type == 'Vod::Movie':
+                    para = {'teasable_id': t_id, 'teasable_type': t_type}
+                    if self.wl:
+                        contextMenuItems.append(('Remove from Watchlist', 'RunPlugin("plugin://'+__addonId__+'/?mode=remove_wl&params='+str(para)+'")',))
+                    else:
+                        contextMenuItems.append(('Add to Watchlist', 'RunPlugin("plugin://'+__addonId__+'/?mode=add_wl&params='+str(para)+'")',))
+                li.addContextMenuItems(contextMenuItems, replaceItems=True)        
         xbmcplugin.addDirectoryItems(__addonhandle__, listing)
         xbmcplugin.setContent(__addonhandle__, 'movies')
         xbmcplugin.addSortMethod(__addonhandle__, xbmcplugin.SORT_METHOD_LABEL )    
-        xbmcplugin.endOfDirectory(__addonhandle__)
+        xbmcplugin.endOfDirectory(__addonhandle__,  succeeded=True, updateListing=False, cacheToDisc=False)
         
     
-    def vod_watch(self, pfad, params):
+    def vod_watch(self, __addonhandle__, pfad, params):
         params = ast.literal_eval(params)
         debug (type(params))
         resultData = self.zapi.exec_zapiCall('/zapi/' + pfad , params)
@@ -236,11 +247,15 @@ class vod:
         if STREAM_TYPE == 'dash':
             li.setProperty('inputstream', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-        if STREAM_TYPE == 'dash_widevine':
+        elif STREAM_TYPE == 'dash_widevine':
             li.setProperty('inputstream', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
             li.setProperty('inputstream.adaptive.license_key', streams[streamNr]['license_url'] + "||a{SSM}|")
             li.setProperty('inputstream.adaptive.license_type', "com.widevine.alpha")
+        elif stream_type == 'hls7':
+            li.setProperty('inputstream', 'inputstream.adaptive')
+            li.setProperty('inputstream.adaptive.manifest_type', 'hls')
+
             
         xbmcplugin.setResolvedUrl(__addonhandle__, True, li)
         pos = 0
@@ -250,7 +265,37 @@ class vod:
             except: pass
             xbmc.sleep(100)
     
-    
+    def get_watchlist(self):
+        # get watchlist
+        api = '/zapi/v2/cached/' + self.zapi.AccountData['power_guide_hash'] + '/teaser_collections/ptc_vod_watchlist_movies_landscape'
+        vod_wl = self.zapi.exec_zapiCall(api, None)
+        watchlist = []
+        if not vod_wl: return None
+        for teasers in vod_wl['teasers']:
+            watchlist.append(teasers['teasable_id'])
+        debug(watchlist)
+        return watchlist
+                
+    def add_watchlist(self, params):
+        debug('vod_add')
+        params = ast.literal_eval(params)
+        api = "/zapi/v2/vod/watch_list/add"
+        vod_add = self.zapi.exec_zapiCall(api, params)
+        debug(vod_add)
+        self.watchlist = self.get_watchlist()
+        xbmc.executebuiltin('Container.Refresh')
+        debug(xbmc.getInfoLabel('Container.FolderPath'))
+        
+    def remove_watchlist(self, params):
+        debug('vod_remove')
+        params = ast.literal_eval(params)
+        debug(type(params))
+        api = "/zapi/v2/vod/watch_list/remove"
+        vod_remove = self.zapi.exec_zapiCall(api, params)
+        debug(vod_remove)
+        self.watchlist = self.get_watchlist()
+        xbmc.executebuiltin('Container.Refresh')
+        
                     
         
             

@@ -487,11 +487,11 @@ msgid "always play show in EPG"
 msgstr ""
 
 msgctxt "#40001"
-msgid "function after Recall"
+msgid "Functions in recall"
 msgstr ""
 
 msgctxt "#40002"
-msgid "LiveTV"
+msgid "After recalling LiveTV"
 msgstr ""
 
 msgctxt "#40003"
@@ -504,6 +504,14 @@ msgstr ""
 
 msgctxt "#40005"
 msgid "post_padding in seconds"
+msgstr ""
+
+msgctxt "#40006"
+msgid "Recall as a playlist"
+msgstr ""
+
+msgctxt "#40007"
+msgid "Numeric keypad for Yatse"
 msgstr ""
 
 ### Recordings ###
@@ -672,6 +680,10 @@ msgstr ""
 
 msgctxt "#31301"
 msgid "Play from beginning"
+msgstr ""
+
+msgctxt "#31910"
+msgid "Add to playlist"
 msgstr ""
 
 msgctxt "#31302"
@@ -988,7 +1000,7 @@ msgid "dash"
 msgstr ""
 
 msgctxt "#33151"
-msgid "hls"
+msgid "hls7"
 msgstr ""
 
 msgctxt "#33152"

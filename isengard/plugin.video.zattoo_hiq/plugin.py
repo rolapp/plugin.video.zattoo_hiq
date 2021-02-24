@@ -21,7 +21,9 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
+import sys
 import resources.lib.main as _main_
-    
-_main_.main()
+
+if __name__ == '__main__':
+    # Call the router function and pass the plugin call parameters to it.
+    _main_.main(sys.argv[0],int(sys.argv[1]),sys.argv[2])    

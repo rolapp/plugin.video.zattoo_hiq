@@ -176,7 +176,7 @@
 					<constraints>
 						<options>
 							<option label="33150">dash</option>
-							<option label="33151">hls</option>
+							<option label="33151">hls7</option>
 							<option label="33152">dash_widevine</option>
 						</options>
 					</constraints>
@@ -284,6 +284,13 @@
 				</setting>
 			</group>
 			<group id="2">
+				<setting label="40007" id="yatse" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+			</group>
+			<group id="3">
 				<setting label="310034" id="recall_bool" type="boolean" help="">
 					<level>0</level>
 					<default>false</default>
@@ -295,9 +302,10 @@
 					<default>0</default>
 					<constraints>
 						<options>
-							<option label="31352">0</option>
+							<option label="36044">0</option>
 							<option label="40002">1</option>
 							<option label="40003">2</option>
+							<option label="40006">3</option>
 						</options>
 					</constraints>
 					<dependencies>

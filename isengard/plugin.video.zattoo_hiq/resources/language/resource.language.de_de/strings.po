@@ -448,10 +448,10 @@ msgctxt "#310100"
 msgid "Show Settings in Main Menu"
 msgstr "Zeige Einstellungen im Hauptmenü"
 
-# ## EPG/Aufnahmen ###
+### EPG/Recall ###
 msgctxt "#31010"
-msgid "EPG/Recordings"
-msgstr "EPG/Aufnahmen"
+msgid "EPG/Recall"
+msgstr "EPG/Recall"
 
 msgctxt "#31011"
 msgid "EPG time offset"
@@ -461,17 +461,38 @@ msgctxt "#31012"
 msgid "always play show in EPG"
 msgstr "im EPG immer abspielen"
 
-msgctxt "#31013"
-msgid "select folder for library"
-msgstr "Verzeichnis für Bibliothek auswählen"
+msgctxt "#310171"
+msgid "show LiveTV in EPG"
+msgstr "Zeige LiveTV im EPG"
 
-msgctxt "#31014"
-msgid "Reset Folder"
-msgstr "Verzeichnis zurücksetzen"
+msgctxt "#40001"
+msgid "Functions in recall"
+msgstr "Funktionen im Recall"
 
-msgctxt "#31015"
-msgid "make library files"
-msgstr "Bibliothek Dateien erstellen"
+msgctxt "#40002"
+msgid "After recalling LiveTV"
+msgstr "Nach Recall ins LiveTV"
+
+msgctxt "#40003"
+msgid "next broadcast in recall"
+msgstr "nächste Sendung im Recall"
+
+msgctxt "#40004"
+msgid "pre_padding in seconds"
+msgstr "Vorlauf in Sekunden"
+
+msgctxt "#40005"
+msgid "post_padding in seconds"
+msgstr "Nachlauf in Sekunden"
+
+msgctxt "#40006"
+msgid "Recall as a playlist"
+msgstr "Recall als Playliste"
+
+### Aufnahmen ###
+msgctxt "#40000"
+msgid "Recordings"
+msgstr "Aufnahmen"
 
 msgctxt "#31016"
 msgid "Only finished recordings"
@@ -493,9 +514,18 @@ msgctxt "#31019"
 msgid "weekday day.month.year hour:minute"
 msgstr "Wochentag Tag.Monat.Jahr Stunde:Minute"
 
-msgctxt "#310171"
-msgid "show LiveTV in EPG"
-msgstr "Zeige LiveTV im EPG"
+msgctxt "#31013"
+msgid "select folder for library"
+msgstr "Verzeichnis für Bibliothek auswählen"
+
+msgctxt "#31014"
+msgid "Reset Folder"
+msgstr "Verzeichnis zurücksetzen"
+
+msgctxt "#31015"
+msgid "make library files"
+msgstr "Bibliothek Dateien erstellen"
+
 
 # ## Datenbank ###
 msgctxt "#31020"
@@ -617,6 +647,10 @@ msgctxt "#31204"
 msgid "play or record:"
 msgstr "abspielen oder aufnehemn:"
 
+msgctxt "#31910"
+msgid "Add to playlist"
+msgstr "Zur Playliste hinzufügen"
+
 msgctxt "#31250"
 msgid "Database was cleared and current data was loaded."
 msgstr "Die Datenbank wurde gelöscht und neue Daten wurden geladen."
@@ -631,7 +665,7 @@ msgstr "Diese Sendung aufnehmen"
 
 msgctxt "#31301"
 msgid "Play from beginning"
-msgstr "Von Anfang abspielen"
+msgstr "Vom Anfang abspielen"
 
 msgctxt "#31302"
 msgid "Function not available!"

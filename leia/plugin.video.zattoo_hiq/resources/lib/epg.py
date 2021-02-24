@@ -47,6 +47,7 @@ local = xbmc.getLocalizedString
 accountData=_zattooDB_.zapi.get_accountData()
 DEBUG = __addon__.getSetting('debug')
 
+
 # get Timezone Offset
 from tzlocal import get_localzone
 
@@ -117,7 +118,16 @@ CHANNELS_PER_PAGE = 8
 
 HALF_HOUR = datetime.timedelta(minutes=30)
 
-
+if __addon__.getSetting('yatse') == 'true':
+    NEXT_DAY = [ACTION_NEXT_ITEM, ACTION_PAGE_UP]
+    PREV_DAY = [ACTION_PREV_ITEM, ACTION_PAGE_DOWN]
+    NEXT_SITE = [ACTION_1]
+    PREV_SITE = [ACTION_7, ACTION_JUMP_SMS7]
+else:
+    NEXT_DAY = [ACTION_NEXT_ITEM, ACTION_1, ACTION_PLAYER_FORWARD]
+    PREV_DAY = [ACTION_PREV_ITEM, ACTION_7, ACTION_JUMP_SMS7, ACTION_PLAYER_REWIND]
+    NEXT_SITE = [ACTION_PAGE_UP]
+    PREV_SITE = [ACTION_PAGE_DOWN]
 
 if __addon__.getSetting('country') == 'CH': SWISS = 'true'
 else: SWISS = 'false'
@@ -317,13 +327,13 @@ class EPG(xbmcgui.WindowXML):
         elif actionId in [ACTION_3, ACTION_JUMP_SMS3]:
             self.viewStartDate += datetime.timedelta(hours=2)
             self.onRedrawEPG(self.channelIdx, self.viewStartDate)
-        elif actionId in [ACTION_NEXT_ITEM, ACTION_1, ACTION_PLAYER_FORWARD]:
+        elif actionId in NEXT_DAY:
             self._nextDay()
-        elif actionId in [ACTION_PREV_ITEM, ACTION_7, ACTION_JUMP_SMS7, ACTION_PLAYER_REWIND]:
+        elif actionId in PREV_DAY:
             self._previousDay()
-        elif actionId == ACTION_PAGE_UP:
+        elif actionId in NEXT_SITE:
             self._moveUp(CHANNELS_PER_PAGE)
-        elif actionId == ACTION_PAGE_DOWN:
+        elif actionId in PREV_SITE:
             self._moveDown(CHANNELS_PER_PAGE)
         elif actionId == ACTION_MOUSE_WHEEL_UP:
             self._moveUp(scrollEvent=True)

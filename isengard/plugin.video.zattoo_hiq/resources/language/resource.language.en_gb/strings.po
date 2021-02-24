@@ -465,14 +465,17 @@ msgctxt "#310099"
 msgid "Show Help in Main Menu"
 msgstr ""
 
-
 msgctxt "#310100"
 msgid "Show Settings in Main Menu"
 msgstr ""
 
-### EPG/Aufnahmen ###
+### EPG/Recall ###
 msgctxt "#31010"
-msgid "EPG/Recordings"
+msgid "EPG/Recall"
+msgstr ""
+
+msgctxt "#310171"
+msgid "show LiveTV in EPG"
 msgstr ""
 
 msgctxt "#31011"
@@ -481,6 +484,36 @@ msgstr ""
 
 msgctxt "#31012"
 msgid "always play show in EPG"
+msgstr ""
+
+msgctxt "#40001"
+msgid "Functions in recall"
+msgstr ""
+
+msgctxt "#40002"
+msgid "After recalling LiveTV"
+msgstr ""
+
+msgctxt "#40003"
+msgid "next broadcast in recall"
+msgstr ""
+
+msgctxt "#40004"
+msgid "pre_padding in seconds"
+msgstr ""
+
+msgctxt "#40005"
+msgid "post_padding in seconds"
+msgstr ""
+
+msgctxt "#40006"
+msgid "Recall as a playlist"
+msgstr ""
+
+
+### Recordings ###
+msgctxt "#40000"
+msgid "Recordings"
 msgstr ""
 
 msgctxt "#31013"
@@ -513,10 +546,6 @@ msgstr ""
 
 msgctxt "#31019"
 msgid "weekday day.month.year hour:minute"
-msgstr ""
-
-msgctxt "#310171"
-msgid "show LiveTV in EPG"
 msgstr ""
 
 ### Datenbank ###
@@ -648,6 +677,10 @@ msgstr ""
 
 msgctxt "#31301"
 msgid "Play from beginning"
+msgstr ""
+
+msgctxt "#31910"
+msgid "Add to playlist"
 msgstr ""
 
 msgctxt "#31302"

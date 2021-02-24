@@ -249,12 +249,12 @@ class ZattooDB(object):
     #time.sleep(5)
     api = '/zapi/channels/favorites'
     favoritesData = self.zapi.exec_zapiCall(api, None)
-    debug (str(favoritesData))
+    #debug (str(favoritesData))
     if favoritesData == None:
         debug('favourites = None')
         time.sleep(5)
         favoritesData = self.zapi.exec_zapiCall(api, None)
-    debug (str(favoritesData))
+    #debug (str(favoritesData))
 
     nr = 0
     #for group in channelsData['channel_groups']:
@@ -602,7 +602,7 @@ class ZattooDB(object):
         else:
             #api = '/zapi/program/details?program_id=' + str(showID) + '&complete=True'
             api = '/zapi/v2/cached/program/power_details/' + self.zapi.AccountData['power_guide_hash']+'?program_ids='+str(showID)
-            debug(api)
+            #debug(api)
             showInfo = self.zapi.exec_zapiCall(api, None)
             if showInfo is None:
                 c.close()
@@ -684,7 +684,7 @@ class ZattooDB(object):
         c = self.conn.cursor()
         
         programList = []
-        debug(showID)
+       # debug(showID)
         #try:
         c.execute('SELECT * FROM programs WHERE showID = ? ', [showID])
         #except:pass
@@ -809,8 +809,6 @@ class ZattooDB(object):
                     percent = int(bar * 100 / counter)
                 
                 if description_long is None or int(restart) == 0:
-                    #debug (str(row['channel'])+' ' +str(row["showID"]))
-                    debug('Restart '+str(int(restart)))
                     if notify:
                         PopUp.update(percent,localString(31922), localString(31923) + str(row['channel']))
                     description_long = self.getShowLongDescription(row["showID"])

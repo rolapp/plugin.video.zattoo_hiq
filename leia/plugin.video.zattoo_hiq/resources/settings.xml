@@ -19,7 +19,7 @@
         <setting type="sep"/>
         <setting label="31005" id="max_bandwidth" type="labelenum" values="600|900|1500|3000|5000|8000" default="8000"/>
         <setting label="31006" id="audio_stream" type="labelenum" values="A|B" default="A"/>
-        <setting label="310065" id="stream_type" type="labelenum" values="hls5|hls7|dash|dash_widevine" default="dash"/>
+        <setting label="310065" id="stream_type" type="labelenum" values="hls7|dash|dash_widevine" default="dash"/>
         <setting label="310066" id="dolby" type="bool" default="false"/>
         <setting type="sep"/>
         <setting label="31007" type="bool" id="start_liveTV" default="false"/>
@@ -36,7 +36,9 @@
         <setting label="31011"  id="time_offset" type="labelenum" values="-12|-11|-10|-9|-8|-7|-6|-5|-4|-3|-2|-1|0|1|2|3|4|5|6|7|8|9|10|11|12" default="-2"/>
         <setting label="31012" type="bool" id="epgPlay" default="false"/>
         <setting label="310171" id="livetv" type="bool" default="false"/>
-        <setting label="310034" type="sep"/>
+        <setting type="sep"/>
+        <setting label="40007" type="bool" id="yatse" default="false"/>
+        <setting type="sep"/>
         <setting label="310034" id="recall_bool" type="bool" visible="false" />
         <setting label="40001" id="after_recall" type="select" lvalues="36044|40002|40003|40006" visible="eq(-1,true)"/>
         <setting label="40004" id="pre_padding" type="slider" default="0" range="0,300" option="int" visible="!eq(-2,0)" />

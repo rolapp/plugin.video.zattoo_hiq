@@ -448,7 +448,7 @@ msgctxt "#310100"
 msgid "Show Settings in Main Menu"
 msgstr "Zeige Einstellungen im Hauptmenü"
 
-# ## EPG/Aufnahmen ###
+### EPG/Recall ###
 msgctxt "#31010"
 msgid "EPG/Recall"
 msgstr "EPG/Recall"
@@ -461,17 +461,17 @@ msgctxt "#31012"
 msgid "always play show in EPG"
 msgstr "im EPG immer abspielen"
 
-msgctxt "#31013"
+msgctxt "#310171"
 msgid "show LiveTV in EPG"
 msgstr "Zeige LiveTV im EPG"
 
-msgctxt "#31014"
-msgid "function after Recall"
-msgstr "Funktion nach Recall"
+msgctxt "#40001"
+msgid "Functions in recall"
+msgstr "Funktionen im Recall"
 
-msgctxt "#31015"
-msgid "LiveTV"
-msgstr "Live-TV"
+msgctxt "#40002"
+msgid "After recalling LiveTV"
+msgstr "Nach Recall ins LiveTV"
 
 msgctxt "#40003"
 msgid "next broadcast in recall"
@@ -484,6 +484,14 @@ msgstr "Vorlauf in Sekunden"
 msgctxt "#40005"
 msgid "post_padding in seconds"
 msgstr "Nachlauf in Sekunden"
+
+msgctxt "#40006"
+msgid "Recall as a playlist"
+msgstr "Recall als Playliste"
+
+msgctxt "#40007"
+msgid "Numeric keypad for Yatse"
+msgstr "Zifferblock für Yatse"
 
 ### Aufnahmen ###
 msgctxt "#40000"
@@ -510,7 +518,7 @@ msgctxt "#31019"
 msgid "weekday day.month.year hour:minute"
 msgstr "Wochentag Tag.Monat.Jahr Stunde:Minute"
 
-msgctxt "#310171"
+msgctxt "#31013"
 msgid "select folder for library"
 msgstr "Verzeichnis für Bibliothek auswählen"
 
@@ -643,6 +651,10 @@ msgctxt "#31204"
 msgid "play or record:"
 msgstr "abspielen oder aufnehemn:"
 
+msgctxt "#31910"
+msgid "Add to playlist"
+msgstr "Zur Playliste hinzufügen"
+
 msgctxt "#31250"
 msgid "Database was cleared and current data was loaded."
 msgstr "Die Datenbank wurde gelöscht und neue Daten wurden geladen."
@@ -657,7 +669,7 @@ msgstr "Diese Sendung aufnehmen"
 
 msgctxt "#31301"
 msgid "Play from beginning"
-msgstr "Von Anfang abspielen"
+msgstr "Vom Anfang abspielen"
 
 msgctxt "#31302"
 msgid "Function not available!"
@@ -970,7 +982,7 @@ msgid "dash"
 msgstr ""
 
 msgctxt "#33151"
-msgid "hls"
+msgid "hls7"
 msgstr ""
 
 msgctxt "#33152"

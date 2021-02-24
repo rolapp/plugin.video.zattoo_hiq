@@ -95,7 +95,7 @@ class ChannelsPreview(xbmcgui.WindowXML): #needs to be WindowXML or onInit won't
             self.refreshTimerRunning=False
             debug(self.controls[self.selected%16]['program']['showID'])
             url = "plugin://"+__addonId__+"/?mode=watch_c&showID=" + self.controls[self.selected%16]['program']['showID'] + "&id=" + self.controls[self.selected%16]['channel']
-            xbmc.executebuiltin('XBMC.RunPlugin(%s)' % url)
+            xbmc.executebuiltin('RunPlugin(%s)' % url)
             #xbmc.executebuiltin("Action(FullScreen)")
         elif actionID == ACTION_MOUSE_MOVE:
             x=int(action.getAmount1()/(self.getWidth()/5))

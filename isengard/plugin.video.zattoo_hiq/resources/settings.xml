@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-        <category label="310031">
-                <setting label="31001" id="username" type="text" default=""/>
-                <setting label="31002" id="password" type="text" option="hidden" enable="!eq(-1,)" default=""/>
-                <setting id="channellist" enabled="false"/>
-                <setting id="provider" type="enum" label="31004" default = "0" values="Zattoo|1und1|SwbTV|m-net|WALY.TV|meinewelt.cc|BBV-tv.net|VTXtv.ch|Salt.tv|GLATTvision.ch|SAKtv.ch|NetCologne|EWE.de|quantum TV" />
-                <setting type="sep"/>
-                <setting label="310033" id="accounttype" type="text" enable="false" />
-                <setting label="310038" id="country" type="text" enable="false" />
-                <setting label="310034" id="recall" type="text" enable="false" />
-                <setting label="310035" id="record" type="text" enable="false" />
-        </category>
-
+    <category label="310031">
+            <setting label="31001" id="username" type="text" default=""/>
+            <setting label="31002" id="password" type="text" option="hidden" enable="!eq(-1,)" default=""/>
+            <setting id="channellist" enabled="false"/>
+            <setting id="provider" type="enum" label="31004" default = "0" values="Zattoo|1und1|SwbTV|m-net|WALY.TV|meinewelt.cc|BBV-tv.net|VTXtv.ch|Salt.tv|GLATTvision.ch|SAKtv.ch|NetCologne|EWE.de|quantum TV" />
+            <setting type="sep"/>
+            <setting label="310033" id="accounttype" type="text" enable="false" />
+            <setting label="310038" id="country" type="text" enable="false" />
+            <setting label="310034" id="recall" type="text" enable="false" />
+            <setting label="310035" id="record" type="text" enable="false" />
+    </category>
 
     <category label="31000">
 
@@ -20,32 +19,39 @@
         <setting type="sep"/>
         <setting label="31005" id="max_bandwidth" type="labelenum" values="600|900|1500|3000|5000|8000" default="8000"/>
         <setting label="31006" id="audio_stream" type="labelenum" values="A|B" default="A"/>
-        <setting label="310065" id="stream_type" type="labelenum" values="hls|dash|dash_widevine" default="hls" enable="false"/>
+        <setting label="310065" id="stream_type" type="labelenum" values="hls5|hls7" default="hls7"/>
         <setting label="310066" id="dolby" type="bool" default="false"/>
         <setting type="sep"/>
         <setting label="31007" type="bool" id="start_liveTV" default="false"/>
         <setting label="31009" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=selectStartChannel)" enable="eq(-1,true)"/>
         <setting label="310091" type="text" id="start_channel" enable="false" visible="gt(0,)"/>
-	<setting type="sep"/>
+        <setting type="sep"/>
         <setting label="310099" type="bool" id="help" default="true"/>
         <setting label="310100" type="bool" id="settings" default="false"/>
         <setting label="310096" type="bool" id="debug" default="false"/>
 
-        </category>
+    </category>
 
     <category label="31010">
         <setting label="31011"  id="time_offset" type="labelenum" values="-12|-11|-10|-9|-8|-7|-6|-5|-4|-3|-2|-1|0|1|2|3|4|5|6|7|8|9|10|11|12" default="-2"/>
         <setting label="31012" type="bool" id="epgPlay" default="false"/>
-        <setting label="31017" id="rec_name" default="0" type="enum" lvalues="31018|31019" />
         <setting label="310171" id="livetv" type="bool" default="false"/>
-        <setting type="sep"/>
+        <setting label="310034" type="sep"/>
+        <setting label="310034" id="recall_bool" type="bool" visible="false" />
+        <setting label="40001" id="after_recall" type="select" lvalues="36044|40002|40003|40006" visible="eq(-1,true)"/>
+        <setting label="40004" id="pre_padding" type="slider" default="0" range="0,300" option="int" visible="!eq(-2,0)" />
+        <setting label="40005" id="post_padding" type="slider" default="0" range="0,1200" option="int" visible="!eq(-3,0)" />
+    </category>
+    
+    <category label="40000">
+        <setting label="31017" id="rec_name" default="0" type="enum" lvalues="31018|31019" />
         <setting label="31016" type="bool" id="rec_ready" default="false"/>
         <setting label="310161" type="bool" id="rec_now" default="false" enable="eq(-1,true)" />
         <setting label="31013" type="folder" id="library_dir" source="video" option="writeable"/>
         <setting label="31014" type="action" id="reset_dir" enable="!eq(-1,)" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=resetdir)"/>
         <setting label="31015" type="action" option="hidden" enable="!eq(-2,)" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=makelibrary)"/>
-
     </category>
+    
     <category label="31020">
         <setting label="31021" id="dbonstart" type="bool" default="false" />
         <setting label="31022" id="onlyfav" type="bool" enable="eq(-1,true)" default="false" />
@@ -53,6 +59,7 @@
         <setting label="31023" id="reloadDB" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=reloadDB)"/>
         <setting label="31024" id="clearCache" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=clearCache)"/>
     </category>
+    
     <category label="31030">
         <setting label="31032" type="action" action="RunPlugin(plugin://plugin.video.zattoo_hiq/?mode=editKeyMap)"/>
         <setting label="31033" type="enum" id="keymap" lvalues="31035|31034|31036"/>

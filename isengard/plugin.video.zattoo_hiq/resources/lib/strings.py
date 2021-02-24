@@ -69,7 +69,7 @@ RECORD_SHOW = 31300
 PLAY_FROM_START = 31301
 ERROR_NO_PREMIUM= 31302
 RECORD_SERIES = 31305
-
+ADD_TO_PLAYLIST = 31910
 
 def strings(id, replacements = None):
     string = ADDON.getLocalizedString(id)

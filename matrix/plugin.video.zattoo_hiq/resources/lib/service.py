@@ -27,9 +27,14 @@ from resources.lib.library import library
 from resources.lib.zattooDB import ZattooDB
 from resources.lib.zapisession import ZapiSession
 
+#import web_pdb;
+
+global player
+
 _zattooDB_ = ZattooDB()
 __addon__ = xbmcaddon.Addon()
 __addondir__  = xbmc.translatePath( __addon__.getAddonInfo('profile') )
+__addonId__=__addon__.getAddonInfo('id')
 
 _library_=library()
 localString = __addon__.getLocalizedString
@@ -99,8 +104,11 @@ def start():
     OLDVERSION = _zattooDB_.get_version(VERSION)
 
     if OLDVERSION != VERSION:
-       #_zattooDB_.reloadDB(True)
-       _zattooDB_.set_version(VERSION)
+    
+        # reload DB
+        #_zattooDB_.reloadDB()
+        # set Version
+        _zattooDB_.set_version(VERSION)
 
     import urllib.request, urllib.parse, urllib.error
     #xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
@@ -156,50 +164,59 @@ def getProgNextDay():
 # start
 class myPlayer(xbmc.Player):
 
-    def __init__(self, skip=0):
+    def __init__( self, skip=0, *args):
+      
       self.skip=skip
       self.startTime=0
       self.playing=True
-
-
+      self.playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+      
     def onPlayBackStarted(self):
-      debug('MyPlayer')
-      #self.loadKeymap()
-      if (self.skip>0):
-        self.seekTime(self.skip)
-        self.startTime=self.startTime-datetime.timedelta(seconds=self.skip)
-      xbmc.sleep(200)
-      playingFile=xbmc.getInfoLabel('Player.Filenameandpath')
-      debug(playingFile)
-      #print "playingfile: " + str(playingFile)
-      if playingFile.find('dash-live')>-1 or playingFile.find('hls-live')>-1 or playingFile.find('dashenc-live')>-1:
+        from resources.lib.zattooDB import ZattooDB
+        _zattooDB_ = ZattooDB()
+        live = 'false'
+        streams = xbmc.getInfoLabel('Player.Filenameandpath')
+        showID = xbmc.getInfoLabel('VideoPlayer.Writer')
+        channel = xbmc.getInfoLabel('VideoPlayer.Director')
+        _zattooDB_.set_playing(channel, showID, streams, 0)
+        
+        # load Keymap for liveTV
+        if streams.find('dash-live')>-1 or streams.find('hls5-live')>-1 or streams.find('dashenc-live')>-1 or streams.find('hls7-live')>-1:
+            live = 'true'
             self.loadKeymap()
-
-      else: #start recall while playing -> unload keymap
-        self.unloadKeymap()
-
-    #def onPlayBackSeek(self, time, seekOffset):
-    #  if self.startTime+datetime.timedelta(milliseconds=time) > datetime.datetime.now():
-    #    channel=_zattooDB_.get_playing()['channel']
-        #_zattooDB_.set_playing() #clear setplaying to start channel in watch_channel
-     #   self.playing=False
-     #   xbmc.executebuiltin('RunPlugin("plugin://'+__addonId__+'/?mode=watch_c&id='+channel+'&showOSD=1")')
-
+        else: 
+            self.unloadKeymap()
+            
 
     def onPlayBackStopped(self):
       self.unloadKeymap()
-      self.playing=False;
+      self.playing=False
+      self.playlist.clear()
 
     def onPlayBackEnded(self):
-      self.unloadKeymap()
-      self.playing=False;
+      playing = _zattooDB_.get_playing()
+      if playing['channel'] != '': 
+          ret = xbmcgui.Window(12005).getProperty('after_recall')
+          #GreenAir: switch to live
+          if ret == "1":
+            playing = _zattooDB_.get_playing()
+            xbmc.executebuiltin('RunPlugin("plugin://'+__addonId__+'/?mode=watch_c&id='+playing['channel'] +'")')
+          #GreenAir: continue with next recall
+          elif ret == "2":
+            playing = _zattooDB_.get_playing()
+            program = _zattooDB_.get_showID(playing['showID'])[0]
+            nextprog = _zattooDB_.getPrograms({'index':[program['channel']]}, True, program['end_date']+datetime.timedelta(seconds=20), program['end_date']+datetime.timedelta(seconds=50))[0]
+    
+            xbmc.executebuiltin('RunPlugin("plugin://'+__addonId__+'/?mode=watch_c&id='+nextprog['channel'] + '&showID=' + nextprog['showID'] +'&restart=true")')
+    
+            notice ('continueRecall program:'+str(program))
+            notice ('continueRecall nextprog:'+str(nextprog))
 
-
+            
     def loadKeymap(self):
 
       source = __addondir__ + '/zattooKeymap.xml'
-      dest = xbmcvfs.translatePath('special://profile/keymaps/zattooKeymap.xml')
-      debug(dest)
+      dest = xbmc.translatePath('special://profile/keymaps/zattooKeymap.xml')
       if os.path.isfile(dest): return
       with open(source, 'r') as file: content = file.read()
       with open(dest, 'w') as file: file.write(content)
@@ -208,7 +225,7 @@ class myPlayer(xbmc.Player):
 
     def unloadKeymap(self):
 
-      path=xbmcvfs.translatePath('special://profile/keymaps/zattooKeymap.xml')
+      path=xbmc.translatePath('special://profile/keymaps/zattooKeymap.xml')
       if os.path.isfile(path):
         try:
           os.remove(path)
