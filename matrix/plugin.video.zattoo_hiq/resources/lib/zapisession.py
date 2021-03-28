@@ -10,6 +10,7 @@ import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
 import os, re, base64,sys
 import urllib.request, urllib.parse, urllib.error
 import json
+from http.client import BadStatusLine
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
@@ -18,8 +19,8 @@ __addonVersion__ = __addon__.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel( "System.BuildVersion" ).split()[0]
 DEBUG = __addon__.getSetting('debug')
 
+USERAGENT = 'Kodi-'+str(KODIVERSION)+' '+str(__addonname__)+'-'+str(__addonVersion__)+' (Kodi Video Addon)'
 #USERAGENT = 'Kodi-'+str(KODIVERSION)+' '+str(__addonname__)+'-'+str(__addonVersion__)+' (Kodi Video Addon)'
-USERAGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0'
 
 def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
@@ -110,8 +111,6 @@ class ZapiSession:
     def persist_accountData(self, accountData):
         with open(self.ACCOUNT_FILE, 'wb') as f:
             f.write(base64.b64encode(json.dumps(accountData).encode('utf-8')))
-        with open(self.ACCOUNT_TXT, 'w') as f:
-            f.write(json.dumps(accountData))
 
     def persist_sessionId(self, sessionId):
         with open(self.COOKIE_FILE, 'wb') as f:
@@ -120,8 +119,6 @@ class ZapiSession:
     def persist_sessionData(self, sessionData):
         with open(self.SESSION_FILE, 'wb') as f:
             f.write(base64.b64encode(json.dumps(sessionData).encode('utf-8')))
-        with open(self.SESSION_TXT, 'w') as f:
-            f.write(json.dumps(sessionData))
 
     def set_cookie(self, sessionId):
         self.HttpHandler.addheaders.append(('Cookie', 'beaker.session.id=' + sessionId))
@@ -153,12 +150,10 @@ class ZapiSession:
            debug(str(e))
            if '403' in str(e):
                 debug('Error 403')
-               # profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
-                # if os.path.isfile(os.path.join(profilePath, 'session.cache')):
-                    # os.remove(os.path.join(profilePath, 'session.cache'))
-                # if os.path.isfile(os.path.join(profilePath, 'account.cache')):
-                    # os.remove(os.path.join(profilePath, 'account.cache'))
-                self.renew_session()
+
+        except BadStatusLine:
+            pass
+
         return None
 
     # zapiCall with params=None creates GET request otherwise POST
@@ -183,7 +178,7 @@ class ZapiSession:
         # return None
 
     def fetch_appToken(self):
-        handle = urllib.request.urlopen(self.ZAPIUrl)
+        handle = urllib.request.urlopen(self.ZAPIUrl + '/login')
         html = str(handle.read())
         js = re.search(r"\/app-\w+\.js", html).group(0)
         handle = urllib.request.urlopen(self.ZAPIUrl + js)
@@ -198,7 +193,7 @@ class ZapiSession:
         return htmlJson['session_token']
                 
     def fetch_appVersion(self):
-        handle = urllib.request.urlopen(self.ZAPIUrl)
+        handle = urllib.request.urlopen(self.ZAPIUrl + '/login')
         html = str(handle.read())
         return re.search("<!--(.+?)-v(.+?)-", html).group(2)
 

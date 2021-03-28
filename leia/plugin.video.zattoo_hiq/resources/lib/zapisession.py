@@ -140,11 +140,9 @@ class ZapiSession:
 
            if '403' in str(e):
                 debug('Error 403')
-                # profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-                # if os.path.isfile(os.path.join(profilePath, 'session.cache')):
-                    # os.remove(os.path.join(profilePath, 'session.cache'))
-                # if os.path.isfile(os.path.join(profilePath, 'account.cache')):
-                    # os.remove(os.path.join(profilePath, 'account.cache'))
+
+        except BadStatusLine:
+            pass
                 #self.renew_session()
 
         return None
@@ -170,7 +168,7 @@ class ZapiSession:
     
     def fetch_appToken(self):
 
-        handle = urllib2.urlopen(self.ZAPIUrl)
+        handle = urllib2.urlopen(self.ZAPIUrl + '/login')
         html = str(handle.read())
         js = re.search(r"\/app-\w+\.js", html).group(0)
         handle = urllib2.urlopen(self.ZAPIUrl + js)
@@ -185,7 +183,7 @@ class ZapiSession:
         return htmlJson['session_token']
                 
     def fetch_appVersion(self):
-        handle = urllib2.urlopen(self.ZAPIUrl)
+        handle = urllib2.urlopen(self.ZAPIUrl + '/login')
         html = str(handle.read())
         return re.search("<!--(.+?)-v(.+?)-", html).group(2)        
         

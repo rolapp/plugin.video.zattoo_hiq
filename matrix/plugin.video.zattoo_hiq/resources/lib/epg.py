@@ -778,7 +778,7 @@ class EPG(xbmcgui.WindowXML):
         self.channelIdx = channelStart
 
         
-        '''
+        ret=self.db.updateProgram(startTime)
         #channels that are visible 
         channels={'index':[]}
         for nr in range(0, CHANNELS_PER_PAGE):
@@ -846,8 +846,8 @@ class EPG(xbmcgui.WindowXML):
                             int(cellWidth - 2),
                             int(self.epgView.cellHeight - 2),
                             title,
-                            noFocusTexture,
-                            focusTexture
+                            noFocusTexture=noFocusTexture,
+                            focusTexture=focusTexture
                         )
         
                         self.controlAndProgramList.append(ControlAndProgram(control, program))

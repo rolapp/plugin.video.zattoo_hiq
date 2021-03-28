@@ -174,6 +174,15 @@ elif accountData['nonlive']['replay_availability'] == 'needs_activation':
 else:
     __addon__.setSetting('recall', localString(310039))
     __addon__.setSetting('recall_bool', 'false')
+    
+# Set Youth Protection PIN
+# params = {'password': __addon__.getSetting('password')}
+# req = _zattooDB_.zapi.exec_zapiCall('/zapi/account/get_pin', params)
+# ypin_zattoo = req['pin']
+# #ypin_local = __addon__.getSetting('ypin')
+# debug('Ypin: '+str(ypin_zattoo))
+# pin = _zattooDB_.zapi.exec_zapiCall('/zapi/account/pin_toggle', None)
+# debug(pin)
         
 try:
   SERIE=accountData['nonlive']['series_recording_eligible']
