@@ -778,7 +778,7 @@ class EPG(xbmcgui.WindowXML):
         self.channelIdx = channelStart
 
         
-        ret=self.db.updateProgram(startTime)
+        '''
         #channels that are visible 
         channels={'index':[]}
         for nr in range(0, CHANNELS_PER_PAGE):

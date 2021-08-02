@@ -91,12 +91,12 @@ def start():
     from resources.lib.zattooDB import ZattooDB
     _zattooDB_ = ZattooDB()
     # reload Account
-    xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)
-    profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-    os.remove(os.path.join(profilePath, 'cookie.cache'))
-    os.remove(os.path.join(profilePath, 'session.cache'))
-    os.remove(os.path.join(profilePath, 'account.cache'))
-    _zattooDB_.zapiSession()
+    # xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)
+    # profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+    # os.remove(os.path.join(profilePath, 'cookie.cache'))
+    # os.remove(os.path.join(profilePath, 'session.cache'))
+    # os.remove(os.path.join(profilePath, 'account.cache'))
+    #_zattooDB_.zapiSession()
         
     player = myPlayer()
     VERSION = __addon__.getAddonInfo('version')

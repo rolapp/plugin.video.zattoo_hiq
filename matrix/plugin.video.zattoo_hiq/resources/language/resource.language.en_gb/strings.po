@@ -404,6 +404,10 @@ msgctxt "#310039"
 msgid "Not available"
 msgstr ""
 
+msgctxt "#310040"
+msgid "Youth protection pin"
+msgstr ""
+
 ## Settings ##
 msgctxt "#31000"
 msgid "Zattoo settings"
@@ -798,7 +802,9 @@ msgctxt "#31926"
 msgid "Toggle wached"
 msgstr ""
 
-
+msgctxt "#31927"
+msgid "Child protection PIN must have 4 characters"
+msgstr ""
 
 
 ### KeyMap ###

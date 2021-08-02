@@ -363,9 +363,11 @@ class ZattooDB(object):
                   #https://images.zattic.com/cms/64ab6db7f62b325f4148/original.jpg
                   #http://images.zattic.com/system/images/6dcc/8817/50d1/dfab/f21c/format_480x360.jpg
                 else: image = ""
-
+                if program['et'] != None:
+                    et = program['et']
+                else: et = ""
                 c.execute('INSERT OR IGNORE INTO programs(channel, title, start_date, end_date, description,  genre, image_small, showID, category, restart, record) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    [cid, program['t'], program['s'], program['e'], program['et'], ', '.join(program['g']), image, program['id'], ', '.join(program['c']), restart, record])
+                    [cid, program['t'], program['s'], program['e'], et, ', '.join(program['g']), image, program['id'], ', '.join(program['c']), restart, record])
             i+=1
 
     if count>0:

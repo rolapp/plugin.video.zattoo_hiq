@@ -3,6 +3,7 @@
     <category label="310031">
             <setting label="31001" id="username" type="text" default=""/>
             <setting label="31002" id="password" type="text" option="hidden" enable="!eq(-1,)" default=""/>
+            <setting label="310040" id="ypin" type="number" default=""/>
             <setting id="channellist" enabled="false"/>
             <setting id="provider" type="enum" label="31004" default = "0" values="Zattoo|1und1|SwbTV|m-net|WALY.TV|meinewelt.cc|BBV-tv.net|VTXtv.ch|Salt.tv|GLATTvision.ch|SAKtv.ch|NetCologne|EWE.de|quantum TV" />
             <setting type="sep"/>

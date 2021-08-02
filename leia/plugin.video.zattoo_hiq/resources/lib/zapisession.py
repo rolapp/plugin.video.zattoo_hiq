@@ -10,6 +10,7 @@ import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 import os, re, base64,sys
 import urllib, urllib2
 import json
+from httplib import BadStatusLine
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')

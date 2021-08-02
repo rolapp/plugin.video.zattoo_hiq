@@ -39,6 +39,7 @@ STREAM_TYPE     = __addon__.getSetting('stream_type')
 DOLBY           = __addon__.getSetting('dolby')
 MAX_BANDWIDTH   = __addon__.getSetting('max_bandwidth')
 DEBUG           = __addon__.getSetting('debug')
+YPIN			= __addon__.getSetting('ypin')
 
 def debug(content):
     if DEBUG:log(content, xbmc.LOGDEBUG)
@@ -143,7 +144,8 @@ class vod:
                 if t_type == 'Avod::Video': 
                     pfad ='avod/videos/' + data['token'] + '/watch'
                     params = {
-                            'stream_type': STREAM_TYPE
+                            'stream_type': STREAM_TYPE,
+                            'youth_protection_pin': YPIN
                             }
                 if t_type == 'Vod::Video': 
                     pfad = 'watch/vod/video'
@@ -155,7 +157,8 @@ class vod:
                             'term_token': str(token),
                             'teasable_id': str(t_id),
                             'teasable_type': t_type,
-                            'stream_type': STREAM_TYPE
+                            'stream_type': STREAM_TYPE,
+                            'youth_protection_pin': YPIN
                             }
                         
                 elif t_type == 'Vod::Movie': 
@@ -168,7 +171,8 @@ class vod:
                             'term_token': str(token),
                             'teasable_id': str(t_id),
                             'teasable_type': t_type,
-                            'stream_type': STREAM_TYPE
+                            'stream_type': STREAM_TYPE,
+                            'youth_protection_pin': YPIN
                             }
                 
                 episode = ''
@@ -247,11 +251,15 @@ class vod:
         if STREAM_TYPE == 'dash':
             li.setProperty('inputstreamaddon', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-        if STREAM_TYPE == 'dash_widevine':
+        elif STREAM_TYPE == 'dash_widevine':
             li.setProperty('inputstreamaddon', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
             li.setProperty('inputstream.adaptive.license_key', streams[streamNr]['license_url'] + "||a{SSM}|")
             li.setProperty('inputstream.adaptive.license_type', "com.widevine.alpha")
+        elif STREAM_TYPE == 'hls7':
+            li.setProperty('inputstream', 'inputstream.adaptive')
+            li.setProperty('inputstream.adaptive.manifest_type', 'hls')
+
             
         xbmcplugin.setResolvedUrl(__addonhandle__, True, li)
         pos = 0

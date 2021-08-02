@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.zattoo_hiq" version="2.0.47" name="Zattoo HiQ" provider-name="Steffen Rolapp">
+<addon id="plugin.video.zattoo_hiq" version="2.0.52" name="Zattoo HiQ" provider-name="Steffen Rolapp">
   <requires>
     <import addon="xbmc.python" version="2.26.0"/>
     <import addon="inputstream.adaptive" />
@@ -41,7 +41,7 @@ Zattoo Live TV, Aufnahmen und EPG
         Bugfix Provider
     </news>
     <license>GNU GENERAL PUBLIC LICENSEVersion 3, 29 June 2007</license>
-    <source>https://github.com/rolapp/plugin.video.zattoo_hiq</source>
+    <source>https://github.com/rolapp/plugin.video.zattoo_hiq/tree/master/leia</source>
     <email>kodi@rolapp.de</email>
     <disclaimer lang="en">Check http://www.zattoo.com for availability in your country.</disclaimer>
     <disclaimer lang="de">Überprüfe ob http://www.zattoo.com in Deinem Land verfügbar ist.</disclaimer>

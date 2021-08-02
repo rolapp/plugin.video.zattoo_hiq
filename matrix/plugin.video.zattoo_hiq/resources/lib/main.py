@@ -130,12 +130,12 @@ def to_seconds(date):
 ### Account Data ###
 
 accountData=_zattooDB_.zapi.get_accountData()
-hiq = accountData['account']['permissions'][0]
-__addon__.setSetting('accounttype', hiq)
-if hiq != 'free':
-    premiumUser = True
-else: 
+hiq = accountData['account']['permissions']
+__addon__.setSetting('accounttype', str(hiq))
+if 'free' in hiq:
     premiumUser = False
+else: 
+    premiumUser = True
 
 # Set Recall    
 try:
@@ -176,13 +176,20 @@ else:
     __addon__.setSetting('recall_bool', 'false')
     
 # Set Youth Protection PIN
-# params = {'password': __addon__.getSetting('password')}
-# req = _zattooDB_.zapi.exec_zapiCall('/zapi/account/get_pin', params)
-# ypin_zattoo = req['pin']
-# #ypin_local = __addon__.getSetting('ypin')
-# debug('Ypin: '+str(ypin_zattoo))
+try:
+	params = {'password': __addon__.getSetting('password')}
+	req = _zattooDB_.zapi.exec_zapiCall('/zapi/account/get_pin', params)
+	YPIN = req['pin']
+	__addon__.setSetting('ypin', YPIN)
+except:
+	YPIN = __addon__.getSetting('ypin')
+	
+if len(YPIN) != 4:
+	xbmcgui.Dialog().ok(__addonname__, localString(31927))
+	__addon__.openSettings()
+	
 # pin = _zattooDB_.zapi.exec_zapiCall('/zapi/account/pin_toggle', None)
-# debug(pin)
+
         
 try:
   SERIE=accountData['nonlive']['series_recording_eligible']
@@ -673,7 +680,7 @@ def watch_recording(__addonuri__, __addonhandle__, recording_id, start=0):
   #else: stream_type='hls'
 
   #params = {'recording_id': recording_id, 'stream_type': stream_type, 'maxrate':max_bandwidth}
-  params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY}
+  params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'youth_protection_pin': YPIN}
   resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/recording/' + recording_id, params)
   #debug ('ResultData: '+str(resultData))
   if resultData is not None:
@@ -785,9 +792,9 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
   #lastplaying = playing['channel']
   xbmcgui.Window(10000).setProperty('lastChannel', playing['channel'])
   #debug('last play Channel '+str(xbmcgui.Window(10000).getProperty('lastChannel')))
-  if (xbmc.Player().isPlaying() and channel_id == playing['channel'] and start=='0'):
-    xbmc.executebuiltin("Action(FullScreen)")
-    return
+  #if (xbmc.Player().isPlaying() and channel_id == playing['channel'] and start=='0'):
+  #  xbmc.executebuiltin("Action(FullScreen)")
+  #  return
 
   # (64 150 300) 600 900 1500 3000 5000
   max_bandwidth = __addon__.getSetting('max_bandwidth')
@@ -795,17 +802,17 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
   debug('Restart: '+str(recall))
   if recall == 'true':
     debug(recall)
-    params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'pre_padding':pre, 'post_padding':post}
+    params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'pre_padding':pre, 'post_padding':post, 'youth_protection_pin': YPIN}
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/v3/watch/replay/' + channel_id + '/' + showID, params)
   else:
-    params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'timeshift':'10800', 'https_watch_urls': 'true'}
+    params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'timeshift':'10800', 'https_watch_urls': 'true', 'youth_protection_pin': YPIN}
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/live/' + channel_id, params)
 
   channelInfo = _zattooDB_.get_channelInfo(channel_id)
 
   debug('Streams :' +str(resultData))
   if resultData is None:
-    if add == 'true': return
+    #if add == 'true': return
     xbmcgui.Dialog().notification("ERROR", "NO ZAPI RESULT", channelInfo['logo'], 5000, False)
     return
 

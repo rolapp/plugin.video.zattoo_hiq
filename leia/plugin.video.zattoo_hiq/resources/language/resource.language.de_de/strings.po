@@ -379,6 +379,10 @@ msgctxt "#310039"
 msgid "Not available"
 msgstr "Nicht verfügbar"
 
+msgctxt "#310040"
+msgid "Youth protection pin"
+msgstr "Jugendschutz PIN"
+
 # ## Zattoo Einstellungen ###
 msgctxt "#31000"
 msgid "Zattoo settings"
@@ -803,6 +807,10 @@ msgctxt "#31926"
 msgid "Toggle wached"
 msgstr "'Gesehen' umschalten"
 
+msgctxt "#31927"
+msgid "Child protection PIN must have 4 characters"
+msgstr "Jugenschutz PIN muss 4 Zeichen haben"
+
 # ## KeyMap ###
 msgctxt "#32000"
 msgid "select cmd to change key"
@@ -982,7 +990,7 @@ msgid "dash"
 msgstr ""
 
 msgctxt "#33151"
-msgid "hls"
+msgid "hls7"
 msgstr ""
 
 msgctxt "#33152"

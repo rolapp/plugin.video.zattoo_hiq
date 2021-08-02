@@ -91,6 +91,7 @@
 		</mouse>
 		<touch>
 			<tap>RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=showInfo")</tap>
+			<tap pointers="2">OSD</tap>
 			<swipe direction="left">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=toggle_channel")</swipe>
 			<swipe direction="up">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=1")</swipe>
 			<swipe direction="down">RunPlugin("plugin://plugin.video.zattoo_hiq/?mode=skip_channel&amp;skipDir=-1")</swipe>

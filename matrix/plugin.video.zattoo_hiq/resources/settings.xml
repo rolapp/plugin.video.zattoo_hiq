@@ -29,6 +29,21 @@
 						<hidden>true</hidden>
 					</control>
 				</setting>
+				<setting help="" id="ypin" label="310040" type="string">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="!is" setting="username"/>
+						</dependency>
+					</dependencies>
+					<control format="integer" type="edit">
+						<heading>310040</heading>
+					</control>
+				</setting>
 				<setting help="" id="channellist" type="string">
 					<level>0</level>
 					<default/>

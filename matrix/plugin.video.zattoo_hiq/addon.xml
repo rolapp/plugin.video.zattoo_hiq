@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<addon id="plugin.video.zattoo_hiq" name="Zattoo HiQ" provider-name="Steffen Rolapp" version="3.0.47+matrix">
+<addon id="plugin.video.zattoo_hiq" name="Zattoo HiQ" provider-name="Steffen Rolapp" version="3.0.52+matrix">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="inputstream.adaptive"/>
@@ -13,8 +13,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Play Live TV and recorded shows from Zattoo.</summary>
     <summary lang="de">Zattoo Live TV, Aufnahmen und EPG</summary>
-    <description lang="en">ZattooHiQ-19 is Zattoo-HiQ for Kodi-19 Matrix
-
+    <description lang="en">
 Play Live TV and recorded shows from Zattoo.
 - switch between favourites/all channels
 - channels preview
@@ -24,8 +23,7 @@ Play Live TV and recorded shows from Zattoo.
 - settings: stream quality, default language
 - touchscreen support
     </description>
-    <description lang="de">ZattooHiQ-19 ist Zattoo-HiQ for Kodi-19 Matrix
-
+    <description lang="de">
 Zattoo Live TV, Aufnahmen und EPG
 - wechsel zwischen Favoriten/Allen Kanälen
 - Kanalvorschau
@@ -42,7 +40,7 @@ Zattoo Live TV, Aufnahmen und EPG
     </news>
     <forum>https://www.kodinerds.net/index.php/Thread/68785-ZattooHiQ-19/?postID=573693#post573693</forum>
     <license>GNU GENERAL PUBLIC LICENSEVersion 3, 29 June 2007</license>
-    <source>https://github.com/rolapp/plugin.video.zattooHiQ-19</source>
+    <source>https://github.com/rolapp/plugin.video.zattoo_hiq/tree/master/matrix</source>
     <email>kodi@rolapp.de</email>
     <disclaimer lang="en">Check http://www.zattoo.com for availability in your country.</disclaimer>
     <disclaimer lang="de">Überprüfe ob http://www.zattoo.com in Deinem Land verfügbar ist.</disclaimer>
