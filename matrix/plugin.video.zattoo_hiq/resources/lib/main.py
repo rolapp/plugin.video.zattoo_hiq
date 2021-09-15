@@ -129,14 +129,19 @@ def to_seconds(date):
     
 ### Account Data ###
 
-accountData=_zattooDB_.zapi.get_accountData()
-hiq = accountData['account']['permissions']
-__addon__.setSetting('accounttype', str(hiq))
-if 'free' in hiq:
+#accountData=_zattooDB_.zapi.get_accountData()
+#hiq = accountData['account']['permissions']
+accountData = _zattooDB_.zapi.exec_zapiCall('/zapi/v2/session', None)
+hiq = accountData['session']['user']['products']
+
+if hiq == []:
     premiumUser = False
+    __addon__.setSetting('accounttype', 'Free')
 else: 
     premiumUser = True
+    __addon__.setSetting('accounttype', str(hiq[0]['name']))
 
+accountData=_zattooDB_.zapi.get_accountData()
 # Set Recall    
 try:
     if accountData['account']['permissions'][1] == "recall_activated" and accountData['nonlive']['replay_availability'] == 'available':
@@ -749,7 +754,7 @@ def setup_recording(program_id):
 
 def delete_recording(recording_id, title):
   dialog = xbmcgui.Dialog()
-  ret = dialog.yesno(local(19112), str(title), '[COLOR gold]'+localString(32025)+'[/COLOR]', localString(32026),'','[COLOR red]'+local(19291)+'[/COLOR]')
+  ret = dialog.yesno(local(19112), str(title) + "\n" + '[COLOR gold]' + localString(32025)+'[/COLOR]' + '\n' + localString(32026) + '\n \n'+'[COLOR red]'+local(19291)+'[/COLOR]')
   if ret ==1:
     params = {'recording_id': recording_id}
     folder=__addon__.getSetting('library_dir') # NEW added - by Samoth

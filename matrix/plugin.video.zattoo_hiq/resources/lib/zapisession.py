@@ -129,13 +129,9 @@ class ZapiSession:
         try:
 
             if params is not None:
-                debug(params)
                 f = urllib.parse.urlencode(params)
                 f = f.encode('utf-8')
-                debug(f)
-            #u = urllib.parse.quote(url)
-            #u = u.encode('utf-8')
-            #debug(u)
+
             response = self.HttpHandler.open(url,f if params is not None else None)
 
             if response is not None:
@@ -161,7 +157,7 @@ class ZapiSession:
     def exec_zapiCall(self, api, params, context='default'):
         #url = self.ZAPIAuthUrl + api if context == 'session' else self.ZAPIUrl + api
         url = self.ZAPIUrl + api
-        debug( "ZapiCall  " + str(url)+'  '+str(params))
+        #debug( "ZapiCall  " + str(url)+'  '+str(params))
         content = self.request_url(url, params)
         #debug(content)
         if content is None:# and self.renew_session():
@@ -187,7 +183,7 @@ class ZapiSession:
             token_js = re.search(r"token-(.+?)\.json", html).group(0)
         except AttributeError:
             token_js = 'token.json'
-        debug(token_js)
+        #debug(token_js)
         handle = urllib.request.urlopen(self.ZAPIUrl + '/' + token_js)
         htmlJson = json.loads(handle.read())                        
         return htmlJson['session_token']
