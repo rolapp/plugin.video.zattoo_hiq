@@ -341,6 +341,7 @@ class ZattooDB(object):
                 # xbmcgui.Dialog().notification('Update Program', 'No Data',  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, False)
                 # #c.close()
                 # continue
+            if len(programData['channels'][cid]) == 0: continue
             
             for i in range(0, len(programData['channels'][cid])):
                 debug(programData['channels'][cid][i])

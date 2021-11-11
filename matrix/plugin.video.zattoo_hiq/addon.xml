@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<addon id="plugin.video.zattoo_hiq" name="Zattoo HiQ" provider-name="Steffen Rolapp" version="3.0.53+matrix">
+<addon id="plugin.video.zattoo_hiq" name="Zattoo HiQ" provider-name="Steffen Rolapp" version="3.0.54+matrix">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="inputstream.adaptive"/>
