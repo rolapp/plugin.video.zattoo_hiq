@@ -30,7 +30,7 @@ _zattooDB_ = ZattooDB()
 __addon__       = xbmcaddon.Addon()
 __addonId__     =__addon__.getAddonInfo('id')
 __addonname__   = __addon__.getAddonInfo('name')
-__addondir__    = xbmc.translatePath( __addon__.getAddonInfo('profile') )
+__addondir__    = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') )
 #__addonhandle__ = int(sys.argv[1])
 __addonuri__    = sys.argv[0]
 

@@ -50,7 +50,7 @@ DEBUG = __addon__.getSetting('debug')
 
 
 # get Timezone Offset
-from tzlocal import get_localzone
+#from tzlocal import get_localzone
 #import .resources.lib.pytz
 try:
   tz = get_localzone()
@@ -605,7 +605,9 @@ class EPG(xbmcgui.WindowXML):
         #if hasattr(self, 'descriptionTimer'):self.descriptionTimer.cancel() 
         #self.descriptionTimer= threading.Timer(0.2, self._showDescription, [program['showID']])
         #self.descriptionTimer.start()
+       
         self._showDescription(program['showID'])
+       
         #self.setControlImage(self.C_MAIN_LOGO, program['channel_logo'])
 
         if program['image_small'] is not None:

@@ -211,7 +211,7 @@ class Teletext(xbmcgui.WindowDialog):
 		url='https://zapi.zattoo.com/teletext/'+self.channelID+'/hd/'+page+'/'+str(subpage)+'.html'
 		#print 'TELETEXT  -  ' + str(url)
 		#url="https://zapi.zattoo.com/teletext/sf-1/hd/100/1.html"
-		print(('teletext image:'+url))
+		#debug(('teletext image:'+url))
 
 		req=urllib.request.Request(headers={'User-Agent':'Mozilla/5.0','Cache-Control':'max-age=0'}, url=url)
 		try:
@@ -223,8 +223,8 @@ class Teletext(xbmcgui.WindowDialog):
 			data= html[start:end]
 			image = base64.b64decode(data)
 			if self.imagePath: os.remove(self.imagePath)
-			self.imagePath = os.path.join(_dataFolder_, 'teletextImage'+str(time.clock())+'.png')
-
+			self.imagePath = os.path.join(_dataFolder_, 'teletextImage'+str(time.perf_counter())+'.png')
+	
 			with open(self.imagePath, "wb") as fh:
 				fh.write(image)
 				fh.close()

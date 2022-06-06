@@ -520,7 +520,8 @@ class ZattooDB(object):
         record = show['record']
         genre = show['genre']
         cred = show['credits']
-        if longDesc is None or int(to_seconds(show['restart'])) == 0:
+        #if longDesc is None or int(to_seconds(show['restart'])) == 0:
+        if longDesc is None: 
             import json
 
             profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))

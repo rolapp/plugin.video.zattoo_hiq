@@ -74,7 +74,7 @@ def log(msg, level=xbmc.LOGINFO):
     xbmc.log('%s: %s' % (addonID, msg), level)
 
 # get Timezone Offset
-from tzlocal import get_localzone
+#from tzlocal import get_localzone
 #import resources.lib.pytz
 try:
   tz = get_localzone()
@@ -822,6 +822,7 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
     return
 
   streams = resultData['stream']['watch_urls']
+  debug("streams "+str(streams))
   if len(streams)==0:
     xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", channelInfo['logo'], 5000, False)
     return
@@ -1084,12 +1085,12 @@ def showHelp(__addonuri__, __addonhandle__):
   import urllib
   iconPath = __addon__.getAddonInfo('path') + '/icon.png'
   content = [
-    {'title': '[COLOR blue]'+local(10043)+'[/COLOR]', 'url':__addonuri__+ '?' + urllib.urlencode({'mode': 'showhelp'}), 'image': HELP_IMG, 'isFolder': True, },
-    {'title': local(128), 'image': ICON_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'main.png'})},
-    {'title': localString(30300), 'image': ICON_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'Live-Keymap.png'})},
-    {'title': 'EPG', 'image': EPG_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'epg-1.png'})},
-    {'title': 'EPG - Touchscreen', 'image': EPG_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'epg-2.png'})},
-    {'title': local(10550), 'image': ICON_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.urlencode({'mode': 'helpmy', 'img':'Teletext.png'})},
+    {'title': '[COLOR blue]'+local(10043)+'[/COLOR]', 'url':__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'showhelp'}), 'image': HELP_IMG, 'isFolder': True, },
+    {'title': local(128), 'image': ICON_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'main.png'})},
+    {'title': localString(30300), 'image': ICON_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'Live-Keymap.png'})},
+    {'title': 'EPG', 'image': EPG_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'epg-1.png'})},
+    {'title': 'EPG - Touchscreen', 'image': EPG_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'epg-2.png'})},
+    {'title': local(10550), 'image': ICON_IMG, 'isFolder': True, 'url': __addonuri__+ '?' + urllib.parse.urlencode({'mode': 'helpmy', 'img':'Teletext.png'})},
 
 
   ]

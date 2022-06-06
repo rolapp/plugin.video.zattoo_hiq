@@ -22,14 +22,14 @@ import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import os
 
 __addon__ = xbmcaddon.Addon()
-__addondir__  = xbmc.translatePath( __addon__.getAddonInfo('profile') )
+__addondir__  = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') )
 __addonId__=__addon__.getAddonInfo('id')
 localString = __addon__.getLocalizedString
 
 #reload Account
 profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
 
-if os.path.isfile(os.path.join(profilePath, 'session.cache')):
+if os.path.isfile(os.path.join(profilePath, 'account.cache')):
 	xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)
 	#profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
 	os.remove(os.path.join(profilePath, 'cookie.cache'))

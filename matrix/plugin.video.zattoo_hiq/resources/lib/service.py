@@ -33,7 +33,7 @@ global player
 
 _zattooDB_ = ZattooDB()
 __addon__ = xbmcaddon.Addon()
-__addondir__  = xbmc.translatePath( __addon__.getAddonInfo('profile') )
+__addondir__  = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') )
 __addonId__=__addon__.getAddonInfo('id')
 
 _library_=library()
@@ -106,7 +106,7 @@ def start():
     if OLDVERSION != VERSION:
     
         # reload DB
-        #_zattooDB_.reloadDB()
+        _zattooDB_.reloadDB()
         # set Version
         _zattooDB_.set_version(VERSION)
 
@@ -216,7 +216,7 @@ class myPlayer(xbmc.Player):
     def loadKeymap(self):
 
       source = __addondir__ + '/zattooKeymap.xml'
-      dest = xbmc.translatePath('special://profile/keymaps/zattooKeymap.xml')
+      dest = xbmcvfs.translatePath('special://profile/keymaps/zattooKeymap.xml')
       if os.path.isfile(dest): return
       with open(source, 'r') as file: content = file.read()
       with open(dest, 'w') as file: file.write(content)
@@ -225,7 +225,7 @@ class myPlayer(xbmc.Player):
 
     def unloadKeymap(self):
 
-      path=xbmc.translatePath('special://profile/keymaps/zattooKeymap.xml')
+      path=xbmcvfs.translatePath('special://profile/keymaps/zattooKeymap.xml')
       if os.path.isfile(path):
         try:
           os.remove(path)
