@@ -25,10 +25,7 @@ import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 import sys, urlparse,  os, json
 import time, datetime, threading
 import _strptime
-import urllib
-
-reload(sys)
-sys.setdefaultencoding('utf8')
+import platform
 
 from resources.lib.zattooDB import ZattooDB
 from resources.lib.library import library
@@ -804,6 +801,7 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
   post = __addon__.getSetting('post_padding')
   #selected currently playing live TV
   playing = _zattooDB_.get_playing()
+  drm = _zattooDB_.get_drm(channel_id)
 
   #lastplaying = playing['channel']
   xbmcgui.Window(10000).setProperty('lastChannel', playing['channel'])
@@ -820,9 +818,14 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
   if recall == 'true':
     debug(recall)
     params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'pre_padding':pre, 'post_padding':post, 'youth_protection_pin': YPIN}
+    if drm == True and platform.system() == 'Linux':
+        params['quality'] = 'sd'
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/v3/watch/replay/' + channel_id + '/' + showID, params)
   else:
     params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'timeshift':'10800', 'https_watch_urls': 'true', 'youth_protection_pin': YPIN}
+    if drm == True and platform.system() == 'Linux':
+        params['quality'] = 'sd'
+
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/live/' + channel_id, params)
 
   channelInfo = _zattooDB_.get_channelInfo(channel_id)

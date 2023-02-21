@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window> <!--  -->
+
+	<controls>
+
+		<control type="label">
+			<left>100</left>
+			<top>80</top>
+			<width>1230</width>
+			<height>974</height>
+			<font>font30</font>
+		</control>
+
+	</controls>
+
+</window>

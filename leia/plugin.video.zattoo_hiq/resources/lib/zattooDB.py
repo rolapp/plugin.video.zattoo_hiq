@@ -201,7 +201,7 @@ class ZattooDB(object):
 
     try:
       c = self.conn.cursor()
-      c.execute('CREATE TABLE channels(id TEXT, title TEXT, logo TEXT, weight INTEGER, favourite BOOLEAN, PRIMARY KEY (id) )')
+      c.execute('CREATE TABLE channels(id TEXT, title TEXT, logo TEXT, weight INTEGER, favourite BOOLEAN, drm BOOLEAN, PRIMARY KEY (id) )')
       c.execute('CREATE TABLE programs(showID TEXT, title TEXT, channel TEXT, start_date TIMESTAMP, end_date TIMESTAMP, restart TIMESTAMP DEFAULT 0, series BOOLEAN, record TIMESTAMP DEFAULT 0, description TEXT, description_long TEXT, year TEXT, country TEXT, genre TEXT, category TEXT, image_small TEXT, credits TEXT, PRIMARY KEY (showID), FOREIGN KEY(channel) REFERENCES channels(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)')
 
       c.execute('CREATE INDEX program_list_idx ON programs(channel, start_date, end_date)')
@@ -274,12 +274,16 @@ class ZattooDB(object):
         except:
           weight = 1000 + nr
           favourite = False
-
-        c.execute('INSERT OR IGNORE INTO channels(id, title, logo, weight, favourite) VALUES(?, ?, ?, ?, ?)',
-            [channel['id'], channel['title'], logo, weight, favourite])
+        try:
+          drm = channel['qualities'][0]['drm_required']
+        except:
+          drm = False
+        
+        c.execute('INSERT OR IGNORE INTO channels(id, title, logo, weight, favourite, drm) VALUES(?, ?, ?, ?, ?, ?)',
+            [channel['id'], channel['title'], logo, weight, favourite, drm])
         if not c.rowcount:
-          c.execute('UPDATE channels SET title=?, logo=?, weight=?, favourite=? WHERE id=?',
-              [channel['title'], logo, weight, favourite, channel['id']])
+          c.execute('UPDATE channels SET title=?, logo=?, weight=?, favourite=?, drm=? WHERE id=?',
+              [channel['title'], logo, weight, favourite, drm, channel['id']])
         nr += 1
     if nr>0: c.execute('INSERT INTO updates(date, type) VALUES(?, ?)', [datetime.date.today(), 'channels'])
     self.conn.commit()
@@ -1111,3 +1115,10 @@ class ZattooDB(object):
     c.close()
     debug ('Kategorien: '+str(programList))
     return programList
+    
+  def get_drm(self, cid):
+      c = self.conn.cursor()
+      c.execute('SELECT drm FROM channels WHERE id = ?', [cid])
+      drm = c.fetchone()
+      c.close()
+      return drm['drm']
