@@ -131,20 +131,22 @@ class ZattooDB(object):
     elif PROVIDER == "11": ZAPIUrl = "https://nettv.netcologne.de"
     elif PROVIDER == "12": ZAPIUrl = "https://tvonline.ewe.de"
     elif PROVIDER == "13": ZAPIUrl = "https://www.quantum-tv.com"
-    
+
+    if not __addon__.getSetting('username') or not __addon__.getSetting('password'):
+        # show home window, zattooHiQ settings and quit
+        xbmc.executebuiltin('ActivateWindow(10000)')
+        xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), __addon__.getLocalizedString(31902))
+        __addon__.openSettings()
+
     if zapiSession.init_session(__addon__.getSetting('username'), __addon__.getSetting('password'), ZAPIUrl):
       return zapiSession
 
     else:
-      # show home window, zattooHiQ settings and quit
-      xbmc.executebuiltin('ActivateWindow(10000)')
-      xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), __addon__.getLocalizedString(31902))
-      __addon__.openSettings()
+      debug('neuer Versuch')
+      xbmcgui.Dialog().notification('ZattooHiQ', localString(31205),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, True)
+      xbmc.sleep(1500)
       zapiSession.renew_session()
-      xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), local(24074))
-
-      import sys
-      sys.exit()
+      return zapiSession
 
   @staticmethod
   def adapt_datetime(ts):

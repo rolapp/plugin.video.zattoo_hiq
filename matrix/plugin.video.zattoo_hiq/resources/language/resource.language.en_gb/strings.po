@@ -670,6 +670,10 @@ msgctxt "#31204"
 msgid "play or record:"
 msgstr ""
 
+msgctxt "#31205"
+msgid "Login failed"
+msgstr ""
+
 msgctxt "#31250"
 msgid "Database was cleared and current data was loaded."
 msgstr ""
@@ -1037,6 +1041,10 @@ msgstr ""
 
 msgctxt "#33165"
 msgid "8000"
+msgstr ""
+
+msgctxt "#33166"
+msgid "0"
 msgstr ""
 
 ### Audio-Spur ###

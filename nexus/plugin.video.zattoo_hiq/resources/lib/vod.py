@@ -140,6 +140,9 @@ class vod:
                 try:
                     s_id = teasers['teasable']['current_season']['id']
                 except: pass
+                episode = ''
+                director = []
+                cast = []
                 if t_type == 'Avod::Video': 
                     pfad ='avod/videos/' + data['token'] + '/watch'
                     params = {

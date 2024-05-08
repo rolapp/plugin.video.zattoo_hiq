@@ -28,7 +28,7 @@ localString = __addon__.getLocalizedString
 
 # reload account
 profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-if os.path.isfile(os.path.join(profilePath, 'session.cache')):
+if os.path.isfile(os.path.join(profilePath, 'account.cache')):
 	xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)
 	profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 	os.remove(os.path.join(profilePath, 'cookie.cache'))

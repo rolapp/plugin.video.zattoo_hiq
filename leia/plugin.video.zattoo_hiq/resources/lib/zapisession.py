@@ -11,11 +11,13 @@ import os, re, base64,sys
 import urllib, urllib2
 import json
 from httplib import BadStatusLine
+from uuid import uuid4
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
 __addonVersion__ = __addon__.getAddonInfo('version')
+local = xbmc.getLocalizedString
 KODIVERSION = xbmc.getInfoLabel( "System.BuildVersion" ).split()[0]
 DEBUG = __addon__.getSetting('debug')
 
@@ -84,11 +86,11 @@ class ZapiSession:
                         self.SessionData = json.loads(base64.b64decode(f.readline()))
                     return True
             except: 
-                profilePath = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-                if os.path.isfile(os.path.join(profilePath, 'session.cache')):
-                    os.remove(os.path.join(profilePath, 'session.cache'))
-                if os.path.isfile(os.path.join(profilePath, 'account.cache')):
-                    os.remove(os.path.join(profilePath, 'account.cache'))
+                # profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
+                # if os.path.isfile(os.path.join(profilePath, 'session.cache')):
+                    # os.remove(os.path.join(profilePath, 'session.cache'))
+                # if os.path.isfile(os.path.join(profilePath, 'account.cache')):
+                    # os.remove(os.path.join(profilePath, 'account.cache'))
                 self.renew_session()
         return False
 
@@ -127,7 +129,7 @@ class ZapiSession:
     def request_url(self, url, params):
         
         try:
-            response = self.HttpHandler.open(url, urllib.urlencode(params) if params is not None else None)
+            response = self.HttpHandler.open(url, urllib.urlencode(params) if params is not None else None, timeout=60)
             #debug(response.read())
             if response is not None:
                 sessionId = self.extract_sessionId(response.info().getheader('Set-Cookie'))
@@ -139,10 +141,13 @@ class ZapiSession:
         except urllib2.HTTPError as e:
            debug(e)
 
-           if '403' in str(e):
-                debug('Error 403')
+           if '403' in str(e) or '400' in str(e):
+                xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), str(e))
+                xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), __addon__.getLocalizedString(31902))
+                sys.exit()
 
-        except BadStatusLine:
+        except Exception as e:
+            debug(e)
             pass
                 #self.renew_session()
 
@@ -155,18 +160,26 @@ class ZapiSession:
         url = self.ZAPIUrl + api
         debug( "ZapiCall  " + str(url)+str(params))
         content = self.request_url(url, params)
+        debug(content)
         if content is None:# and self.renew_session():
+            xbmc.sleep(1000)
+            debug('Zweiter Versuch')
+            content = self.request_url(url, params)
+        if content is None:# and self.renew_session():
+            xbmc.sleep(2000)
+            debug('dritter Versuch')
             content = self.request_url(url, params)
         if content is None:
             return None
-        try:
-            resultData = json.loads(content)
-            return resultData
+        #try:
+        resultData = json.loads(content)
+        #debug(resultData)
+        return resultData
 
-        except Exception:
-            pass
-        return None
-    
+        # except Exception:
+           # pass
+        # return None
+
     def fetch_appToken(self):
 
         handle = urllib2.urlopen(self.ZAPIUrl + '/login')
@@ -191,10 +204,10 @@ class ZapiSession:
     def session(self):
         api = '/zapi/v3/session/hello'
         params = {"client_app_token" : self.fetch_appToken(),
-                 "uuid"    : "d7512e98-38a0-4f01-b820-5a5cf98141fe",
+                  "uuid"    : str(uuid4()),
                  #"lang"    : "de",
                 # "format"  : "json",
-                 "app_version" : self.fetch_appVersion()}
+                 "app_version" : '3.2315.0'}
       
         sessionData = self.exec_zapiCall(api, params, 'session')
         debug('SessionData: '+str(sessionData))
@@ -206,7 +219,7 @@ class ZapiSession:
 
     def login(self):
         api = '/zapi/v3/account/login'
-        params = {"login": self.Username, "password" : self.Password}
+        params = {"login": self.Username, "password" : self.Password, "remember": True}
         accountData = self.exec_zapiCall(api, params, 'session')
         debug ('Login: '+str(accountData))
         if accountData is not None:

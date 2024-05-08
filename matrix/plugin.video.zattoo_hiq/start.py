@@ -25,18 +25,37 @@ __addon__ = xbmcaddon.Addon()
 __addondir__  = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') )
 __addonId__=__addon__.getAddonInfo('id')
 localString = __addon__.getLocalizedString
+DEBUG = __addon__.getSetting('debug')
+
+def debug(content):
+    if DEBUG:log(content, xbmc.LOGDEBUG)
+
+def notice(content):
+    log(content, xbmc.LOGINFO)
+
+def log(msg, level=xbmc.LOGINFO):
+    addon = xbmcaddon.Addon()
+    addonID = addon.getAddonInfo('id')
+    xbmc.log('%s: %s' % (addonID, msg), level)
 
 #reload Account
 profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
 
-if os.path.isfile(os.path.join(profilePath, 'account.cache')):
-	xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)
-	#profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
-	os.remove(os.path.join(profilePath, 'cookie.cache'))
-	os.remove(os.path.join(profilePath, 'session.cache'))
-	os.remove(os.path.join(profilePath, 'account.cache'))
+# if os.path.isfile(os.path.join(profilePath, 'account.cache')):
+	# xbmcgui.Dialog().notification(localString(30104), localString(31024),  __addon__.getAddonInfo('path') + '/resources/icon.png', 500, False)
+	# #profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
+	# os.remove(os.path.join(profilePath, 'cookie.cache'))
+	# os.remove(os.path.join(profilePath, 'session.cache'))
+	# os.remove(os.path.join(profilePath, 'account.cache'))
 
+# from resources.lib.myplayer import myPlayer
+# global player
+# player = myPlayer()
 import resources.lib.service as service
 
+debug('Start Service')
 service.start() 
+
+ 
+
 

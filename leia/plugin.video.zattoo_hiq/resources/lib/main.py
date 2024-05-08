@@ -818,13 +818,15 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
   if recall == 'true':
     debug(recall)
     params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'pre_padding':pre, 'post_padding':post, 'youth_protection_pin': YPIN}
-    if drm == True and platform.system() == 'Linux':
-        params['quality'] = 'sd'
+    if SWISS:
+        if drm == True and platform.system() == 'Linux':
+            params['quality'] = 'sd'
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/v3/watch/replay/' + channel_id + '/' + showID, params)
   else:
     params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'timeshift':'10800', 'https_watch_urls': 'true', 'youth_protection_pin': YPIN}
-    if drm == True and platform.system() == 'Linux':
-        params['quality'] = 'sd'
+    if SWISS:
+        if drm == True and platform.system() == 'Linux':
+            params['quality'] = 'sd'
 
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/live/' + channel_id, params)
 

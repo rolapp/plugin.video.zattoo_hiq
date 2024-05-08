@@ -412,6 +412,10 @@ msgctxt "#310067"
 msgid "Only show favourite channels"
 msgstr "Nur Favoriten-Kanäle anzeigen"
 
+msgctxt "#310068"
+msgid "Smart HD Subscription"
+msgstr "Smart HD Abonnement"
+
 msgctxt "#31007"
 msgid "liveTV on first start"
 msgstr "liveTV beim ersten Start"
@@ -654,6 +658,10 @@ msgstr "keine passende Sendung gefunden"
 msgctxt "#31204"
 msgid "play or record:"
 msgstr "abspielen oder aufnehemn:"
+
+msgctxt "#31205"
+msgid "Login failed"
+msgstr "Login fehlgeschlagen"
 
 msgctxt "#31910"
 msgid "Add to playlist"
@@ -1021,6 +1029,10 @@ msgstr ""
 
 msgctxt "#33165"
 msgid "8000"
+msgstr ""
+
+msgctxt "#33166"
+msgid "0"
 msgstr ""
 
 ### Audio-Spur ###

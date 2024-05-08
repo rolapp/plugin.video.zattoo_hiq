@@ -185,6 +185,7 @@
 					</constraints>
 					<control format="string" type="spinner"/>
 				</setting>
+<!--
 				<setting help="" id="stream_type" label="310065" type="string">
 					<level>0</level>
 					<default>dash</default>
@@ -197,6 +198,8 @@
 					</constraints>
 					<control format="string" type="spinner"/>
 				</setting>
+-->
+<!--
 				<setting help="" id="audio_stream" label="31006" type="string">
 					<level>0</level>
 					<default>A</default>
@@ -210,6 +213,15 @@
 						<dependency type="enable" setting="stream_type">hls</dependency>
 					</dependencies>
 					<control format="string" type="spinner"/>
+				</setting>
+-->
+				<setting help="" id="smarttv" label="310068" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="visible" setting="provider">0</dependency>
+					</dependencies>
+					<control type="toggle"/>
 				</setting>
 				<setting help="" id="dolby" label="310066" type="boolean">
 					<level>0</level>

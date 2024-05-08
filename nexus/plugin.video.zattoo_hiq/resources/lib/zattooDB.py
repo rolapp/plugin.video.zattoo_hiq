@@ -20,17 +20,21 @@
 #    along with zattooHiQ.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xbmc, xbmcgui, xbmcaddon, os, xbmcplugin, datetime, time, xbmcvfs
+import xbmc, xbmcgui, xbmcaddon, xbmcplugin, xbmcvfs
 import json
-from resources.lib.zapisession import ZapiSession
+import datetime, time
+from .zapisession import ZapiSession
 import sqlite3
-import sys
+import sys, os
 import importlib
+import platform
+#from .tools import *
 importlib.reload(sys)
 #sys.setdefaultencoding('utf8')
 
 
 __addon__ = xbmcaddon.Addon()
+__addonId__=__addon__.getAddonInfo('id')
 _listMode_ = __addon__.getSetting('channellist')
 _channelList_=[]
 localString = __addon__.getLocalizedString
@@ -99,7 +103,10 @@ class reloadDB(xbmcgui.WindowXMLDialog):
     super(reloadDB, self).close()
 
 class ZattooDB(object):
+  import time, datetime
+  
   def __init__(self):
+    import time, datetime
     self.conn = None
     profilePath = xbmcvfs.translatePath(__addon__.getAddonInfo('profile'))
     if not os.path.exists(profilePath): os.makedirs(profilePath)
@@ -126,25 +133,29 @@ class ZattooDB(object):
     elif PROVIDER == "12": ZAPIUrl = "https://tvonline.ewe.de"
     elif PROVIDER == "13": ZAPIUrl = "https://www.quantum-tv.com"
 
+    if not __addon__.getSetting('username') or not __addon__.getSetting('password'):
+        # show home window, zattooHiQ settings and quit
+        xbmc.executebuiltin('ActivateWindow(10000)')
+        xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), __addon__.getLocalizedString(31902))
+        __addon__.openSettings()
+
     if zapiSession.init_session(__addon__.getSetting('username'), __addon__.getSetting('password'), ZAPIUrl):
       return zapiSession
 
     else:
-      # show home window, zattooHiQ settings and quit
-      xbmc.executebuiltin('ActivateWindow(10000)')
-      xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), __addon__.getLocalizedString(31902))
-      __addon__.openSettings()
+      debug('neuer Versuch')
+      xbmcgui.Dialog().notification('ZattooHiQ', localString(31205),  __addon__.getAddonInfo('path') + '/resources/icon.png', 3000, True)
+      xbmc.sleep(1500)
       zapiSession.renew_session()
-      xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), local(24074))
-
-      import sys
-      sys.exit()
+      return zapiSession
 
   @staticmethod
   def adapt_datetime(ts):
     # http://docs.python.org/2/library/sqlite3.html#registering-an-adapter-callable
-    return time.mktime(ts.timetuple())
-
+    try:
+        return time.mktime(ts.timetuple())
+    except:
+        pass
   @staticmethod
   def convert_datetime(ts):
     try:
@@ -806,9 +817,12 @@ class ZattooDB(object):
             f=c.fetchall()
 
             for row in f:
-
+                #debug(str(row['showID']) + str(row['restart']))
                 description_long = row['description_long']
-                restart = to_seconds(row['restart'])
+                if row['restart'] is None:
+                    restart = 0
+                else:
+                    restart = to_seconds(row['restart'])
                 #debug(str(row['channel'])+' ' +str(row['description_long']))
                 if notify:
                     bar += 1

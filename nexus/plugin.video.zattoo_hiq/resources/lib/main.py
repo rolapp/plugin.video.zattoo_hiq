@@ -55,6 +55,7 @@ _vod_ = vod()
 
 global lastplaying
 global player
+
 player = xbmc.Player()
 
 _umlaut_ = {ord('ä'): 'ae', ord('ö'): 'oe', ord('ü'): 'ue', ord('ß'): 'ss'}
@@ -234,13 +235,15 @@ PREVIEW_IMG = __addon__.getAddonInfo('path') + '/resources/media/preview.png'
 EPG_IMG = __addon__.getAddonInfo('path') + '/resources/media/epg.png'
 KAT_IMG = __addon__.getAddonInfo('path') + '/resources/media/kat.png'
 
-stream_type = __addon__.getSetting('stream_type')
+#stream_type = __addon__.getSetting('stream_type')
+
 RECREADY = __addon__.getSetting('rec_ready')
 RECNOW = __addon__.getSetting('rec_now')
 VERSION = __addon__.getAddonInfo('version')
 DOLBY = __addon__.getSetting('dolby')
 KEYMAP = __addon__.getSetting('keymap')
 PLAYLIST = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+
 
 if premiumUser or SWISS:
   xbmc.executebuiltin( "Skin.SetBool(%s)" %'record')
@@ -661,7 +664,7 @@ def build_recordingsList(__addonuri__, __addonhandle__):
 
     xbmcplugin.addDirectoryItem(
       handle=__addonhandle__,
-      url=__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_r', 'id': record['id'], 'start': start}),
+      url=__addonuri__+ '?' + urllib.parse.urlencode({'mode': 'watch_r', 'id': record['id'],'cid': record['cid'], 'start': start}),
       listitem=li,
       isFolder=False
     )
@@ -673,8 +676,10 @@ def build_recordingsList(__addonuri__, __addonhandle__):
   xbmcplugin.addSortMethod(__addonhandle__, xbmcplugin.SORT_METHOD_GENRE)
   xbmcplugin.endOfDirectory(__addonhandle__, succeeded=True, cacheToDisc=False)
 
-def watch_recording(__addonuri__, __addonhandle__, recording_id, start=0):
+def watch_recording(__addonuri__, __addonhandle__, recording_id, cid, start=0):
   #if xbmc.Player().isPlaying(): return
+  debug(str(recording_id) + ' ' +str(cid))
+  STREAM_TYPE = "dash"
 
   if start == 0:
     startTime=int(xbmc.getInfoLabel('ListItem.Property(zStartTime)'))
@@ -683,13 +688,16 @@ def watch_recording(__addonuri__, __addonhandle__, recording_id, start=0):
     startTime=int(start)
 
   max_bandwidth = __addon__.getSetting('max_bandwidth')
-  #if DASH: stream_type='dash'
-  #else: stream_type='hls'
 
-  #params = {'recording_id': recording_id, 'stream_type': stream_type, 'maxrate':max_bandwidth}
-  params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'youth_protection_pin': YPIN}
+  params = {'stream_type': STREAM_TYPE, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'youth_protection_pin': YPIN}
+  drm = _zattooDB_.get_drm(cid)
+  if drm == True:
+    params['stream_type'] = 'dash_widevine'
+    STREAM_TYPE = 'dash_widevine'
+    params['max_drm_lvl'] = '1'
+      
   resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/recording/' + recording_id, params)
-  #debug ('ResultData: '+str(resultData))
+  debug ('ResultRec: '+str(resultData))
   if resultData is not None:
     streams = resultData['stream']['watch_urls']
 
@@ -701,20 +709,16 @@ def watch_recording(__addonuri__, __addonhandle__, recording_id, start=0):
 
     li = xbmcgui.ListItem(path=streams[streamNr]['url'])
 
-    if stream_type == 'dash':
+    if STREAM_TYPE == 'dash':
         li.setProperty('inputstream', 'inputstream.adaptive')
         li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
     
-    elif stream_type == 'dash_widevine':
+    elif STREAM_TYPE == 'dash_widevine':
         li.setProperty('inputstream', 'inputstream.adaptive')
         li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
         li.setProperty('inputstream.adaptive.license_key', streams[1]['license_url'] + "||a{SSM}|")
         li.setProperty('inputstream.adaptive.license_type', "com.widevine.alpha")
         
-    elif stream_type == 'hls7':
-        li.setProperty('inputstream', 'inputstream.adaptive')
-        li.setProperty('inputstream.adaptive.manifest_type', 'hls')
-
     xbmcplugin.setResolvedUrl(__addonhandle__, True, li)
     pos=0
     xbmc.sleep(2000)
@@ -789,6 +793,7 @@ def slugify(value):
 
 def watch_channel(handle, channel_id, start, end, showID="", recall='false', add='false'):
   debug('watch_channel: channel_id:'+str(channel_id)+' showID:'+str(showID))
+  STREAM_TYPE = "dash"
   #new ZattooDB instance because this is called from thread-timer on channel-nr input (sql connection doesn't work)
   _zattooDB_=ZattooDB()
   pre = __addon__.getSetting('pre_padding')
@@ -809,16 +814,25 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
 
   debug('Restart: '+str(recall))
   if recall == 'true':
-    debug(recall)
-    params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'pre_padding':pre, 'post_padding':post, 'youth_protection_pin': YPIN}
-    if drm == True and platform.system() == 'Linux':
+    #debug(recall)
+    params = {'stream_type': STREAM_TYPE, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'pre_padding':pre, 'post_padding':post, 'youth_protection_pin': YPIN}
+    if drm == True:
+      params['stream_type'] = 'dash_widevine'
+      STREAM_TYPE = 'dash_widevine'
+      params['max_drm_lvl'] = '1'
+      if SWISS and platform.system() == 'Linux':
         params['quality'] = 'sd'
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/v3/watch/replay/' + channel_id + '/' + showID, params)
   else:
-    params = {'stream_type': stream_type, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'timeshift':'10800', 'https_watch_urls': 'true', 'youth_protection_pin': YPIN}
-    if drm == True and platform.system() == 'Linux':
-        params['quality'] = 'sd'
+    params = {'stream_type': STREAM_TYPE, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'timeshift':'10800', 'https_watch_urls': 'true', 'youth_protection_pin': YPIN}
 
+    if drm == True:
+      params['stream_type'] = 'dash_widevine'
+      STREAM_TYPE = 'dash_widevine'
+      params['max_drm_lvl'] = '1'
+      if SWISS and platform.system() == 'Linux':
+        params['quality'] = 'sd'
+      
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/live/' + channel_id, params)
 
   channelInfo = _zattooDB_.get_channelInfo(channel_id)
@@ -829,15 +843,15 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
     xbmcgui.Dialog().notification("ERROR", "NO ZAPI RESULT", channelInfo['logo'], 5000, False)
     return
 
-  streams = resultData['stream']['watch_urls']
+  streams = resultData['stream']#['watch_urls']
   debug("streams "+str(streams))
   if len(streams)==0:
     xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", channelInfo['logo'], 5000, False)
     return
   # change stream if settings are set
 
-  elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
-  else:  streamNr = 0
+  #elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
+  #else:  streamNr = 0
 
   # save currently playing
   if showID == '1':
@@ -845,7 +859,7 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
     showID = prog[0]['showID']
   program = _zattooDB_.get_showID(showID)
 
-  listitem = xbmcgui.ListItem(path=streams[streamNr]['url'])
+  listitem = xbmcgui.ListItem(path=streams['url'])
 
   if program:
     program = program[0]
@@ -854,25 +868,21 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
 
     #set info for recall
 
-    meta = { 'title': program['title'], 'episode': streamNr, 'tvshowtitle': channelInfo['title']+ ', ' + formatDate(program['start_date'],'%A %H:%M') + '-' + program['end_date'].strftime('%H:%M'), 'premiered' :'premiered', 'duration' : '20', 'rating': 'rating', 'director': 'director', 'writer': 'writer', 'plot': program['description_long']}
+    meta = { 'title': program['title'], 'tvshowtitle': channelInfo['title']+ ', ' + formatDate(program['start_date'],'%A %H:%M') + '-' + program['end_date'].strftime('%H:%M'), 'premiered' :'premiered', 'duration' : '20', 'rating': 'rating', 'director': 'director', 'writer': 'writer', 'plot': program['description_long']}
     listitem.setInfo("Video", meta)
     listitem.setLabel(program['title'] + ' - ' + str(program['description']))
     listitem.setArt({ 'icon': program['image_small'], 'poster': program['image_small'], 'logo' : channelInfo['logo'], 'thumpnail': program['image_small'] })
     listitem.setInfo('Video',{'director': channel_id, 'writer': showID})
     
-  if stream_type == 'dash':
+  if STREAM_TYPE == 'dash':
         listitem.setProperty('inputstream', 'inputstream.adaptive')
         listitem.setProperty('inputstream.adaptive.manifest_type', 'mpd')
 
-  elif stream_type == 'dash_widevine':
+  elif STREAM_TYPE == 'dash_widevine':
         listitem.setProperty('inputstream', 'inputstream.adaptive')
         listitem.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-        listitem.setProperty('inputstream.adaptive.license_key', streams[1]['license_url'] + "||a{SSM}|")
+        listitem.setProperty('inputstream.adaptive.license_key', streams['license_url'] + "||a{SSM}|")
         listitem.setProperty('inputstream.adaptive.license_type', "com.widevine.alpha")
-        
-  elif stream_type == 'hls7':
-        listitem.setProperty('inputstream', 'inputstream.adaptive')
-        listitem.setProperty('inputstream.adaptive.manifest_type', 'hls')
         
   listitem.setProperty('isplayable', 'true')
   listitem.setIsFolder(False)
@@ -886,7 +896,7 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
   #play liveTV: info is created in OSD
   # GreenAir: play live stream or recall without PLAYLIST 
   if recall=='false' or afterRecall != '3':
-    player.play(streams[streamNr]['url'], listitem)
+    player.play(streams['url'], listitem)
     
     #while (player.isPlaying()): xbmc.sleep(100)
 
@@ -1580,8 +1590,9 @@ def main():
     setup_recording(program_id)
   elif action == 'watch_r':
     recording_id = args.get('id')[0]
+    cid = args.get('cid')[0]
     start = args.get('start', '0')[0]
-    watch_recording(__addonuri__, __addonhandle__, recording_id, start)
+    watch_recording(__addonuri__, __addonhandle__, recording_id, cid, start)
   elif action == 'remove_recording':
     recording_id = args.get('recording_id')[0]
     title = args.get('title')[0]

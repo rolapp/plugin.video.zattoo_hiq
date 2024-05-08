@@ -11,11 +11,13 @@ import os, re, base64,sys
 import urllib.request, urllib.parse, urllib.error
 import json
 from http.client import BadStatusLine
+from uuid import uuid4
 
 __addon__ = xbmcaddon.Addon()
 __addonId__=__addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
 __addonVersion__ = __addon__.getAddonInfo('version')
+local = xbmc.getLocalizedString
 KODIVERSION = xbmc.getInfoLabel( "System.BuildVersion" ).split()[0]
 DEBUG = __addon__.getSetting('debug')
 
@@ -132,7 +134,7 @@ class ZapiSession:
                 f = urllib.parse.urlencode(params)
                 f = f.encode('utf-8')
 
-            response = self.HttpHandler.open(url,f if params is not None else None)
+            response = self.HttpHandler.open(url,f if params is not None else None, timeout=60)
 
             if response is not None:
                 sessionId = self.extract_sessionId(response.info())
@@ -143,10 +145,12 @@ class ZapiSession:
                 #debug(response.read().decode('utf-8'))
                 return response.read().decode('utf-8')
         except Exception as e:
-           debug(str(e))
-           if '403' in str(e):
-                debug('Error 403')
-
+            debug(str(e))
+            if '403' in str(e) or '400' in str(e):
+                xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), str(e))
+                xbmcgui.Dialog().ok(__addon__.getAddonInfo('name'), __addon__.getLocalizedString(31902))
+                sys.exit()
+                
         except BadStatusLine:
             pass
 
@@ -159,8 +163,14 @@ class ZapiSession:
         url = self.ZAPIUrl + api
         #debug( "ZapiCall  " + str(url)+'  '+str(params))
         content = self.request_url(url, params)
-        #debug(content)
+        debug(content)
         if content is None:# and self.renew_session():
+            xbmc.sleep(1000)
+            debug('Zweiter Versuch')
+            content = self.request_url(url, params)
+        if content is None:# and self.renew_session():
+            xbmc.sleep(2000)
+            debug('dritter Versuch')
             content = self.request_url(url, params)
         if content is None:
             return None
@@ -196,8 +206,8 @@ class ZapiSession:
     def session(self):
         api = '/zapi/v3/session/hello'
         params = {"client_app_token" : self.fetch_appToken(),
-                  "uuid"    : "d7512e98-38a0-4f01-b820-5a5cf98141fe",
-                  "app_version" : self.fetch_appVersion(),
+                  "uuid"    : str(uuid4()),
+                  "app_version" : '3.2315.0',
                  # "lang"    : "en",
                  # "format"  : "json",
                   }
@@ -212,7 +222,7 @@ class ZapiSession:
 
     def login(self):
         api = '/zapi/v3/account/login'
-        params = {"login": self.Username, "password" : self.Password}
+        params = {"login": self.Username, "password" : self.Password, "remember": True}
         accountData = self.exec_zapiCall(api, params, 'session')
         debug ('Login: '+str(accountData))
         if accountData is not None:
