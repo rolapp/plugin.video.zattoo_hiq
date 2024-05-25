@@ -35,7 +35,7 @@ __addondir__    = xbmcvfs.translatePath( __addon__.getAddonInfo('profile') )
 __addonuri__    = sys.argv[0]
 
 ICON_PATH       = __addon__.getAddonInfo('path') + '/resources/icon.png'
-STREAM_TYPE     = __addon__.getSetting('stream_type')
+STREAM_TYPE     = "dash"
 DOLBY           = __addon__.getSetting('dolby')
 MAX_BANDWIDTH   = __addon__.getSetting('max_bandwidth')
 DEBUG           = __addon__.getSetting('debug')
@@ -84,6 +84,7 @@ class vod:
             vod_sub = self.zapi.exec_zapiCall(api, None)
             debug(vod_sub)
             if not vod_sub: continue
+            if main["element_content_id"] == "de_replay_all": continue
             if vod_sub['teasers_total'] == 0: continue
             #for teasers in vod_sub['teasers']:
                         
@@ -150,7 +151,7 @@ class vod:
                             'youth_protection_pin': YPIN
                             }
                 elif t_type == 'Vod::Video': 
-                    pfad = 'watch/vod/video'
+                    pfad = '/zapi/watch/vod/video'
                     try:
                         token = data['terms_catalog'][0]['terms'][0]['token']
                     except:
@@ -161,10 +162,42 @@ class vod:
                             'teasable_type': t_type,
                             'stream_type': STREAM_TYPE,
                             'youth_protection_pin': YPIN
+                            }
+                    if data['credits'] != []:
+                        if 'directors' in data['credits']:
+                            for name in data['credits']['directors']:
+                                director.append(name['name'])
+                        if 'actors' in data['credits']:
+                            for name in data['credits']['actors']:
+                                cast.append(name['name'])
+                    try:
+                        year = data['year']
+                    except:
+                        year = ''
+                    try:
+                        duration = data['duration']   
+                    except:
+                        duration = data['runtime'] * 60
+    
+                    if data['subtitle']: episode = ' - ' + data['subtitle']
+                    image_url = 'https://images.zattic.com/cms/' + data['image_token'] + '/format_480x360.jpg'
+                    if self.wl:
+                        title = '[COLOR gold]' + data['title'] + episode + '[/COLOR]'
+                    else:
+                        title = data['title'] + episode
+                    meta = {
+                            'title': title,
+                            'plot': data['description'],
+                            #'country': data['countries'],
+                            'genre': data['genres'],
+                            'year': year,
+                            'duration': duration,
+                            'director': director,
+                            'cast': cast
                             }
                         
                 elif t_type == 'Vod::Movie': 
-                    pfad = 'watch/vod/video'
+                    pfad = '/zapi/watch/vod/video'
                     try:
                         token = data['terms_catalog'][0]['terms'][0]['token']
                     except:
@@ -176,43 +209,94 @@ class vod:
                             'stream_type': STREAM_TYPE,
                             'youth_protection_pin': YPIN
                             }
-                
-                episode = ''
-                director = []
-                cast = []
-                if data['credits'] != []:
-                    if 'directors' in data['credits']:
-                        for name in data['credits']['directors']:
-                            director.append(name['name'])
-                    if 'actors' in data['credits']:
-                        for name in data['credits']['actors']:
-                            cast.append(name['name'])
-                try:
-                    year = data['year']
-                except:
-                    year = ''
-                try:
-                    duration = data['duration']   
-                except:
-                    duration = data['runtime'] * 60
-
-                if data['subtitle']: episode = ' - ' + data['subtitle']
-                image_url = 'https://images.zattic.com/cms/' + data['image_token'] + '/format_480x360.jpg'
-                if self.wl:
-                    title = '[COLOR gold]' + data['title'] + episode + '[/COLOR]'
-                else:
-                    title = data['title'] + episode
-                meta = {
-                        'title': title,
-                        'plot': data['description'],
-                        #'country': data['countries'],
-                        'genre': data['genres'],
-                        'year': year,
-                        'duration': duration,
-                        'director': director,
-                        'cast': cast
-                        }
-                li = xbmcgui.ListItem(label=data['title'] + episode)
+                            
+                    if data['credits'] != []:
+                        if 'directors' in data['credits']:
+                            for name in data['credits']['directors']:
+                                director.append(name['name'])
+                        if 'actors' in data['credits']:
+                            for name in data['credits']['actors']:
+                                cast.append(name['name'])
+                    try:
+                        year = data['year']
+                    except:
+                        year = ''
+                    try:
+                        duration = data['duration']   
+                    except:
+                        duration = data['runtime'] * 60
+    
+                    if data['subtitle']: episode = ' - ' + data['subtitle']
+                    image_url = 'https://images.zattic.com/cms/' + data['image_token'] + '/format_480x360.jpg'
+                    if self.wl:
+                        title = '[COLOR gold]' + data['title'] + episode + '[/COLOR]'
+                    else:
+                        title = data['title'] + episode
+                    meta = {
+                            'title': title,
+                            'plot': data['description'],
+                            #'country': data['countries'],
+                            'genre': data['genres'],
+                            'year': year,
+                            'duration': duration,
+                            'director': director,
+                            'cast': cast
+                            }
+                            
+                elif t_type == 'Tv::Broadcast': 
+                    pfad = '/v3/watch/replay/' + data['cid'] + '/' + str(data['id'])
+                    
+                    # try:
+                        # token = data['terms_catalog'][0]['terms'][0]['token']
+                    # except:
+                        # token = data['current_season']['terms_catalog'][0]['terms'][0]['token']
+                    params = {
+                            #'term_token': str(token),
+                            #'teasable_id': str(t_id),
+                            #'teasable_type': t_type,
+                            'stream_type': 'dash_widevine',
+                            'youth_protection_pin': YPIN,
+                            'max_drm_lvl': '1'
+                            }
+                            
+                    if data['cr'] != []:
+                        if 'director' in data['cr']:
+                            for name in data['cr']['director']:
+                                director.append(name)
+                        if 'actor' in data['cr']:
+                            for name in data['cr']['actor']:
+                                cast.append(name)
+                                
+                    if data['g']:
+                        for genre in data['g']:
+                            director.append(genre)
+                    try:
+                        year = data['year']
+                    except:
+                        year = ''
+                    #try:
+                        #duration = data['duration']   
+                    #except:
+                        #duration = data['runtime'] * 60
+    
+                    if data['et']: episode = ' - ' + data['et']
+                    if data['i_t']: image_url = 'https://images.zattic.com/cms/' + data['i_t'] + '/format_480x360.jpg'
+                    if self.wl:
+                        title = '[COLOR gold]' + data['t'] + episode + '[/COLOR]'
+                    else:
+                        title = data['t'] + episode
+                    meta = {
+                            'title': title,
+                            'plot': data['d'],
+                            #'country': data['countries'],
+                            #'genre': data['g'],
+                            'year': year,
+                            #'duration': duration,
+                            'director': director,
+                            'cast': cast
+                            }
+                            
+                li = xbmcgui.ListItem(label=title)
                 li.setInfo('video', meta)
                 li.setProperty('IsPlayable','true') 
                 li.setArt({'thumb':image_url, 'fanart':image_url, 'landscape':image_url,'icon':image_url})
@@ -229,7 +313,8 @@ class vod:
                         contextMenuItems.append(('Remove from Watchlist', 'RunPlugin("plugin://'+__addonId__+'/?mode=remove_wl&params='+str(para)+'")',))
                     else:
                         contextMenuItems.append(('Add to Watchlist', 'RunPlugin("plugin://'+__addonId__+'/?mode=add_wl&params='+str(para)+'")',))
-                li.addContextMenuItems(contextMenuItems, replaceItems=True)        
+                li.addContextMenuItems(contextMenuItems, replaceItems=True) 
+                       
         xbmcplugin.addDirectoryItems(__addonhandle__, listing)
         xbmcplugin.setContent(__addonhandle__, 'movies')
         xbmcplugin.addSortMethod(__addonhandle__, xbmcplugin.SORT_METHOD_LABEL )    
@@ -239,10 +324,10 @@ class vod:
     def vod_watch(self, __addonhandle__, pfad, params):
         params = ast.literal_eval(params)
         debug (type(params))
-        resultData = self.zapi.exec_zapiCall('/zapi/' + pfad , params)
+        resultData = self.zapi.exec_zapiCall(pfad , params)
         debug ('ResultData: '+str(resultData))
         if resultData is not None:
-            streams = resultData['stream']['watch_urls']
+            streams = resultData['stream'][ "watch_urls"]
             
             if len(streams)==0:
                 xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", ICON_PATH, 5000, False)
@@ -250,14 +335,14 @@ class vod:
             elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
             else: streamNr = 0
             
-        li = xbmcgui.ListItem(path=streams[streamNr]['url'])
+        li = xbmcgui.ListItem(path=streams[0]['url'])
         if STREAM_TYPE == 'dash':
             li.setProperty('inputstream', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
         elif STREAM_TYPE == 'dash_widevine':
             li.setProperty('inputstream', 'inputstream.adaptive')
             li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-            li.setProperty('inputstream.adaptive.license_key', streams[streamNr]['license_url'] + "||a{SSM}|")
+            li.setProperty('inputstream.adaptive.license_key', streams[0]['license_url'] + "||a{SSM}|")
             li.setProperty('inputstream.adaptive.license_type', "com.widevine.alpha")
         elif STREAM_TYPE == 'hls7':
             li.setProperty('inputstream', 'inputstream.adaptive')

@@ -255,7 +255,8 @@ class ZapiSession:
 
     def session(self):
         api = '/zapi/v3/session/hello'
-        if __addon__.getSetting('smarttv'):            
+
+        if __addon__.getSetting('smarttv') == 'true':     
             params = {"uuid"    : str(uuid4()),
                       "app_version" : '2.2409.1',
                       "app_tid" : "01054a65-1f0d-4a00-a441-44c2ec5fa357",

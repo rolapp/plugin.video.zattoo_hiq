@@ -416,6 +416,10 @@ msgctxt "#310068"
 msgid "Smart HD Subscription"
 msgstr "Smart HD Abonnement"
 
+msgctxt "#310069"
+msgid "Enable DRM"
+msgstr "DRM aktivieren"
+
 msgctxt "#31007"
 msgid "liveTV on first start"
 msgstr "liveTV beim ersten Start"
@@ -635,8 +639,8 @@ msgid "Categories"
 msgstr "Kategorien"
 
 msgctxt "#31109"
-msgid "On Demand"
-msgstr "On Demand"
+msgid "Zattoothek"
+msgstr "Zattoothek"
 
 # ## Benachrichtigungen ##
 msgctxt "#31200"

@@ -691,15 +691,16 @@ def watch_recording(__addonuri__, __addonhandle__, recording_id, cid, start=0):
 
   params = {'stream_type': STREAM_TYPE, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'youth_protection_pin': YPIN}
   drm = _zattooDB_.get_drm(cid)
-  if drm == True:
-    params['stream_type'] = 'dash_widevine'
-    STREAM_TYPE = 'dash_widevine'
-    params['max_drm_lvl'] = '1'
+  if __addon__.getSetting('drm') == 'true': 
+    if drm == True:
+      params['stream_type'] = 'dash_widevine'
+      STREAM_TYPE = 'dash_widevine'
+      params['max_drm_lvl'] = '1'
       
   resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/recording/' + recording_id, params)
   debug ('ResultRec: '+str(resultData))
   if resultData is not None:
-    streams = resultData['stream']['watch_urls']
+    streams = resultData['stream']
 
     if len(streams)==0:
       xbmcgui.Dialog().notification("ERROR", "NO STREAM FOUND, CHECK SETTINGS!", channelInfo['logo'], 5000, False)
@@ -707,7 +708,7 @@ def watch_recording(__addonuri__, __addonhandle__, recording_id, cid, start=0):
     elif len(streams) > 1 and  __addon__.getSetting('audio_stream') == 'B' and streams[1]['audio_channel'] == 'B': streamNr = 1
     else: streamNr = 0
 
-    li = xbmcgui.ListItem(path=streams[streamNr]['url'])
+    li = xbmcgui.ListItem(path=streams['url'])
 
     if STREAM_TYPE == 'dash':
         li.setProperty('inputstream', 'inputstream.adaptive')
@@ -716,7 +717,7 @@ def watch_recording(__addonuri__, __addonhandle__, recording_id, cid, start=0):
     elif STREAM_TYPE == 'dash_widevine':
         li.setProperty('inputstream', 'inputstream.adaptive')
         li.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-        li.setProperty('inputstream.adaptive.license_key', streams[1]['license_url'] + "||a{SSM}|")
+        li.setProperty('inputstream.adaptive.license_key', streams['license_url'] + "||a{SSM}|")
         li.setProperty('inputstream.adaptive.license_type', "com.widevine.alpha")
         
     xbmcplugin.setResolvedUrl(__addonhandle__, True, li)
@@ -816,23 +817,24 @@ def watch_channel(handle, channel_id, start, end, showID="", recall='false', add
   if recall == 'true':
     #debug(recall)
     params = {'stream_type': STREAM_TYPE, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'pre_padding':pre, 'post_padding':post, 'youth_protection_pin': YPIN}
-    if drm == True:
-      params['stream_type'] = 'dash_widevine'
-      STREAM_TYPE = 'dash_widevine'
-      params['max_drm_lvl'] = '1'
-      if SWISS and platform.system() == 'Linux':
-        params['quality'] = 'sd'
+    if __addon__.getSetting('drm') == 'true':   
+      if drm == True:
+        params['stream_type'] = 'dash_widevine'
+        STREAM_TYPE = 'dash_widevine'
+        params['max_drm_lvl'] = '1'
+        if SWISS and platform.system() == 'Linux':
+          params['quality'] = 'sd'
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/v3/watch/replay/' + channel_id + '/' + showID, params)
   else:
     params = {'stream_type': STREAM_TYPE, 'maxrate':max_bandwidth, 'enable_eac3':DOLBY, 'timeshift':'10800', 'https_watch_urls': 'true', 'youth_protection_pin': YPIN}
-
-    if drm == True:
-      params['stream_type'] = 'dash_widevine'
-      STREAM_TYPE = 'dash_widevine'
-      params['max_drm_lvl'] = '1'
-      if SWISS and platform.system() == 'Linux':
-        params['quality'] = 'sd'
-      
+    if __addon__.getSetting('drm') == 'true': 
+      if drm == True:
+        params['stream_type'] = 'dash_widevine'
+        STREAM_TYPE = 'dash_widevine'
+        params['max_drm_lvl'] = '1'
+        if SWISS and platform.system() == 'Linux':
+          params['quality'] = 'sd'
+        
     resultData = _zattooDB_.zapi.exec_zapiCall('/zapi/watch/live/' + channel_id, params)
 
   channelInfo = _zattooDB_.get_channelInfo(channel_id)
@@ -1198,7 +1200,9 @@ def makeOsdInfo():
   nextprog = _zattooDB_.getPrograms({'index':[channel_id]}, True, program['end_date']+datetime.timedelta(seconds=60), program['end_date']+datetime.timedelta(seconds=60))
   #debug ('Program: '+str(nextprog))
   if accountData['nonlive']['replay_availability'] == 'available':
-      if program['restart'] > datetime.datetime.now() and program['start_date'] < datetime.datetime.now():
+      if program['restart'] == None:
+          RECALL = False
+      elif program['restart'] > datetime.datetime.now() and program['start_date'] < datetime.datetime.now():
           RECALL = True
       else:
           RECALL = False

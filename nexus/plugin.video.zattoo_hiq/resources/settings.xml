@@ -223,6 +223,11 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting help="" id="drm" label="310069" type="boolean">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
 				<setting help="" id="dolby" label="310066" type="boolean">
 					<level>0</level>
 					<default>false</default>
